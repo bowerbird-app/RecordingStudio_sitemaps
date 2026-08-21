@@ -41,6 +41,8 @@ Devise sign-in keeps `layouts/application` so the login card can stay centered. 
 
 The host injects `flat_pack/application`, the workspace switcher, and Sign out through `app/views/recording_studio/_default_layout_head.html.erb`. Signed-in pages set `page_nav_back_url` and `page_nav_anchor_url` so default-layout PageNav actually gets back and close. Do not put the switcher or Sign out in the home view body.
 
+Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/bundle`, `/usr/local/bundle` (CI), and mise installs. Rebuild with `bin/rails tailwindcss:build` if back/close icon buttons look like tiny dots.
+
 ## Useful Routes
 
 - `/` - signed-in workspace slice
