@@ -223,8 +223,7 @@ class RenameVerificationTest < Minitest::Test
     skip if @gem_name == "gem_template"
 
     ruby_files = Dir.glob(File.join(@root, "**", "*.rb"))
-    # Exclude test files and this verification test itself
-    ruby_files.reject! { |f| f.include?("test/dummy") || f.include?("rename_verification_test.rb") || f.include?("rename_gem_identity_test.rb") }
+    ruby_files.reject! { |path| orphan_scan_excluded?(path) }
 
     files_with_old_refs = []
 
@@ -401,6 +400,12 @@ class RenameVerificationTest < Minitest::Test
     return File.basename(lib_dirs.first) if lib_dirs.any?
 
     raise "Could not detect gem name"
+  end
+
+  def orphan_scan_excluded?(path)
+    path.include?("test/dummy") ||
+      path.end_with?("rename_verification_test.rb") ||
+      path.end_with?("rename_gem_identity_test.rb")
   end
 
   def to_pascal_case(str)
