@@ -39,4 +39,3 @@ class PublishHooksTest < Minitest::Test
     RecordingStudioSitemaps::PublishHooks.instance_variable_set(:@installed, true)
   end
 end
-

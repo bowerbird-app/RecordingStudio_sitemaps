@@ -46,4 +46,3 @@ class XmlBuilderTest < Minitest::Test
     assert_includes xml, "<lastmod>2026-08-21</lastmod>"
   end
 end
-

@@ -12,22 +12,28 @@ module RecordingStudioSitemaps
       end
 
       def call
-        entries = UrlSet.entries
-        xml = XmlBuilder.build(entries.map { |entry| { loc: entry.loc, lastmod: entry.lastmod } })
-        write_log!(
-          status: GenerationLog::SUCCESS,
-          url_count: entries.size,
-          xml: xml
-        )
+        write_success_log!(UrlSet.entries)
       rescue StandardError => e
-        write_log!(
-          status: GenerationLog::ERROR,
-          url_count: 0,
-          error_message: e.message
-        )
+        write_error_log!(e)
       end
 
       private
+
+      def write_success_log!(entries)
+        write_log!(
+          status: GenerationLog::SUCCESS,
+          url_count: entries.size,
+          xml: XmlBuilder.build(entries.map { |entry| { loc: entry.loc, lastmod: entry.lastmod } })
+        )
+      end
+
+      def write_error_log!(error)
+        write_log!(
+          status: GenerationLog::ERROR,
+          url_count: 0,
+          error_message: error.message
+        )
+      end
 
       def write_log!(status:, url_count:, xml: nil, error_message: nil)
         GenerationLog.create!(

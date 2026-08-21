@@ -15,22 +15,24 @@ module RecordingStudioSitemaps
     end
 
     def build
-      lines = +%(<urlset xmlns="#{NAMESPACE}">\n)
-      @entries.each do |entry|
-        loc = xml_escape(entry[:loc].to_s)
-        next if loc.blank?
-
-        lines << "  <url>\n"
-        lines << "    <loc>#{loc}</loc>\n"
-        lastmod = format_lastmod(entry[:lastmod])
-        lines << "    <lastmod>#{xml_escape(lastmod)}</lastmod>\n" if lastmod.present?
-        lines << "  </url>\n"
-      end
-      lines << "</urlset>\n"
-      %(<?xml version="1.0" encoding="UTF-8"?>\n#{lines})
+      urls = @entries.filter_map { |entry| url_xml(entry) }.join
+      <<~XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="#{NAMESPACE}">
+        #{urls}</urlset>
+      XML
     end
 
     private
+
+    def url_xml(entry)
+      loc = xml_escape(entry[:loc].to_s)
+      return if loc.blank?
+
+      lastmod = format_lastmod(entry[:lastmod])
+      lastmod_line = lastmod.present? ? "    <lastmod>#{xml_escape(lastmod)}</lastmod>\n" : ""
+      "  <url>\n    <loc>#{loc}</loc>\n#{lastmod_line}  </url>\n"
+    end
 
     def format_lastmod(value)
       return if value.blank?

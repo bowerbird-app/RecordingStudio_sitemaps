@@ -30,4 +30,3 @@ class AbsoluteUrlTest < Minitest::Test
     assert_nil RecordingStudioSitemaps::AbsoluteUrl.call("http://%", public_base_url: "http://www.example.com")
   end
 end
-
