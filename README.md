@@ -36,7 +36,7 @@ Do not add Publishable, Admin, Support, Press kits, Attachable, API, Webhooks, U
 
 `test/dummy/` is a host that proves the gem. It is not the product.
 
-Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Root Switchable sits in that chrome. Devise sign-in keeps `layouts/application` and still loads Flatpack CSS/JS plus Turbo.
+Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. The workspace switcher and Sign out sit in that chrome. Signed-in `/` is a thin workspace slice (workspace title, then folders and pages), not a host marketing page. Devise sign-in keeps `layouts/application` and still loads Flatpack CSS/JS plus Turbo.
 
 Dummy kit pins:
 

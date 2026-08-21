@@ -88,7 +88,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes default_layout_head, 'stylesheet_link_tag "flat_pack/application"'
     assert_includes default_layout_head, "recording_studio_root_switch_dropdown"
     assert_includes default_layout_head, "recording_studio_page_nav_right"
-    refute_includes default_layout_head, "Sign out"
+    assert_includes default_layout_head, "Sign out"
+    assert_includes default_layout_head, "destroy_user_session_path"
     refute_includes default_layout_head, "dummy_page_nav"
   end
 
@@ -144,13 +145,26 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes readme, "recording_studio/v3.0.0"
   end
 
-  def test_dummy_home_page_is_a_host_not_the_product
+  def test_dummy_home_page_is_a_workspace_slice_not_a_landing
     view_path = File.expand_path("dummy/app/views/home/index.html.erb", __dir__)
     view_source = File.read(view_path)
+    controller_source = File.read(File.expand_path("dummy/app/controllers/home_controller.rb", __dir__))
+    kwargs_source = File.read(
+      File.expand_path("dummy/config/initializers/recording_studio_page_nav_kwargs.rb", __dir__)
+    )
 
-    assert_includes view_source, 'title: "Dummy host"'
-    assert_includes view_source, "FlatPack::Card::Component"
+    assert_includes controller_source, "current_root_recordable"
     assert_includes view_source, "recording_studio_page_nav"
+    assert_includes view_source, "page_nav_back_url:"
+    assert_includes view_source, "page_nav_anchor_url:"
+    assert_includes view_source, "FlatPack::PageTitle::Component"
+    assert_includes kwargs_source, "anchor_href"
+    assert_includes kwargs_source, "FlatPack::PageNav::Component.prepend"
+    refute_includes view_source, "Dummy host"
+    refute_includes view_source, "proves the"
+    refute_includes view_source, "admin@admin.com"
+    refute_includes view_source, "Sitemap XML"
+    refute_includes view_source, "FlatPack::Card::Component"
     refute_includes view_source, "dummy_page_nav"
     refute_includes view_source, "Sign out"
     refute_includes view_source, "recording_studio_root_switch_dropdown"

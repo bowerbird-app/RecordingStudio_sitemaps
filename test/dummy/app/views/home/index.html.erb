@@ -1,17 +1,29 @@
-<% recording_studio_page_nav(title: "Dummy host") %>
+<% workspace_title = @workspace&.name.presence || "Workspace" %>
+<% recording_studio_page_nav(
+  title: workspace_title,
+  page_nav_back_url: root_path,
+  page_nav_anchor_url: root_path
+) %>
 
 <div class="flex w-full flex-col gap-6">
   <%= render FlatPack::PageTitle::Component.new(
-    title: "Dummy host",
-    subtitle: "This app proves the sitemaps gem in a real host. It is not the product.",
+    title: workspace_title,
+    subtitle: (@workspace.present? ? "Folders and pages in this workspace." : "Pick a workspace from the switcher."),
     variant: :h1
   ) %>
 
-  <%= render FlatPack::Card::Component.new(style: :default) do |card| %>
-    <% card.body do %>
-      <p class="text-sm leading-6 text-(--surface-content-color)">
-        Sign in stays at admin@admin.com. Sitemap XML is not on this screen yet.
-      </p>
+  <% if @workspace_items.any? %>
+    <%= render FlatPack::List::Component.new(divider: true) do %>
+      <% @workspace_items.each do |item| %>
+        <%= render FlatPack::List::Item.new(trailing: item.fetch(:kind)) do %>
+          <%= item.fetch(:name) %>
+        <% end %>
+      <% end %>
     <% end %>
+  <% else %>
+    <%= render FlatPack::EmptyState::Component.new(
+      title: "Nothing here yet",
+      description: "Folders and pages in this workspace will show up here."
+    ) %>
   <% end %>
 </div>

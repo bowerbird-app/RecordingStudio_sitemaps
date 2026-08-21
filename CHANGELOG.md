@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Dummy signed-in home is a workspace page slice inside Recording Studio default-layout chrome (back/close, workspace switcher, and Sign out). Dummy-only; no version bump.
+
 ## [0.1.0] - 2026-08-21
 
 First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of Publishable indexable URLs, with generation logs and Admin last-build / excluded URL views, is the product direction. This slice ships the gem identity and Recording Studio 4.2 host pins only. It does not emit XML, logs, Admin, a generator, or Publishable wiring.

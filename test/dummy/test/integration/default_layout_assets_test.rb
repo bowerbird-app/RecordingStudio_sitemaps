@@ -28,7 +28,9 @@ class DefaultLayoutAssetsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/assets/tailwind"
     assert_includes response.body, "@hotwired/turbo-rails"
     refute_includes response.body, "dummy_page_nav"
-    refute_includes response.body, "Sign out"
+    assert_includes response.body, "Sign out"
+    assert_select "[aria-label='Go back']", count: 1
+    assert_select "a[aria-label='Close']", count: 1
   end
 
   test "devise sign in keeps its layout while still loading Flatpack CSS and JS" do
