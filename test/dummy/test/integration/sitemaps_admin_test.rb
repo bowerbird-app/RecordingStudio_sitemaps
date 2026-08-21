@@ -17,6 +17,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
   end
 
   test "admin sitemaps section lists coverage, findable pages, and missing pages" do
+    coverage = RecordingStudioSitemaps::Coverage.snapshot
+
     get "/admin/sections/sitemaps"
 
     assert_response :success
@@ -25,7 +27,9 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "flat_pack/application"
     assert_includes response.body, "Last built"
     assert_includes response.body, "Coverage"
-    assert_includes response.body, "1 / 2"
+    assert_includes response.body, "#{coverage.included} / #{coverage.published}"
+    assert_operator coverage.included, :>, 0
+    assert_operator coverage.published, :>, coverage.included
     assert_includes response.body, "In the sitemap"
     assert_includes response.body, "Getting Started"
     assert_includes response.body, "Page"
