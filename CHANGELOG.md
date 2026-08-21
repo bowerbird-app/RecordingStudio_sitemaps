@@ -7,59 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-08-21
+## [0.1.0] - 2026-08-21
 
-New addons copied from this template are born on Recording Studio 4.x.
+First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of Publishable indexable URLs, with generation logs and Admin last-build / excluded URL views, is the product direction. This slice ships the gem identity and Recording Studio 4.2 host pins only. It does not emit XML, logs, Admin, a generator, or Publishable wiring.
 
 ### Added
-- Gemspec dependency `recording_studio`, `~> 4.1`
-- Dummy host wiring for Accessible (`enable_capability(:accessible, on: Workspace)`) and an opt-in `RecordingStudio::Capabilities::Example.to` mixin. `.to` wraps core 4.2.0 `include_for` (not a fourth verb, and not a raw `enable_capability` / `set_capability_options` path). Installing the gem does not enable the mixin globally; only dummy Workspace opts in.
-- `bin/rename_gem` leftover-identity rewrite/verification for README, homepage, and changelog URLs that still say `GemTemplate` or point at `bowerbird-app/gem_template`
+- Gemspec dependencies `recording_studio`, `~> 4.2` and `recording_studio_accessible`, `~> 0.6`
 
 ### Changed
-- Dummy GitHub tags: Recording Studio `v4.2.0`, Accessible `v0.6.0`, Root Switchable `v0.5.0`, FlatPack `v0.1.133`
-- Dummy authenticated layout is Recording Studio's default layout plus FlatPack CSS/JS; Devise keeps its own sign-in layout
-- Dummy app security pins: Rails `8.1.3.1`, `json` `2.21.2`, `mail` `2.9.1`, Brakeman `8.0.6`
-- Require `RecordingStudio::Hooks` and `RecordingStudio::Services::BaseService` from core instead of shipping copies
+- Renamed the engine from the addon template to `recording_studio_sitemaps`
+- Dummy GitHub tags: Recording Studio `v4.2.0`, Accessible `v0.6.1`, Root Switchable `v0.5.0`, FlatPack `v0.1.133`
+- Dummy authenticated pages use Recording Studio's default layout chrome and load Flatpack CSS/JS (including `flat_pack/application` and Turbo). Devise sign-in keeps its own layout and still loads those assets. Root Switchable sits in the default-layout chrome.
 
 ### Removed
-- Copied `lib/gem_template/hooks.rb` and `lib/gem_template/services/base_service.rb`
-- Product-shipped `ExampleService`
-- Custom `flat_pack_sidebar` authenticated shell
+- Leftover template identity in the public README and gemspec
+- Dummy starter docs pages
+- Template example capability mixin
+- Engine sample home controller
 
 ### Upgrade notes
-- Point dummy or host Gemfiles at Recording Studio `v4.2.0` (not `recording_studio/v3.0.0`)
-- Add `spec.add_dependency "recording_studio", "~> 4.1"` to addon gemspecs
+- Point host and dummy Gemfiles at Recording Studio `v4.2.0` and Accessible `v0.6.1`
+- Declare `spec.add_dependency "recording_studio", "~> 4.2"` and `spec.add_dependency "recording_studio_accessible", "~> 0.6"`
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
-- Delete any copied Hooks or BaseService files and require the core classes
-- Keep recordable declarations; they are required, not a v3-only concern
-- If Accessible is bundled, call `RecordingStudio.enable_capability(:accessible, on: Workspace)` (or your root type)
+- Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-## [0.1.2] - 2026-07-21
-
-### Changed
-- Bumped the dummy app FlatPack dependency from `v0.1.33` to `v0.1.129`
-
-## [0.1.1] - 2026-04-28
-
-### Changed
-- Bumped the dummy app FlatPack dependency from `0.1.2` to `0.1.33` and pinned it by tag in `test/dummy/Gemfile`
-
-## [0.1.0] - 2025-12-04
-
-### Added
-- Initial release
-- Rails mountable engine structure
-- PostgreSQL with UUID primary keys support
-- TailwindCSS v4 integration
-- GitHub Codespaces devcontainer configuration
-- Docker Compose setup with PostgreSQL and Redis
-- Install generator for host applications
-- Comprehensive README and documentation
-- Basic test suite with Minitest
-
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_gem_template/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/bowerbird-app/RecordingStudio_gem_template/releases/tag/v0.2.0
-[0.1.2]: https://github.com/bowerbird-app/RecordingStudio_gem_template/releases/tag/v0.1.2
-[0.1.1]: https://github.com/bowerbird-app/RecordingStudio_gem_template/releases/tag/v0.1.1
-[0.1.0]: https://github.com/bowerbird-app/RecordingStudio_gem_template/releases/tag/v0.1.0
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.1.0
