@@ -16,4 +16,8 @@ module RecordingStudioPageNavCoreKwargs
   end
 end
 
-FlatPack::PageNav::Component.prepend(RecordingStudioPageNavCoreKwargs)
+Rails.application.config.to_prepare do
+  next if FlatPack::PageNav::Component.ancestors.include?(RecordingStudioPageNavCoreKwargs)
+
+  FlatPack::PageNav::Component.prepend(RecordingStudioPageNavCoreKwargs)
+end
