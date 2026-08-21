@@ -1,0 +1,101 @@
+# frozen_string_literal: true
+
+require "test_helper"
+require "devise/test/integration_helpers"
+
+class SitemapsAdminTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
+  setup do
+    @user = User.find_or_create_by!(email: "sitemaps-admin@example.com") do |record|
+      record.password = "Password123!"
+      record.password_confirmation = "Password123!"
+    end
+    seed_admin_and_pages!
+    sign_in @user
+  end
+
+  test "admin sitemaps section shows last build, findable count, and excluded row" do
+    get "/admin/sections/sitemaps"
+
+    assert_response :success
+    assert_select "html[data-theme=rounded]", count: 1
+    assert_select "body[data-recording-studio-default-layout=true]", count: 1
+    assert_includes response.body, "flat_pack/application"
+    assert_includes response.body, "Last build"
+    assert_includes response.body, "Findable pages"
+    assert_includes response.body, "Live but left out"
+    assert_includes response.body, "Staff-only notes"
+    assert_includes response.body, "Hidden from search"
+    refute_includes response.body, "Not yet"
+    assert_match(/[1-9]/, response.body)
+    assert_includes response.body, "Open sitemap"
+    assert_includes response.body, "Rebuild"
+    refute_includes response.body, "total URLs ever"
+  end
+
+  test "rebuild action writes a log and returns to the sitemaps section" do
+    assert_difference -> { RecordingStudioSitemaps::GenerationLog.count }, +1 do
+      get "/recording_studio_sitemaps/rebuild"
+    end
+
+    follow_redirect! if response.redirect?
+
+    assert_response :success
+    assert_includes response.body, "Sitemap rebuilt."
+    assert_predicate RecordingStudioSitemaps::GenerationLog.latest, :success?
+  end
+
+  test "rebuild is forbidden without admin root access" do
+    stranger = User.find_or_create_by!(email: "sitemaps-stranger@example.com") do |record|
+      record.password = "Password123!"
+      record.password_confirmation = "Password123!"
+    end
+    sign_in stranger
+
+    get "/recording_studio_sitemaps/rebuild"
+
+    assert_response :forbidden
+  end
+
+  private
+
+  def seed_admin_and_pages!
+    Current.actor = @user
+    admin_root = AdminRoot.find_or_create_by!(name: "Admin")
+    admin_recording = RecordingStudio.root_recording_for(admin_root)
+    RecordingStudioAccessible.bootstrap_owner_access!(recording: admin_recording, actor: @user)
+
+    workspace = Workspace.create!(name: "Admin Sitemap Workspace #{SecureRandom.hex(4)}")
+    folder = Folder.create!(name: "Docs")
+    indexable_page = Page.create!(title: "Getting Started")
+    excluded_page = Page.create!(title: "Staff-only notes")
+    root = RecordingStudio.root_recording_for(workspace)
+    folder_recording = record_child(folder, root, root)
+    indexable_recording = record_child(indexable_page, root, folder_recording)
+    excluded_recording = record_child(excluded_page, root, folder_recording)
+
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: indexable_recording,
+      actor: @user,
+      attributes: { slug: "getting-started", status: "published", meta_robots: "index,follow" }
+    )
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: excluded_recording,
+      actor: @user,
+      attributes: { slug: "staff-only-notes", status: "published", meta_robots: "noindex,follow" }
+    )
+    RecordingStudioSitemaps.rebuild!(source: :test)
+  ensure
+    Current.actor = nil
+  end
+
+  def record_child(recordable, root_recording, parent_recording)
+    RecordingStudio.record!(
+      action: "created",
+      recordable: recordable,
+      root_recording: root_recording,
+      parent_recording: parent_recording
+    ).recording
+  end
+end

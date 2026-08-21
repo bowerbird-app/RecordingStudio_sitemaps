@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 RecordingStudioSitemaps.configure do |config|
-  # Set your API key (recommended to use ENV or Rails credentials)
-  # config.api_key = ENV["RECORDING_STUDIO_SITEMAPS_API_KEY"]
+  # Public host used when an indexable page only has a path, not a full URL.
+  config.public_base_url = ENV.fetch("SITEMAP_PUBLIC_BASE_URL", "http://localhost:3000")
 
-  # Enable optional feature X
-  # config.enable_feature_x = false
-
-  # Timeout in seconds for external calls
-  # config.timeout = 5
+  # Warn in Admin when the findable URL count heads toward the 50,000 URL cap.
+  # config.url_count_warning_threshold = 45_000
 end

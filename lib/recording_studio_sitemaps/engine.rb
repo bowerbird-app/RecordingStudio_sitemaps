@@ -97,6 +97,18 @@ module RecordingStudioSitemaps
       RecordingStudioSitemaps.configuration.hooks.run(:after_initialize, self)
     end
 
+    initializer "recording_studio_sitemaps.publish_hooks" do
+      config.to_prepare do
+        RecordingStudioSitemaps::PublishHooks.install!
+      end
+    end
+
+    initializer "recording_studio_sitemaps.admin" do
+      config.to_prepare do
+        RecordingStudioSitemaps::Admin.register!
+      end
+    end
+
     # Apply model extensions when models are loaded
     initializer "recording_studio_sitemaps.apply_model_extensions" do
       config.to_prepare do

@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.1.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.2.1", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -16,9 +16,10 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.6"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", "~> 2.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "= 0.2.0"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
-    refute_includes gemspec, 'spec.add_dependency "recording_studio_publishable"'
-    refute_includes gemspec, 'spec.add_dependency "recording_studio_admin"'
     refute_includes gemspec, "internal template"
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_sitemaps"
     refute_includes gemspec, "https://github.com/bowerbird-app/recording_studio_sitemaps"
@@ -30,6 +31,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.6.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "2.0.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.2.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.133"'
     refute_includes gemfile, "recording_studio/v3.0.0"
@@ -111,7 +114,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     initializer_source = File.read(initializer_path)
 
     assert_includes initializer_source, "config.require_recordable_declarations = true"
-    assert_includes initializer_source, "config.recordable_types = [ \"Workspace\", \"Folder\", \"Page\" ]"
+    assert_includes initializer_source, '"AdminRoot"'
+    assert_includes initializer_source, '"RecordingStudioPublishable::Publishable"'
     assert_includes initializer_source, 'config.app_name = "Dummy host"'
     refute_includes initializer_source, "Addon Template"
     refute_includes initializer_source, "config.include_children"
@@ -137,7 +141,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "v4.2.0"
     assert_includes readme, "v0.6.1"
     assert_includes readme, "v0.1.133"
-    assert_includes readme, "does not ship `/sitemap.xml`"
+    assert_includes readme, "/sitemap.xml"
+    assert_includes readme, "v0.2.0"
+    assert_includes readme, "2.0.1"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
@@ -184,11 +190,26 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute File.exist?(view_path)
   end
 
-  def test_slice_does_not_claim_sitemap_xml_or_admin
-    refute File.exist?(File.expand_path("../app/controllers/recording_studio_sitemaps/sitemaps_controller.rb", __dir__))
-    refute File.exist?(File.expand_path("../app/views/recording_studio_sitemaps/sitemaps/show.xml.erb", __dir__))
+  def test_slice_ships_sitemap_xml_and_admin
+    assert File.exist?(File.expand_path("../app/controllers/recording_studio_sitemaps/sitemaps_controller.rb", __dir__))
+    assert File.exist?(File.expand_path("../lib/recording_studio_sitemaps/admin.rb", __dir__))
     engine_routes = File.read(File.expand_path("../config/routes.rb", __dir__))
-    refute_includes engine_routes, "sitemap.xml"
-    refute_includes engine_routes, "admin"
+    assert_includes engine_routes, "rebuild"
+  end
+
+  def test_dummy_page_enables_publishable
+    page_source = File.read(File.expand_path("dummy/app/models/page.rb", __dir__))
+
+    assert_includes page_source, "RecordingStudio::Capabilities::Publishable.to"
+  end
+
+  def test_dummy_html_uses_rounded_theme
+    application_layout = File.read(File.expand_path("dummy/app/views/layouts/application.html.erb", __dir__))
+    default_layout = File.read(
+      File.expand_path("dummy/app/views/layouts/recording_studio/default_layout.html.erb", __dir__)
+    )
+
+    assert_includes application_layout, '<html data-theme="rounded">'
+    assert_includes default_layout, '<html data-theme="rounded">'
   end
 end

@@ -34,7 +34,10 @@ class InstallGeneratorTest < Minitest::Test
       generator.mount_engine
     end
 
-    assert_equal ["mount RecordingStudioSitemaps::Engine, at: \"/addons/recording\""], routes
+    assert_equal [
+      "get \"sitemap.xml\", to: RecordingStudioSitemaps::SitemapsController.action(:show), as: :sitemap",
+      "mount RecordingStudioSitemaps::Engine, at: \"/addons/recording\""
+    ], routes
   end
 
   def test_add_tailwind_source_injects_engine_and_flatpack_sources
@@ -140,8 +143,9 @@ class InstallGeneratorTest < Minitest::Test
 
     assert_includes install_guide, "bin/rails generate recording_studio_sitemaps:migrations"
     assert_includes install_guide, "bin/rails db:migrate"
-    assert_includes install_guide, "auth, layout, and current actor integration"
-    assert_includes install_guide, "recording_studio_recordable"
+    assert_includes install_guide, "public_base_url"
+    assert_includes install_guide, "section :sitemaps"
+    assert_includes install_guide, "RecordingStudioSitemaps.rebuild!"
     refute_includes install_guide, "RecordingStudio v3"
   end
 

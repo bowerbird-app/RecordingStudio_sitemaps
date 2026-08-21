@@ -1,14 +1,15 @@
 ===============================================================================
 
-RecordingStudioSitemaps has been installed successfully!
+RecordingStudioSitemaps has been installed.
 
-The engine has been mounted at /recording_studio_sitemaps in your application.
+Public sitemap: /sitemap.xml
+Engine rebuild: /recording_studio_sitemaps/rebuild
 
-If you use Tailwind CSS:
-1. Run 'bin/rails tailwindcss:build' to rebuild your CSS with RecordingStudioSitemaps styles
-
-To use the engine:
-1. Start your Rails server
-2. Visit http://localhost:3000/recording_studio_sitemaps
+Next:
+1. Set public_base_url in config/initializers/recording_studio_sitemaps.rb
+2. Run bin/rails generate recording_studio_sitemaps:migrations && bin/rails db:migrate
+3. Enable Publishable on the types that should appear
+4. Enable `section :sitemaps` on your admin root and grant Accessible access
+5. Rebuild Tailwind if you use it
 
 ===============================================================================

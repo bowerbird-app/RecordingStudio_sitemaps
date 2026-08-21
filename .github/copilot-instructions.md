@@ -5,7 +5,7 @@
 - This repository is the Recording Studio Sitemaps Rails engine (`RecordingStudioSitemaps`).
 - Preserve engine namespace isolation under `RecordingStudioSitemaps`.
 - Treat `docs/gem_template/` as architectural reference material. The top-level README is the product; the dummy app is a host that proves the gem.
-- Keep changes small and scoped. Do not add `/sitemap.xml`, Admin, generation logs, or Publishable wiring unless the request asks for that slice.
+- Keep changes small and scoped. This gem owns `/sitemap.xml`, generation logs, and the Admin Sitemaps section. Publishable still owns per-page search tags.
 
 ## UI Conventions
 

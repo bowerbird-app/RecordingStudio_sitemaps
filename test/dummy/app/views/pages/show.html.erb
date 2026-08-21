@@ -1,0 +1,5 @@
+<% page = @page || @parent_recordable %>
+<%= render FlatPack::PageTitle::Component.new(
+  title: page&.title.presence || "Page",
+  subtitle: "A public page."
+) %>

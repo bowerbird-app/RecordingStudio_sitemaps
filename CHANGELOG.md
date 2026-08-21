@@ -7,8 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-21
+
+Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
+
+### Added
+- `RecordingStudioSitemaps.rebuild!` as the one domain action for publish/unpublish hooks and Admin Rebuild
+- Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
+- Generation logs for when a sitemap was written, how many URLs it held, and any error
+- Admin Sitemaps section: last build, findable page count, published-but-excluded rows, Open sitemap, Rebuild
+- Warning when the findable URL count heads toward 50,000
+- Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
+- Dummy seed with one findable page and one published page left out of the sitemap
+
 ### Changed
-- Dummy signed-in home is a workspace page slice inside Recording Studio default-layout chrome (back/close, workspace switcher, and Sign out). Dummy Tailwind also scans mise gem paths so PageNav icon buttons keep their size. Dummy-only; no version bump.
+- Gemspec now depends on Admin `~> 2.0`, Publishable `= 0.2.0`, and FlatPack `~> 0.1.129`
+- Dummy GitHub tags: Admin `2.0.1` and Publishable `v0.2.0`
+- Dummy Page enables Publishable with `RecordingStudio::Capabilities::Publishable.to`
+- Configuration is `public_base_url` and `url_count_warning_threshold` (template `api_key` / `enable_feature_x` / `timeout` are gone)
+
+### Removed
+- Engine sample `recording_studio_sitemaps_pages` table. Sitemap rows are derived; only generation logs are stored.
+
+### Upgrade notes
+- Add Admin `2.0.1` and Publishable `v0.2.0` next to Recording Studio `v4.2.0`
+- Set `config.public_base_url` to the public host search engines should see
+- Run `bin/rails generate recording_studio_sitemaps:install` and `bin/rails generate recording_studio_sitemaps:migrations`
+- Enable Publishable on types that should appear
+- Enable `section :sitemaps` on the admin root and grant Accessible access. Do not use `user.admin?`
+- Drop any `recording_studio_sitemaps_pages` table if a host copied the old engine migration
 
 ## [0.1.0] - 2026-08-21
 
@@ -34,5 +61,6 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.1.0

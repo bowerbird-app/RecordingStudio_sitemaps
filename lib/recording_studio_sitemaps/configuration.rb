@@ -2,33 +2,37 @@
 
 module RecordingStudioSitemaps
   class Configuration
-    attr_accessor :api_key, :enable_feature_x, :timeout
+    URL_COUNT_WARNING_THRESHOLD = 45_000
+    SITEMAP_URL_LIMIT = 50_000
+
+    attr_accessor :public_base_url, :url_count_warning_threshold
     attr_reader :hooks
 
     def initialize
-      @api_key = ENV.fetch("RECORDING_STUDIO_SITEMAPS_API_KEY", nil)
-      @enable_feature_x = false
-      @timeout = 5
+      @public_base_url = nil
+      @url_count_warning_threshold = URL_COUNT_WARNING_THRESHOLD
       @hooks = RecordingStudio::Hooks.new
     end
 
     def to_h
       {
-        api_key: api_key,
-        enable_feature_x: enable_feature_x,
-        timeout: timeout,
-        hooks_registered: hooks.instance_variable_get(:@registry).transform_values(&:size)
+        public_base_url: public_base_url,
+        url_count_warning_threshold: url_count_warning_threshold,
+        hooks_registered: hooks.registered_counts
       }
     end
 
     def merge!(hash)
       return unless hash.respond_to?(:each)
 
-      hash.each do |k, v|
-        key = k.to_s
+      hash.each do |key, value|
         setter = "#{key}="
-        public_send(setter, v) if respond_to?(setter)
+        public_send(setter, value) if respond_to?(setter)
       end
+    end
+
+    def approaching_url_limit?(count)
+      count.to_i >= url_count_warning_threshold.to_i
     end
   end
 end

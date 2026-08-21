@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
-# Slice 1 has no mounted screens. Hosts still mount the engine after install.
-RecordingStudioSitemaps::Engine.routes.draw do # rubocop:disable Lint/EmptyBlock
+RecordingStudioSitemaps::Engine.routes.draw do
+  get "rebuild", to: "rebuilds#create", as: :rebuild
+  post "rebuild", to: "rebuilds#create"
 end

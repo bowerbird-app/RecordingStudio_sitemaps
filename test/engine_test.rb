@@ -35,11 +35,11 @@ class EngineTest < Minitest::Test
       hook_payload = cfg
     end
 
-    xcfg = Struct.new(:recording_studio_sitemaps).new({ enable_feature_x: true })
+    xcfg = Struct.new(:recording_studio_sitemaps).new({ url_count_warning_threshold: 40_000 })
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
       def config_for(_name)
-        { api_key: "from_yaml", timeout: 12 }
+        { public_base_url: "https://from-yaml.test" }
       end
     end.new(app_config)
 
@@ -47,15 +47,14 @@ class EngineTest < Minitest::Test
 
     assert hook_called
     assert_equal RecordingStudioSitemaps.configuration, hook_payload
-    assert_equal "from_yaml", RecordingStudioSitemaps.configuration.api_key
-    assert_equal 12, RecordingStudioSitemaps.configuration.timeout
-    assert_equal true, RecordingStudioSitemaps.configuration.enable_feature_x
+    assert_equal "https://from-yaml.test", RecordingStudioSitemaps.configuration.public_base_url
+    assert_equal 40_000, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
   def test_load_config_handles_errors_and_each_pair_fallback
     pair_config = Class.new do
       def each_pair
-        yield(:timeout, 15)
+        yield(:url_count_warning_threshold, 15)
       end
     end.new
 
@@ -70,7 +69,7 @@ class EngineTest < Minitest::Test
 
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_equal 15, RecordingStudioSitemaps.configuration.timeout
+    assert_equal 15, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
   def test_load_config_swallow_each_pair_errors
@@ -84,14 +83,14 @@ class EngineTest < Minitest::Test
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
       def config_for(_name)
-        { api_key: "ok" }
+        { public_base_url: "https://ok.test" }
       end
     end.new(app_config)
 
     # Should not raise even if xcfg.each_pair fails.
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_equal "ok", RecordingStudioSitemaps.configuration.api_key
+    assert_equal "https://ok.test", RecordingStudioSitemaps.configuration.public_base_url
   end
 
   def test_load_config_is_noop_without_config_sources
@@ -99,9 +98,9 @@ class EngineTest < Minitest::Test
 
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_nil RecordingStudioSitemaps.configuration.api_key
-    assert_equal 5, RecordingStudioSitemaps.configuration.timeout
-    assert_equal false, RecordingStudioSitemaps.configuration.enable_feature_x
+    assert_nil RecordingStudioSitemaps.configuration.public_base_url
+    assert_equal RecordingStudioSitemaps::Configuration::URL_COUNT_WARNING_THRESHOLD,
+                 RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
   def test_load_config_ignores_non_enumerable_yaml_and_merge_errors
@@ -111,7 +110,7 @@ class EngineTest < Minitest::Test
       end
     end.new
 
-    xcfg = Struct.new(:recording_studio_sitemaps).new({ timeout: 22 })
+    xcfg = Struct.new(:recording_studio_sitemaps).new({ url_count_warning_threshold: 22 })
     app_config = Struct.new(:x).new(xcfg)
     app = Struct.new(:config) do
       attr_accessor :yaml
@@ -124,7 +123,7 @@ class EngineTest < Minitest::Test
 
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_equal 22, RecordingStudioSitemaps.configuration.timeout
+    assert_equal 22, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
   def test_apply_extension_initializers_register_active_support_on_load_callbacks

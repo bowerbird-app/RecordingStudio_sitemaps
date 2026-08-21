@@ -17,7 +17,13 @@ module RecordingStudioSitemaps
       )
 
       def mount_engine
+        route %(get "sitemap.xml", to: RecordingStudioSitemaps::SitemapsController.action(:show), as: :sitemap)
         route %(mount RecordingStudioSitemaps::Engine, at: "#{options[:mount_path]}")
+      end
+
+      def remind_admin_section
+        say "Enable the sitemaps Admin section on your admin root with `section :sitemaps`.", :green
+        say "Set public_base_url in config/initializers/recording_studio_sitemaps.rb.", :green
       end
 
       def copy_initializer

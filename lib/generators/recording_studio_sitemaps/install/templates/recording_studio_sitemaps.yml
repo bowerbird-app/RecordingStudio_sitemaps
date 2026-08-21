@@ -1,9 +1,7 @@
 development:
-  api_key: "dev-key"
-  enable_feature_x: true
-  timeout: 5
+  public_base_url: "http://localhost:3000"
+  url_count_warning_threshold: 45000
 
 production:
-  api_key: <%= ENV["RECORDING_STUDIO_SITEMAPS_API_KEY"] %>
-  enable_feature_x: false
-  timeout: 5
+  public_base_url: <%= ENV["SITEMAP_PUBLIC_BASE_URL"] %>
+  url_count_warning_threshold: 45000
