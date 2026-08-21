@@ -16,23 +16,30 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     switch_to_admin_root!(@admin_recording)
   end
 
-  test "admin sitemaps section shows last build, findable count, and excluded row" do
+  test "admin sitemaps section lists coverage, findable pages, and missing pages" do
     get "/admin/sections/sitemaps"
 
     assert_response :success
     assert_select "html[data-theme=rounded]", count: 1
     assert_select "body[data-recording-studio-default-layout=true]", count: 1
     assert_includes response.body, "flat_pack/application"
-    assert_includes response.body, "Last build"
-    assert_includes response.body, "Findable pages"
-    assert_includes response.body, "Live but left out"
+    assert_includes response.body, "Last built"
+    assert_includes response.body, "Coverage"
+    assert_includes response.body, "1 / 2"
+    assert_includes response.body, "In the sitemap"
+    assert_includes response.body, "Getting Started"
+    assert_includes response.body, "Page"
+    assert_includes response.body, "Missing"
     assert_includes response.body, "Staff-only notes"
     assert_includes response.body, "Hidden from search"
-    refute_includes response.body, "Not yet"
-    assert_match(/[1-9]/, response.body)
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
+    refute_includes response.body, "Findable pages"
+    refute_includes response.body, "Live but left out"
     refute_includes response.body, "total URLs ever"
+    refute_includes response.body, "recordable"
+    refute_includes response.body, "indexable?"
+    refute_includes response.body, "Sign in"
   end
 
   test "rebuild action writes a log and returns to the sitemaps section" do

@@ -2,81 +2,126 @@
 
 module RecordingStudioSitemaps
   module Admin
-    WIDGET_LAST_BUILD = "widgets.sitemaps.last_build"
-    WIDGET_INDEXABLE_COUNT = "widgets.sitemaps.indexable_count"
-    WIDGET_EXCLUDED = "widgets.sitemaps.excluded"
+    WIDGET_COVERAGE = "widgets.sitemaps.coverage"
+    WIDGET_FINDABLE = "widgets.sitemaps.findable"
+    WIDGET_MISSING = "widgets.sitemaps.missing"
 
     class << self
       def register!
         return unless defined?(::RecordingStudioAdmin)
 
         RecordingStudioAdmin.register_section(Section)
-        RecordingStudioAdmin.register_widget(last_build_widget)
-        RecordingStudioAdmin.register_widget(indexable_count_widget)
-        RecordingStudioAdmin.register_widget(excluded_widget)
+        RecordingStudioAdmin.register_widget(coverage_widget)
+        RecordingStudioAdmin.register_widget(findable_widget)
+        RecordingStudioAdmin.register_widget(missing_widget)
       end
 
-      def last_build_widget
-        @last_build_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_LAST_BUILD) do
-          type :number
-          title "Last build"
-          info "When this sitemap was last written, and whether that write stuck."
+      def coverage_widget
+        @coverage_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_COVERAGE) do
+          type :progress
+          title "Coverage"
+          info { |_| RecordingStudioSitemaps::Admin.coverage_info }
           hide_change
           hide_period
-          value { |_| RecordingStudioSitemaps::Admin.last_build_value }
-          subtitle { |_| RecordingStudioSitemaps::Admin.last_build_status }
+          metadata { |_| RecordingStudioSitemaps::Admin.coverage_metadata }
         end
       end
 
-      def indexable_count_widget
-        @indexable_count_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_INDEXABLE_COUNT) do
-          type :number
-          title "Findable pages"
-          info { |_| RecordingStudioSitemaps::Admin.indexable_count_info }
-          hide_change
-          hide_period
-          value { |_| RecordingStudioSitemaps::UrlSet.entries.size }
-        end
-      end
-
-      def excluded_widget
-        @excluded_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_EXCLUDED) do
+      def findable_widget
+        @findable_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_FINDABLE) do
           type :list
-          title "Live but left out"
-          info "Published pages that did not make the sitemap, and why."
-          items { |_| RecordingStudioSitemaps::Admin.excluded_items }
+          title "In the sitemap"
+          info "Pages search engines can pick up from this sitemap."
+          list_options({ divider: true })
+          items { |_| RecordingStudioSitemaps::Admin.findable_items }
         end
       end
 
-      def last_build_value
-        log = GenerationLog.latest
-        return "Not yet" if log.blank?
-
-        log.built_at.strftime("%d %b %Y, %H:%M")
+      def missing_widget
+        @missing_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_MISSING) do
+          type :list
+          title "Missing"
+          info "Published pages that did not make the sitemap, and why."
+          list_options({ divider: true })
+          items { |_| RecordingStudioSitemaps::Admin.missing_items }
+        end
       end
 
-      def last_build_status
+      def last_build_line
         log = GenerationLog.latest
         return "No sitemap written yet." if log.blank?
-        return "Built" if log.success?
 
-        "Failed"
+        stamp = log.built_at.strftime("%d %b %Y, %H:%M")
+        return "Last built #{stamp}." if log.success?
+
+        "Last build failed #{stamp}."
       end
 
-      def indexable_count_info
-        count = UrlSet.entries.size
-        if RecordingStudioSitemaps.configuration.approaching_url_limit?(count)
-          "This list is getting close to the 50,000 URL cap. A split is not available yet."
-        else
-          "Published pages that can show up in search."
+      def coverage_metadata
+        snapshot = Coverage.snapshot
+        included = snapshot.included
+        published = snapshot.published
+        max = [published, 1].max
+        value = [included, max].min
+
+        {
+          progress_value: value,
+          progress_max: max,
+          progress_label: "#{included} / #{published}"
+        }
+      end
+
+      def coverage_info
+        snapshot = Coverage.snapshot
+        breakdown = snapshot.types.map { |type| "#{type.label} #{type.included}/#{type.published}" }
+        parts = [breakdown.join("; ").presence || "No published pages yet."]
+        if RecordingStudioSitemaps.configuration.approaching_url_limit?(snapshot.included)
+          parts << "This list is getting close to the 50,000 URL cap. A split is not available yet."
         end
+        parts.join(" ")
       end
 
-      def excluded_items
-        rows = Exclusions.items
-        return [{ text: "Nothing left out. Nice." }] if rows.empty?
+      def findable_items
+        entries = UrlSet.entries
+        return [list_item("Nothing findable yet.")] if entries.empty?
 
-        rows.map { |row| { text: row.title, trailing: row.reason } }
+        entries.map { |entry| findable_item_for(entry.recordable) }
+      end
+
+      def missing_items
+        rows = Exclusions.items.map { |row| list_item(row.title, trailing: row.reason) }
+        Coverage.snapshot.types.each do |type|
+          next unless type.included.zero?
+
+          rows << list_item(type.label, trailing: "None in the sitemap")
+        end
+        return [list_item("Nothing missing. Nice.")] if rows.empty?
+
+        rows
+      end
+
+      private
+
+      def findable_item_for(recordable)
+        list_item(title_for(recordable), trailing: type_for(recordable))
+      end
+
+      def list_item(text, trailing: nil)
+        item = { text: text }
+        item[:trailing] = trailing if trailing.present?
+        item
+      end
+
+      def title_for(recordable)
+        recordable.try(:title).presence ||
+          recordable.try(:name).presence ||
+          type_for(recordable)
+      end
+
+      def type_for(recordable)
+        return RecordingStudio.recordable_type_label(recordable) if defined?(RecordingStudio) && recordable
+
+        recordable.class.model_name.human
       end
     end
 
@@ -97,9 +142,14 @@ module RecordingStudioSitemaps
            url: ->(_context) { "/recording_studio_sitemaps/rebuild" },
            style: :primary
 
-      widget WIDGET_LAST_BUILD
-      widget WIDGET_INDEXABLE_COUNT
-      widget WIDGET_EXCLUDED
+      link :last_build,
+           text: ->(_context) { RecordingStudioSitemaps::Admin.last_build_line },
+           url: ->(_context) { "#" },
+           style: :ghost
+
+      widget WIDGET_COVERAGE
+      widget WIDGET_FINDABLE
+      widget WIDGET_MISSING
     end
   end
 end

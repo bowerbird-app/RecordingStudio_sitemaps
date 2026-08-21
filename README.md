@@ -1,6 +1,6 @@
 # Recording Studio Sitemaps
 
-A public `/sitemap.xml` of the pages people can find. Built from Publishable URLs that are indexable. Generation logs remember when the list was written. Admin shows the last build and why a live page was left out.
+A public `/sitemap.xml` of the pages people can find. Built from Publishable URLs that are indexable. Generation logs remember when the list was written. Admin lists what is in the sitemap and why a live page was left out.
 
 This gem owns the XML list, the build log, and the Admin view of that list. Publishable still owns per-page search tags (`indexable?`, robots, canonical). Do not treat this as a second SEO gem.
 
@@ -92,13 +92,13 @@ end
 
 ## Admin
 
-The Sitemaps section is a few signals:
+The Sitemaps section is Coverage plus two lists, then Open sitemap / Rebuild:
 
-- Last build time and status
-- Findable page count, with a warning when the list heads toward 50,000 URLs
-- Live pages left out, and why (hidden from search, no public URL, or in the trash)
+- **Coverage** — findable pages over published Publishable pages, as a progress bar
+- **In the sitemap** — each findable page, with its type
+- **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
 
-It links to `/sitemap.xml` and offers Rebuild. Empty space is fine. There is no vanity “total URLs ever” card.
+Last build time and status sit as a quiet line next to Rebuild, not a number card. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 ## Dummy host
 

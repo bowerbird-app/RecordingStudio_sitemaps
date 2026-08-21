@@ -4,5 +4,5 @@
 
 - `RecordingStudioSitemaps.rebuild!` is the one write path
 - `/sitemap.xml` lists Publishable indexable URLs
-- Admin shows last build, findable count, and published-but-excluded rows
+- Admin shows Coverage, findable pages, and Missing rows; last build sits next to Rebuild
 - Dummy pins Admin `2.0.1` and Publishable `v0.2.0`

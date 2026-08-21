@@ -15,7 +15,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - `RecordingStudioSitemaps.rebuild!` as the one domain action for publish/unpublish hooks and Admin Rebuild
 - Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
 - Generation logs for when a sitemap was written, how many URLs it held, and any error
-- Admin Sitemaps section: last build, findable page count, published-but-excluded rows, Open sitemap, Rebuild
+- Admin Sitemaps section: Coverage progress, findable page list, Missing rows, last build next to Rebuild, Open sitemap, Rebuild
 - Warning when the findable URL count heads toward 50,000
 - Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
 - Dummy seed with one findable page and one published page left out of the sitemap
