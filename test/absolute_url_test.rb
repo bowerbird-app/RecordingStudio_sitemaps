@@ -27,5 +27,7 @@ class AbsoluteUrlTest < Minitest::Test
     assert_nil RecordingStudioSitemaps::AbsoluteUrl.call(nil, public_base_url: "http://www.example.com")
     assert_nil RecordingStudioSitemaps::AbsoluteUrl.call("not a url", public_base_url: "http://www.example.com")
     assert_nil RecordingStudioSitemaps::AbsoluteUrl.call("/published/abc", public_base_url: nil)
+    assert_nil RecordingStudioSitemaps::AbsoluteUrl.call("http://%", public_base_url: "http://www.example.com")
   end
 end
+

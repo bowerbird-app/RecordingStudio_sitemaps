@@ -123,7 +123,7 @@ bin/rails db:setup
 bin/dev
 ```
 
-Seed creates one findable page and one published page hidden from search, then rebuilds the sitemap so Admin and `/sitemap.xml` are not empty. Sign-in details live in the dummy README.
+Seed creates one findable page and one published page hidden from search, then rebuilds the sitemap so Admin and `/sitemap.xml` are not empty. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps`.
 
 ## Out of scope
 

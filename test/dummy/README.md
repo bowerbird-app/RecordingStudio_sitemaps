@@ -10,7 +10,7 @@ This Rails app exists to prove Recording Studio Sitemaps in a real host. It is n
 - Publishable on `Page` via `RecordingStudio::Capabilities::Publishable.to`
 - One findable page and one published page hidden from search
 - Public `/sitemap.xml` with no sign-in
-- Admin Sitemaps section gated by Accessible on an admin root
+- Admin Sitemaps section gated by Accessible on an admin root (switch the current root to Admin first)
 - Recording Studio default layout (back/close chrome), Flatpack CSS/JS, Turbo, and Tailwind source scanning
 - `html data-theme="rounded"` on both the login layout and the default layout
 - Workspace switcher and Sign out in the default-layout chrome, not a host-only shell
@@ -32,6 +32,8 @@ Then open the app and sign in with:
 - Email: `admin@admin.com`
 - Password: `Password`
 
+The dummy home stays on a workspace. Admin lives on the Admin root. Switch to **Admin** in the root switcher, then open `/admin/sections/sitemaps`. `/sitemap.xml` is public and does not need a sign-in.
+
 ## Layouts and assets
 
 Authenticated pages include `RecordingStudio::UsesDefaultLayout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy HTML sets Flatpack's `data-theme="rounded"`.
@@ -51,7 +53,7 @@ Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/
 
 - `/` - signed-in workspace slice
 - `/sitemap.xml` - public sitemap, no sign-in
-- `/admin/sections/sitemaps` - Admin Sitemaps section
+- `/admin/sections/sitemaps` - Admin Sitemaps section (switch to the Admin root first)
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes
 - `/users/sign_in` - Devise sign-in page
 - `/up` - Rails health check

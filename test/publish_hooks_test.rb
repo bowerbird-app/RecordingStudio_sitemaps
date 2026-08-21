@@ -22,4 +22,21 @@ class PublishHooksTest < Minitest::Test
 
     assert_equal [:publish], called
   end
+
+  def test_install_registers_the_after_record_hook_once
+    RecordingStudioSitemaps::PublishHooks.instance_variable_set(:@installed, false)
+    calls = []
+    hooks = RecordingStudio.configuration.hooks
+
+    hooks.stub(:after_record, ->(&block) { calls << block }) do
+      RecordingStudioSitemaps::PublishHooks.install!
+      RecordingStudioSitemaps::PublishHooks.install!
+    end
+
+    assert_equal 1, calls.size
+    assert RecordingStudioSitemaps::PublishHooks.instance_variable_get(:@installed)
+  ensure
+    RecordingStudioSitemaps::PublishHooks.instance_variable_set(:@installed, true)
+  end
 end
+

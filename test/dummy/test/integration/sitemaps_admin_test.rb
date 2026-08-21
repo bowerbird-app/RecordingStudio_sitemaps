@@ -13,6 +13,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     end
     seed_admin_and_pages!
     sign_in @user
+    switch_to_admin_root!(@admin_recording)
   end
 
   test "admin sitemaps section shows last build, findable count, and excluded row" do
@@ -63,8 +64,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
   def seed_admin_and_pages!
     Current.actor = @user
     admin_root = AdminRoot.find_or_create_by!(name: "Admin")
-    admin_recording = RecordingStudio.root_recording_for(admin_root)
-    grant_admin_access_for_test!(recording: admin_recording, actor: @user)
+    @admin_recording = RecordingStudio.root_recording_for(admin_root)
+    grant_admin_access_for_test!(recording: @admin_recording, actor: @user)
 
     workspace = Workspace.create!(name: "Admin Sitemap Workspace #{SecureRandom.hex(4)}")
     folder = Folder.create!(name: "Docs")
@@ -88,6 +89,16 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     RecordingStudioSitemaps.rebuild!(source: :test)
   ensure
     Current.actor = nil
+  end
+
+  def switch_to_admin_root!(admin_recording)
+    patch "/recording_studio_root_switchable/v1/root_switch", params: {
+      scope: "all_workspaces",
+      root_switch: {
+        root_recording_id: admin_recording.id,
+        return_to: "/"
+      }
+    }
   end
 
   def record_child(recordable, root_recording, parent_recording)

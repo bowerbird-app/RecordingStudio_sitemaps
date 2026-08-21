@@ -16,7 +16,7 @@ This slice ships the public sitemap, generation logs, and Admin.
 2. Run `bin/rails generate recording_studio_sitemaps:install` and `bin/rails generate recording_studio_sitemaps:migrations`.
 3. Set `RecordingStudioSitemaps.configuration.public_base_url` to the public host.
 4. Enable Publishable with `include RecordingStudio::Capabilities::Publishable.to(...)` on types that should appear.
-5. Enable `section :sitemaps` on the admin root and grant Accessible access to that root.
+5. Enable `section :sitemaps` on the admin root and grant Accessible access to that root. Admin requires the current root to be that admin root.
 6. Drop `recording_studio_sitemaps_pages` if a host copied the old engine migration. Sitemap URLs are derived; only generation logs are stored.
 
 `RecordingStudioSitemaps.rebuild!` is the one write path. Publish/unpublish and Admin Rebuild both call it.

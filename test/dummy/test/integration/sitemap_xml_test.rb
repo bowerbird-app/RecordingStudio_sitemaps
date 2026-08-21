@@ -39,6 +39,16 @@ class SitemapXmlTest < ActionDispatch::IntegrationTest
     assert_includes response.body, log.xml[/<loc>.*<\/loc>/]
   end
 
+  test "public sitemap rebuilds when no successful log exists" do
+    RecordingStudioSitemaps::GenerationLog.delete_all
+
+    get "/sitemap.xml"
+
+    assert_response :success
+    assert_includes response.body, "getting-started"
+    assert_predicate RecordingStudioSitemaps::GenerationLog.latest, :success?
+  end
+
   private
 
   def seed_sitemap_pages!

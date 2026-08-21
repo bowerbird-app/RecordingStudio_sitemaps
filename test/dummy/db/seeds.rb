@@ -2,6 +2,27 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
+grant_seed_admin_access = lambda do |recording:, actor:|
+  current_role = RecordingStudioAccessible.role_for(actor: actor, recording: recording)
+  next if current_role.to_s == "admin"
+
+  result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: actor)
+  next if result.success?
+
+  previous_authorizer = RecordingStudioAccessible.configuration.access_management_authorizer
+  begin
+    RecordingStudioAccessible.configuration.access_management_authorizer = ->(recording:, **) { recording.present? }
+    RecordingStudioAccessible.grant_access(
+      recording: recording,
+      actor: actor,
+      role: :admin,
+      manager_actor: actor
+    )
+  ensure
+    RecordingStudioAccessible.configuration.access_management_authorizer = previous_authorizer
+  end
+end
+
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|
   RecordingStudio::Recording.find_by(
     root_recording: root_recording,
@@ -43,10 +64,7 @@ begin
   excluded_page_recording = find_or_record_child.call(excluded_page, root_recording, folder_recording)
 
   if defined?(RecordingStudioAccessible)
-    RecordingStudioAccessible.bootstrap_owner_access!(
-      recording: admin_root_recording,
-      actor: user
-    )
+    grant_seed_admin_access.call(recording: admin_root_recording, actor: user)
   end
 
   RecordingStudioPublishable::Services::Publishables::Update.call(
