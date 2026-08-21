@@ -123,7 +123,7 @@ bin/rails db:setup
 bin/dev
 ```
 
-Sign in with `admin@admin.com` / `Password`. Seed creates one findable page and one published page hidden from search, then rebuilds the sitemap so Admin and `/sitemap.xml` are not empty.
+Seed creates one findable page and one published page hidden from search, then rebuilds the sitemap so Admin and `/sitemap.xml` are not empty. Sign-in details live in the dummy README.
 
 ## Out of scope
 

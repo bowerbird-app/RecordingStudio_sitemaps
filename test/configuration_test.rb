@@ -26,7 +26,8 @@ class ConfigurationTest < Minitest::Test
 
     @configuration.merge!(nil)
 
-    assert_equal original[:public_base_url], @configuration.public_base_url
+    assert_nil original[:public_base_url]
+    assert_nil @configuration.public_base_url
     assert_equal original[:url_count_warning_threshold], @configuration.url_count_warning_threshold
   end
 

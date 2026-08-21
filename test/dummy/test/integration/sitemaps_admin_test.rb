@@ -64,7 +64,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     Current.actor = @user
     admin_root = AdminRoot.find_or_create_by!(name: "Admin")
     admin_recording = RecordingStudio.root_recording_for(admin_root)
-    RecordingStudioAccessible.bootstrap_owner_access!(recording: admin_recording, actor: @user)
+    grant_admin_access_for_test!(recording: admin_recording, actor: @user)
 
     workspace = Workspace.create!(name: "Admin Sitemap Workspace #{SecureRandom.hex(4)}")
     folder = Folder.create!(name: "Docs")
