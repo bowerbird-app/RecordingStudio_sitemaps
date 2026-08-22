@@ -51,7 +51,14 @@ module RecordingStudioSitemaps
       hide_change
       hide_period
       chart_type :area
-      chart_options { {} }
+      chart_options do |context|
+        range = context.widget_time_range(default_preset_key: :last_30_days)
+        RecordingStudioSitemaps::Admin.index_size_chart_options(
+          height: 160,
+          range: range,
+          xaxis: { labels: { show: false } }
+        )
+      end
       series do |context|
         range = context.widget_time_range(default_preset_key: :last_30_days)
         RecordingStudioSitemaps::Admin.index_size_series(format_x: false, range: range)
