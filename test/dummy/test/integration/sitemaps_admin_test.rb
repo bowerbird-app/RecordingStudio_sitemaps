@@ -73,15 +73,23 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_select "body[data-recording-studio-default-layout=true]", count: 1
     assert_includes response.body, "Build history"
     assert_includes response.body, "Every rebuild, and whether the list grew or shrank."
-    assert_includes response.body, "Pages in the sitemap"
-    assert_includes response.body, "Each rebuild"
-    assert_includes response.body, "When"
-    assert_includes response.body, "Pages"
-    assert_includes response.body, "Worked"
+    assert_includes response.body, "/admin/screens/build_history/chart"
+    assert_includes response.body, "/admin/screens/build_history/table"
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
     refute_includes response.body, "recordable"
+
+    get "/admin/screens/build_history/chart"
+    assert_response :success
+    assert_includes response.body, "Pages in the sitemap"
+
+    get "/admin/screens/build_history/table"
+    assert_response :success
+    assert_includes response.body, "Each rebuild"
+    assert_includes response.body, "When"
+    assert_includes response.body, "Pages"
+    assert_includes response.body, "Worked"
   end
 
   test "rebuild is forbidden without admin root access" do
