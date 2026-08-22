@@ -170,6 +170,9 @@ class AdminTest < Minitest::Test
     assert_equal RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE, widget.key
     assert_equal "Build history", widget.link_label
     assert_equal "/admin/screens/build_history", widget.link_to
+    assert_equal 180, widget.chart_options[:height]
+    refute widget.chart_options.dig(:xaxis, :type)
+    refute widget.chart_options.key?(:yaxis)
     assert_equal "Pages", widget.series.first[:name]
     refute widget.show_change
     refute widget.show_period
