@@ -51,7 +51,7 @@ module RecordingStudioSitemaps
       hide_change
       hide_period
       chart_type :area
-      chart_options { { height: 180 } }
+      chart_options { RecordingStudioSitemaps::Admin.index_size_chart_options(height: 180) }
       series { |_| RecordingStudioSitemaps::Admin.index_size_series }
       link_to { |context| context.admin_screen_path(SCREEN_BUILD_HISTORY) }
     end

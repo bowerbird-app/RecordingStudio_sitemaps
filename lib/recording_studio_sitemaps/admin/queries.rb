@@ -2,22 +2,32 @@
 
 module RecordingStudioSitemaps
   module Admin
+    WHEN_FORMAT = "%d %b %Y, %H:%M"
+
     class << self
+      def index_size_points
+        GenerationLog.order(:built_at).map do |log|
+          { x: format_when(log), y: log.url_count.to_i }
+        end
+      end
+
       def index_size_series
-        [
-          {
-            name: "Pages",
-            data: GenerationLog.order(:built_at).map { |log| { x: log.built_at, y: log.url_count } }
-          }
-        ]
+        [{ name: "Pages", data: index_size_points }]
+      end
+
+      def format_when(value)
+        time = value.respond_to?(:built_at) ? value.built_at : value
+        time.strftime(WHEN_FORMAT)
       end
 
       def build_when(log)
-        log.built_at.strftime("%d %b %Y, %H:%M")
+        format_when(log)
       end
 
       def build_result(log)
-        log.success? ? "Worked" : "Failed"
+        return "Ok" if log.success?
+
+        log.try(:error_message).presence || "Failed"
       end
 
       def last_build_line

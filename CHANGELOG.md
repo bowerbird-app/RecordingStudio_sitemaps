@@ -16,7 +16,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
 - Generation logs for when a sitemap was written, how many URLs it held, and any error
 - Admin Sitemaps section: Coverage progress, findable page list, Missing rows, Index size chart, last build next to Rebuild, Open sitemap, Rebuild
-- Build history Admin screen (`build_history`) from generation logs: pages-over-time chart and when / pages / result table
+- Build history Admin screen (`build_history`) from generation logs: pages-over-time chart and when / pages / result table. Result is `Ok` or `Failed` (or the real error). Chart x uses the same date language as the table; y stays on whole page counts.
 - Warning when the findable URL count heads toward 50,000
 - Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
 - Dummy seed with one findable page, one published page left out of the sitemap, and a short rebuild history so Index size is not a single point

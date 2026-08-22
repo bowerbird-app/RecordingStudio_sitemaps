@@ -134,16 +134,24 @@ class AdminTest < Minitest::Test
 
     RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
       series = RecordingStudioSitemaps::Admin.index_size_series
+      options = RecordingStudioSitemaps::Admin.index_size_chart_options(height: 320)
 
       assert_equal "Pages", series.first[:name]
       assert_equal(
         [
-          { x: Time.utc(2026, 8, 1, 12), y: 1 },
-          { x: Time.utc(2026, 8, 2, 12), y: 2 },
-          { x: Time.utc(2026, 8, 3, 12), y: 1 }
+          { x: "01 Aug 2026, 12:00", y: 1 },
+          { x: "02 Aug 2026, 12:00", y: 2 },
+          { x: "03 Aug 2026, 12:00", y: 1 }
         ],
         series.first[:data]
       )
+      refute(series.first[:data].any? { |point| point[:x].to_s.include?("T") })
+      assert_equal 0, options.dig(:yaxis, :decimalsInFloat)
+      assert_equal 0, options.dig(:yaxis, :min)
+      assert_equal 2, options.dig(:yaxis, :max)
+      assert_equal 2, options.dig(:yaxis, :tickAmount)
+      assert_equal false, options.dig(:yaxis, :forceNiceScale)
+      assert_equal "category", options.dig(:xaxis, :type)
     end
   end
 
@@ -175,8 +183,15 @@ class AdminTest < Minitest::Test
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)
-    assert_equal "Worked", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
+    assert_equal "Ok", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     assert_equal "Failed", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "error"))
+    assert_equal "Disk was full",
+                 RecordingStudioSitemaps::Admin.build_result(
+                   FakeLog.new(status: "error", error_message: "Disk was full")
+                 )
+    refute_equal "Worked", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
+    refute_equal "Worker", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
+    refute_equal "success", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
   end
 
   def test_last_build_link_sits_next_to_rebuild

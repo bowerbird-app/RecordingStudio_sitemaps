@@ -11,6 +11,7 @@ module RecordingStudioSitemaps
 end
 
 require_relative "admin/queries"
+require_relative "admin/chart_options"
 require_relative "admin/widgets"
 require_relative "admin/section"
 require_relative "admin/build_history"

@@ -20,7 +20,7 @@ module RecordingStudioSitemaps
       chart do
         title "Pages in the sitemap"
         type :area
-        options { { height: 320 } }
+        options { RecordingStudioSitemaps::Admin.index_size_chart_options(height: 320) }
         series { |_context| RecordingStudioSitemaps::Admin.index_size_series }
       end
 

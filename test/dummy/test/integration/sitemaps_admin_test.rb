@@ -82,14 +82,21 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
 
     get "/admin/screens/build_history/chart"
     assert_response :success
+    stamp = RecordingStudioSitemaps::Admin.format_when(RecordingStudioSitemaps::GenerationLog.latest)
     assert_includes response.body, "Pages in the sitemap"
+    assert_includes response.body, stamp
+    assert_includes response.body, "decimalsInFloat"
+    refute_match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, response.body)
 
     get "/admin/screens/build_history/table"
     assert_response :success
     assert_includes response.body, "Each rebuild"
     assert_includes response.body, "When"
     assert_includes response.body, "Pages"
-    assert_includes response.body, "Worked"
+    assert_includes response.body, "Ok"
+    assert_includes response.body, stamp
+    refute_includes response.body, "Worked"
+    refute_includes response.body, "Worker"
   end
 
   test "rebuild is forbidden without admin root access" do
