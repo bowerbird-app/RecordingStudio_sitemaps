@@ -5,3 +5,6 @@ Rails.application.config.assets.version = "1.0"
 
 # Add additional assets to the asset load path.
 Rails.application.config.assets.paths << Rails.root.join("app/assets/builds")
+if defined?(RecordingStudioSitemaps::Engine)
+  Rails.application.config.assets.paths << RecordingStudioSitemaps::Engine.root.join("app/javascript")
+end
