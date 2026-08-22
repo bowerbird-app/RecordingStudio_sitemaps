@@ -85,6 +85,13 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'name="end_date"'
     assert_includes response.body, 'name="date_range_preset"'
     assert_includes response.body, "last_30_days"
+    period = RecordingStudioAdmin::Period.from_preset_key(:last_30_days)
+    raw_range = "#{period.start_date.iso8601} to #{period.end_date.iso8601}"
+    assert_select "input[data-flat-pack--flatpack-date-picker-target=trigger][value=?]", "Last 30 days"
+    assert_select "input[data-flat-pack--flatpack-date-picker-target=trigger][value=?]", raw_range, count: 0
+    refute_includes css_select("input[data-flat-pack--flatpack-date-picker-target=trigger]").map { |input|
+      input["value"]
+    }.join, raw_range
     assert_includes response.body, "recording_studio_sitemaps/apexcharts"
     assert_includes response.body, "/admin/screens/build_history/chart"
     assert_includes response.body, "/admin/screens/build_history/table"

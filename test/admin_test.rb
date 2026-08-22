@@ -24,6 +24,28 @@ class AdminTest < Minitest::Test
 
   FakePage = Struct.new(:title, :name, keyword_init: true)
 
+  class DateRangeInputStandIn
+    prepend RecordingStudioSitemaps::Admin::DateRangeLast30Days
+
+    def presets
+      quick_range_presets
+    end
+
+    def range_for(key)
+      preset_range_for(key)
+    end
+
+    private
+
+    def quick_range_presets
+      [{ key: "this_week", label: "This week" }]
+    end
+
+    def preset_range_for(_key)
+      { start: nil, end: nil }
+    end
+  end
+
   def page_snapshot(included: 1, published: 2)
     RecordingStudioSitemaps::Coverage::Snapshot.new(
       included: included,
@@ -212,6 +234,14 @@ class AdminTest < Minitest::Test
     assert date_range
     assert_equal :built_at, date_range.options[:field]
     assert_equal :last_30_days, date_range.options[:default]
+    period = RecordingStudioAdmin::Period.from_preset_key(:last_30_days)
+    assert_equal "Last 30 days", period.label
+    refute_equal "#{period.start_date.iso8601} to #{period.end_date.iso8601}", period.label
+    picker = DateRangeInputStandIn.new
+    assert_equal "last_30_days", picker.presets.first[:key]
+    assert_equal "Last 30 days", picker.presets.first[:label]
+    assert_equal period.start_date.iso8601, picker.range_for("last_30_days")[:start]
+    assert_equal period.end_date.iso8601, picker.range_for("last_30_days")[:end]
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)

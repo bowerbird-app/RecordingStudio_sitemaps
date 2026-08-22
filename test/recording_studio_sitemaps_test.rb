@@ -82,10 +82,18 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes application_js, 'import { application } from "controllers/application"'
     assert_includes importmap, 'pin "@hotwired/turbo-rails", to: "turbo.min.js"'
     assert_includes importmap, 'pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"'
+    assert_includes importmap, 'pin "controllers/flat_pack/flatpack_date_picker_controller"'
+    assert_includes importmap, "recording_studio_sitemaps/flatpack_date_picker_controller.js"
 
     wrapper = File.read(File.expand_path("../app/javascript/recording_studio_sitemaps/apexcharts.js", __dir__))
     assert_includes wrapper, "decimalsInFloat"
     assert_includes wrapper, "Math.round"
+
+    picker = File.read(
+      File.expand_path("../app/javascript/recording_studio_sitemaps/flatpack_date_picker_controller.js", __dir__)
+    )
+    assert_includes picker, "last_30_days"
+    assert_includes picker, "recording_studio_sitemaps/flatpack_date_picker_original"
   end
 
   def test_dummy_default_layout_head_loads_flatpack_css_only

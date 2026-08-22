@@ -16,7 +16,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
 - Generation logs for when a sitemap was written, how many URLs it held, and any error
 - Admin Sitemaps section: four equal cards (Index size, Coverage, In the sitemap, Missing), last rebuild as the section subtitle, Open sitemap, Rebuild
-- Build history Admin screen (`build_history`) from generation logs: Admin `date_range` on `built_at` defaulting to last 30 days, pages-over-time chart, and when / pages / result table. Result is `Ok` or `Failed` (or the real error). Chart x uses the same date language as the table; y stays on whole page counts. Dummy pins ApexCharts through `recording_studio_sitemaps/apexcharts.js` so ticks read `0`, `1`, `2` instead of `0.0`.
+- Build history Admin screen (`build_history`) from generation logs: Admin `date_range` on `built_at` defaulting to last 30 days, pages-over-time chart, and when / pages / result table. Result is `Ok` or `Failed` (or the real error). Chart x uses the same date language as the table; y stays on whole page counts. Dummy pins ApexCharts through `recording_studio_sitemaps/apexcharts.js` so ticks read `0`, `1`, `2` instead of `0.0`. The DateRangeInput trigger shows Admin’s `Last 30 days` preset label; dummy pins the date picker so that preset still applies.
 - Warning when the findable URL count heads toward 50,000
 - Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
 - Dummy seed with one findable page, one published page left out of the sitemap, and a short rebuild history so Index size is not a single point
@@ -43,6 +43,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Set Accessible `avatar_resolver` if staff have names or photos. Admin already renders `recording_studio_accessible_avatars` in the section slot
 - Admin’s default section grid is three columns. Four equal Sitemaps cards share one row when the host uses Flatpack Grid `cols: 4` (the dummy host does this)
 - Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`
+- Pin the Flatpack date picker through `recording_studio_sitemaps/flatpack_date_picker_controller.js` if the Build history filter shows a raw from–to string instead of `Last 30 days`
 - Drop any `recording_studio_sitemaps_pages` table if a host copied the old engine migration
 
 ## [0.1.0] - 2026-08-21

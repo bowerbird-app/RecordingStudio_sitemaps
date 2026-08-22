@@ -16,4 +16,10 @@ end
 if defined?(FlatPack::Engine)
   pin_all_from FlatPack::Engine.root.join("app/javascript/flat_pack/controllers"), under: "controllers/flat_pack", to: "flat_pack/controllers", preload: false
   pin "flat_pack/heroicons", to: "flat_pack/heroicons.js", preload: false
+  pin "recording_studio_sitemaps/flatpack_date_picker_original",
+      to: "flat_pack/controllers/flatpack_date_picker_controller.js",
+      preload: false
+  pin "controllers/flat_pack/flatpack_date_picker_controller",
+      to: "recording_studio_sitemaps/flatpack_date_picker_controller.js",
+      preload: false
 end
