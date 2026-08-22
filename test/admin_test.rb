@@ -11,7 +11,7 @@ class AdminTest < Minitest::Test
 
   FakeContext = Struct.new(:path, :params, keyword_init: true) do
     def initialize(path: nil, params: {})
-      super(path: path, params: params)
+      super
     end
 
     def admin_screen_path(key)
@@ -241,8 +241,8 @@ class AdminTest < Minitest::Test
       ],
       usages.map(&:key)
     )
-    assert usages.all? { |usage| usage.view_variant.nil? }
-    refute usages.any? { |usage| usage.view_variant == :compact }
+    assert(usages.all? { |usage| usage.view_variant.nil? })
+    refute(usages.any? { |usage| usage.view_variant == :compact })
   end
 
   def test_section_subtitle_is_last_built_and_rebuild_has_no_last_built_button
