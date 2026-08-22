@@ -3,9 +3,15 @@
 require "test_helper"
 
 class AdminTest < Minitest::Test
-  FakeLog = Struct.new(:built_at, :status, keyword_init: true) do
+  FakeLog = Struct.new(:built_at, :status, :url_count, :error_message, keyword_init: true) do
     def success?
       status == "success"
+    end
+  end
+
+  FakeContext = Struct.new(:path, keyword_init: true) do
+    def admin_screen_path(key)
+      "/admin/screens/#{key}"
     end
   end
 
@@ -119,10 +125,65 @@ class AdminTest < Minitest::Test
     end
   end
 
+  def test_index_size_series_uses_generation_log_counts
+    logs = [
+      FakeLog.new(built_at: Time.utc(2026, 8, 1, 12), url_count: 1, status: "success"),
+      FakeLog.new(built_at: Time.utc(2026, 8, 2, 12), url_count: 2, status: "success"),
+      FakeLog.new(built_at: Time.utc(2026, 8, 3, 12), url_count: 1, status: "success")
+    ]
+
+    RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
+      series = RecordingStudioSitemaps::Admin.index_size_series
+
+      assert_equal "Pages", series.first[:name]
+      assert_equal(
+        [
+          { x: Time.utc(2026, 8, 1, 12), y: 1 },
+          { x: Time.utc(2026, 8, 2, 12), y: 2 },
+          { x: Time.utc(2026, 8, 3, 12), y: 1 }
+        ],
+        series.first[:data]
+      )
+    end
+  end
+
+  def test_index_size_widget_is_a_chart_linked_to_history
+    logs = [FakeLog.new(built_at: Time.utc(2026, 8, 1, 12), url_count: 1, status: "success")]
+    widget = nil
+
+    RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
+      widget = RecordingStudioSitemaps::Admin.index_size_widget.resolve(FakeContext.new)
+    end
+
+    assert_equal :chart, widget.type
+    assert_equal :area, widget.chart_type
+    assert_equal "Index size", widget.title
+    assert_equal "/admin/screens/build_history", widget.link_to
+    assert_equal "Pages", widget.series.first[:name]
+    refute widget.show_change
+    refute widget.show_period
+    refute widget.show_metric
+  end
+
+  def test_build_history_screen_reads_logs
+    screen = RecordingStudioSitemaps::Admin::BuildHistory
+
+    assert_equal "build_history", screen.key
+    assert_equal :site, screen.blast_radius
+    assert_equal "Build history", screen.title
+    assert_equal "Every rebuild, and whether the list grew or shrank.", screen.subtitle
+    assert_equal :area, screen.chart_value.type
+    assert_equal "Pages in the sitemap", screen.chart_value.title
+    assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)
+    assert_equal "Worked", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
+    assert_equal "Failed", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "error"))
+  end
+
   def test_last_build_link_sits_next_to_rebuild
     names = RecordingStudioSitemaps::Admin::Section.links.map(&:name)
 
-    assert_equal %i[open_sitemap rebuild last_build], names
+    assert_equal %i[open_sitemap build_history rebuild last_build], names
+    assert_equal :last_build, names[names.index(:rebuild) + 1]
     assert_equal "The public list of pages search engines may find.",
                  RecordingStudioSitemaps::Admin::Section.subtitle
 
@@ -139,13 +200,16 @@ class AdminTest < Minitest::Test
     RecordingStudioSitemaps::Admin.instance_variable_set(:@coverage_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@findable_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@missing_widget, nil)
+    RecordingStudioSitemaps::Admin.instance_variable_set(:@index_size_widget, nil)
 
     RecordingStudioSitemaps::Admin.register!
 
     assert RecordingStudioAdmin.section_for("sitemaps")
+    assert RecordingStudioAdmin.screen_for("build_history")
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_COVERAGE)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_FINDABLE)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_MISSING)
+    assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE)
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.last_build")
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.indexable_count")
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.excluded")

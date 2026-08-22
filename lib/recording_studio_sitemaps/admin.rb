@@ -5,15 +5,19 @@ module RecordingStudioSitemaps
     WIDGET_COVERAGE = "widgets.sitemaps.coverage"
     WIDGET_FINDABLE = "widgets.sitemaps.findable"
     WIDGET_MISSING = "widgets.sitemaps.missing"
+    WIDGET_INDEX_SIZE = "widgets.sitemaps.index_size"
+    SCREEN_BUILD_HISTORY = "build_history"
 
     class << self
       def register!
         return unless defined?(::RecordingStudioAdmin)
 
         RecordingStudioAdmin.register_section(Section)
+        RecordingStudioAdmin.register_screen(BuildHistory)
         RecordingStudioAdmin.register_widget(coverage_widget)
         RecordingStudioAdmin.register_widget(findable_widget)
         RecordingStudioAdmin.register_widget(missing_widget)
+        RecordingStudioAdmin.register_widget(index_size_widget)
       end
 
       def coverage_widget
@@ -47,11 +51,43 @@ module RecordingStudioSitemaps
         end
       end
 
+      def index_size_widget
+        @index_size_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_INDEX_SIZE, blast_radius: :site) do
+          type :chart
+          title "Index size"
+          info "How many pages made the sitemap each rebuild."
+          hide_metric
+          hide_change
+          hide_period
+          chart_type :area
+          chart_options { { height: 180 } }
+          series { |_| RecordingStudioSitemaps::Admin.index_size_series }
+          link_to { |context| context.admin_screen_path(SCREEN_BUILD_HISTORY) }
+        end
+      end
+
+      def index_size_series
+        [
+          {
+            name: "Pages",
+            data: GenerationLog.order(:built_at).map { |log| { x: log.built_at, y: log.url_count } }
+          }
+        ]
+      end
+
+      def build_when(log)
+        log.built_at.strftime("%d %b %Y, %H:%M")
+      end
+
+      def build_result(log)
+        log.success? ? "Worked" : "Failed"
+      end
+
       def last_build_line
         log = GenerationLog.latest
         return "No sitemap written yet." if log.blank?
 
-        stamp = log.built_at.strftime("%d %b %Y, %H:%M")
+        stamp = build_when(log)
         return "Last built #{stamp}." if log.success?
 
         "Last build failed #{stamp}."
@@ -137,6 +173,11 @@ module RecordingStudioSitemaps
            url: ->(_context) { "/sitemap.xml" },
            style: :secondary
 
+      link :build_history,
+           text: "Build history",
+           url: ->(context) { context.admin_screen_path(SCREEN_BUILD_HISTORY) },
+           style: :secondary
+
       link :rebuild,
            text: "Rebuild",
            url: ->(_context) { "/recording_studio_sitemaps/rebuild" },
@@ -150,6 +191,45 @@ module RecordingStudioSitemaps
       widget WIDGET_COVERAGE
       widget WIDGET_FINDABLE
       widget WIDGET_MISSING
+      widget WIDGET_INDEX_SIZE, view_variant: :compact
+    end
+
+    class BuildHistory < RecordingStudioAdmin::Screen
+      key SCREEN_BUILD_HISTORY
+      title "Build history"
+      subtitle "Every rebuild, and whether the list grew or shrank."
+      icon :clock
+      blast_radius :site
+
+      query { |_context| GenerationLog.order(:built_at) }
+
+      summary do
+        hide_metric
+        hide_change
+        hide_period
+      end
+
+      chart do
+        title "Pages in the sitemap"
+        type :area
+        options { { height: 320 } }
+        series { |_context| RecordingStudioSitemaps::Admin.index_size_series }
+      end
+
+      table do
+        title "Each rebuild"
+        hide_columns_button
+        column :built_at,
+               title: "When",
+               value: ->(row, _context) { RecordingStudioSitemaps::Admin.build_when(row) }
+        column :url_count, title: "Pages"
+        column :status,
+               title: "Result",
+               tooltip: ->(row, _context) { row.error_message },
+               value: ->(row, _context) { RecordingStudioSitemaps::Admin.build_result(row) }
+        default_sort :built_at, direction: :desc
+        paginate per_page: 25, mode: :infinite
+      end
     end
   end
 end

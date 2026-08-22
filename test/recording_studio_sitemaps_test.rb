@@ -83,16 +83,17 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes importmap, 'pin "@hotwired/turbo-rails", to: "turbo.min.js"'
   end
 
-  def test_dummy_default_layout_head_loads_flatpack_and_root_switch_chrome
+  def test_dummy_default_layout_head_loads_flatpack_css_only
     default_layout_head = File.read(
       File.expand_path("dummy/app/views/recording_studio/_default_layout_head.html.erb", __dir__)
     )
 
     assert_includes default_layout_head, 'stylesheet_link_tag "flat_pack/application"'
-    assert_includes default_layout_head, "recording_studio_root_switch_dropdown"
-    assert_includes default_layout_head, "recording_studio_page_nav_right"
-    assert_includes default_layout_head, "Sign out"
-    assert_includes default_layout_head, "destroy_user_session_path"
+    refute_includes default_layout_head, "recording_studio_root_switch_dropdown"
+    refute_includes default_layout_head, "recording_studio_page_nav_right"
+    refute_includes default_layout_head, "Sign out"
+    refute_includes default_layout_head, "Sign in"
+    refute_includes default_layout_head, "destroy_user_session_path"
     refute_includes default_layout_head, "dummy_page_nav"
   end
 

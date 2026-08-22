@@ -92,19 +92,20 @@ end
 
 ## Admin
 
-The Sitemaps section is Coverage plus two lists, then Open sitemap / Rebuild:
+The Sitemaps section is Coverage plus two lists, an Index size chart, then Open sitemap / Build history / Rebuild:
 
 - **Coverage** — findable pages over published Publishable pages, as a progress bar
 - **In the sitemap** — each findable page, with its type
 - **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
+- **Index size** — how many pages made the sitemap each rebuild, from generation logs. Opens **Build history**
 
-Last build time and status sit as a quiet line next to Rebuild, not a number card. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Last build time and status sit as a quiet line next to Rebuild, not a number card. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 ## Dummy host
 
 `test/dummy/` is a host that proves the gem. It is not the product.
 
-Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`.
+Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot.
 
 Dummy kit pins:
 
@@ -123,7 +124,7 @@ bin/rails db:setup
 bin/dev
 ```
 
-Seed creates one findable page and one published page hidden from search, then rebuilds the sitemap so Admin and `/sitemap.xml` are not empty. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps`.
+Seed creates one findable page and one published page hidden from search. During seed it rebuilds after the first page, again after a second findable page, then after that page is hidden — so Index size has a short honest history. Coverage still ends at 1/2. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps` or `/admin/screens/build_history`.
 
 ## Out of scope
 

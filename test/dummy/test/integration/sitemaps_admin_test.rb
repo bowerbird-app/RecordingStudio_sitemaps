@@ -38,6 +38,11 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Hidden from search"
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
+    assert_includes response.body, "Index size"
+    assert_includes response.body, "Build history"
+    refute_includes response.body, "Sign out"
+    refute_includes response.body, 'href="/users/sign_out"'
+    refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
     refute_includes response.body, "Findable pages"
     refute_includes response.body, "Live but left out"
     refute_includes response.body, "total URLs ever"
@@ -56,6 +61,27 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "Sitemap rebuilt."
     assert_predicate RecordingStudioSitemaps::GenerationLog.latest, :success?
+  end
+
+  test "build history screen shows the index chart and rebuild table" do
+    write_history_logs!
+
+    get "/admin/screens/build_history"
+
+    assert_response :success
+    assert_select "html[data-theme=rounded]", count: 1
+    assert_select "body[data-recording-studio-default-layout=true]", count: 1
+    assert_includes response.body, "Build history"
+    assert_includes response.body, "Every rebuild, and whether the list grew or shrank."
+    assert_includes response.body, "Pages in the sitemap"
+    assert_includes response.body, "Each rebuild"
+    assert_includes response.body, "When"
+    assert_includes response.body, "Pages"
+    assert_includes response.body, "Worked"
+    refute_includes response.body, "Sign out"
+    refute_includes response.body, 'href="/users/sign_out"'
+    refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
+    refute_includes response.body, "recordable"
   end
 
   test "rebuild is forbidden without admin root access" do
@@ -100,6 +126,23 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     RecordingStudioSitemaps.rebuild!(source: :test)
   ensure
     Current.actor = nil
+  end
+
+  def write_history_logs!
+    RecordingStudioSitemaps::GenerationLog.delete_all
+    RecordingStudioSitemaps::GenerationLog.create!(
+      built_at: 2.days.ago,
+      status: RecordingStudioSitemaps::GenerationLog::SUCCESS,
+      url_count: 1,
+      source: "test"
+    )
+    RecordingStudioSitemaps::GenerationLog.create!(
+      built_at: 1.day.ago,
+      status: RecordingStudioSitemaps::GenerationLog::SUCCESS,
+      url_count: 2,
+      source: "test"
+    )
+    RecordingStudioSitemaps.rebuild!(source: :test)
   end
 
   def switch_to_admin_root!(admin_recording)

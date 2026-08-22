@@ -67,6 +67,8 @@ begin
     grant_seed_admin_access.call(recording: admin_root_recording, actor: user)
   end
 
+  write_history = RecordingStudioSitemaps::GenerationLog.none?
+
   RecordingStudioPublishable::Services::Publishables::Update.call(
     parent_recording: indexable_page_recording,
     actor: user,
@@ -78,6 +80,23 @@ begin
       meta_robots: "index,follow"
     }
   )
+
+  if write_history
+    RecordingStudioSitemaps.rebuild!(source: :seed)
+
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: excluded_page_recording,
+      actor: user,
+      attributes: {
+        slug: "staff-only-notes",
+        status: "published",
+        seo_title: "Staff-only notes",
+        seo_description: "Live, but hidden from search.",
+        meta_robots: "index,follow"
+      }
+    )
+    RecordingStudioSitemaps.rebuild!(source: :seed)
+  end
 
   RecordingStudioPublishable::Services::Publishables::Update.call(
     parent_recording: excluded_page_recording,

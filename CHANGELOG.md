@@ -15,16 +15,18 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - `RecordingStudioSitemaps.rebuild!` as the one domain action for publish/unpublish hooks and Admin Rebuild
 - Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
 - Generation logs for when a sitemap was written, how many URLs it held, and any error
-- Admin Sitemaps section: Coverage progress, findable page list, Missing rows, last build next to Rebuild, Open sitemap, Rebuild
+- Admin Sitemaps section: Coverage progress, findable page list, Missing rows, Index size chart, last build next to Rebuild, Open sitemap, Rebuild
+- Build history Admin screen (`build_history`) from generation logs: pages-over-time chart and when / pages / result table
 - Warning when the findable URL count heads toward 50,000
 - Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
-- Dummy seed with one findable page and one published page left out of the sitemap
+- Dummy seed with one findable page, one published page left out of the sitemap, and a short rebuild history so Index size is not a single point
 
 ### Changed
 - Gemspec now depends on Admin `~> 2.0`, Publishable `= 0.2.0`, and FlatPack `~> 0.1.129`
 - Dummy GitHub tags: Admin `2.0.1` and Publishable `v0.2.0`
 - Dummy Page enables Publishable with `RecordingStudio::Capabilities::Publishable.to`
 - Configuration is `public_base_url` and `url_count_warning_threshold` (template `api_key` / `enable_feature_x` / `timeout` are gone)
+- Dummy default-layout head loads Flatpack CSS only. Sign out and Root Switchable stay out of the PageNav right slot
 
 ### Removed
 - Engine sample `recording_studio_sitemaps_pages` table. Sitemap rows are derived; only generation logs are stored.
@@ -35,6 +37,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Run `bin/rails generate recording_studio_sitemaps:install` and `bin/rails generate recording_studio_sitemaps:migrations`
 - Enable Publishable on types that should appear
 - Enable `section :sitemaps` on the admin root and grant Accessible access. Do not use `user.admin?`
+- If a host copied Sign out or a root switcher into `_default_layout_head.html.erb`, remove them. That partial should load Flatpack CSS only
 - Drop any `recording_studio_sitemaps_pages` table if a host copied the old engine migration
 
 ## [0.1.0] - 2026-08-21

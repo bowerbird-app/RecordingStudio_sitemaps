@@ -22,6 +22,10 @@ unless RecordingStudioSitemaps.const_defined?(:GenerationLog, false)
     def self.create!(**)
       nil
     end
+
+    def self.order(*)
+      []
+    end
   end
   generation_log.const_set(:SUCCESS, "success")
   generation_log.const_set(:ERROR, "error")

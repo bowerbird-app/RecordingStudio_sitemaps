@@ -31,8 +31,9 @@ class HomePageTest < ActionDispatch::IntegrationTest
     assert_select "nav.flat-pack-page-nav", count: 1
     assert_select "[aria-label='Go back']", count: 1
     assert_select "a[aria-label='Close'][href='/']", count: 1
-    assert_includes response.body, "Sign out"
-    assert_includes response.body, 'href="/users/sign_out"'
+    refute_includes response.body, "Sign out"
+    refute_includes response.body, 'href="/users/sign_out"'
+    refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
     assert_select "h1", text: workspace.name
     refute_select "h1", text: "Dummy host"
     refute_includes response.body, "proves the"
