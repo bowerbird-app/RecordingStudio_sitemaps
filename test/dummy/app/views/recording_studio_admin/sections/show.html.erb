@@ -1,0 +1,61 @@
+<%= render layout: "recording_studio_admin/shared/page_shell" do %>
+  <% access_recording = recording_studio_admin_context.root_recording || recording_studio_admin_context.access_recording %>
+
+  <% recording_studio_page_nav(
+       title: @section.title,
+       page_nav_anchor_url: page_nav_anchor_url(default: RecordingStudioAdmin.configuration.default_mount_path)
+     ) %>
+  <% if access_recording.present? %>
+    <% recording_studio_page_nav_right do %>
+      <%= recording_studio_accessible_avatars(access_recording, button_style: :primary) %>
+    <% end %>
+  <% end %>
+  <%= render "recording_studio_admin/shared/page_nav" unless recording_studio_admin_default_layout? %>
+
+  <%= render FlatPack::PageTitle::Component.new(title: @section.title, subtitle: @section.subtitle) do |page_title| %>
+    <% if @section.links.any? %>
+      <% action_links = @section.links.reject { |link| link.text == "Admin Sections" } %>
+      <% visible_links = action_links.first(3) %>
+      <% overflow_links = action_links.drop(3) %>
+      <% if action_links.any? %>
+      <% page_title.slot do %>
+        <% visible_links.each do |link| %>
+          <%= render FlatPack::Button::Component.new(text: link.text, url: preserve_anchor_url(link.url), style: link.style) %>
+        <% end %>
+
+        <% if overflow_links.any? %>
+          <% dropdown = FlatPack::Button::Dropdown::Component.new(text: "More", style: :secondary) %>
+
+          <% overflow_links.each do |link| %>
+            <% dropdown.menu_item(text: link.text, href: preserve_anchor_url(link.url)) %>
+          <% end %>
+
+          <%= render dropdown %>
+        <% end %>
+      <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @section.widgets.any? %>
+    <% if RecordingStudioAdmin.configuration.async_widgets.enabled %>
+      <div data-controller="recording-studio-admin--async-widgets"
+           data-recording-studio-admin--async-widgets-max-concurrent-value="<%= RecordingStudioAdmin.configuration.async_widgets.max_concurrent_requests %>"
+           data-recording-studio-admin--async-widgets-retry-count-value="<%= RecordingStudioAdmin.configuration.async_widgets.retry_count %>">
+    <% end %>
+
+    <%= render FlatPack::Grid::Component.new(cols: 4, gap: :md, class: "my-8") do %>
+      <% @section.widgets.each do |widget| %>
+        <% if RecordingStudioAdmin.configuration.async_widgets.enabled %>
+          <%= render_recording_studio_async_widget_frame(widget, parent: :section, parent_key: @section.key) %>
+        <% else %>
+          <%= render_recording_studio_widget(widget) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if RecordingStudioAdmin.configuration.async_widgets.enabled %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

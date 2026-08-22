@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
-GemTemplate::Engine.routes.draw do
-  root "home#index"
+RecordingStudioSitemaps::Engine.routes.draw do
+  get "rebuild", to: "rebuilds#create", as: :rebuild
+  post "rebuild", to: "rebuilds#create"
 end

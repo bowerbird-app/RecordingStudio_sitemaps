@@ -205,17 +205,10 @@ class RenameVerificationTest < Minitest::Test
                  "Application controller should be in module #{@pascal_name}")
   end
 
-  def test_home_controller_exists
+  def test_sample_home_controller_is_removed
     path = File.join(@root, "app", "controllers", @gem_name, "home_controller.rb")
-    assert File.exist?(path),
-           "Home controller should exist at #{path}"
-  end
-
-  def test_home_controller_has_correct_module
-    path = File.join(@root, "app", "controllers", @gem_name, "home_controller.rb")
-    content = File.read(path)
-    assert_match(/^module #{@pascal_name}$/, content,
-                 "Home controller should be in module #{@pascal_name}")
+    refute File.exist?(path),
+           "Sample home controller should not exist at #{path}"
   end
 
   # ============================================================
@@ -230,8 +223,7 @@ class RenameVerificationTest < Minitest::Test
     skip if @gem_name == "gem_template"
 
     ruby_files = Dir.glob(File.join(@root, "**", "*.rb"))
-    # Exclude test files and this verification test itself
-    ruby_files.reject! { |f| f.include?("test/dummy") || f.include?("rename_verification_test.rb") }
+    ruby_files.reject! { |path| orphan_scan_excluded?(path) }
 
     files_with_old_refs = []
 
@@ -408,6 +400,12 @@ class RenameVerificationTest < Minitest::Test
     return File.basename(lib_dirs.first) if lib_dirs.any?
 
     raise "Could not detect gem name"
+  end
+
+  def orphan_scan_excluded?(path)
+    path.include?("test/dummy") ||
+      path.end_with?("rename_verification_test.rb") ||
+      path.end_with?("rename_gem_identity_test.rb")
   end
 
   def to_pascal_case(str)

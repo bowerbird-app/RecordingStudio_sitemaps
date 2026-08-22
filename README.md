@@ -1,160 +1,139 @@
-# GemTemplate
+# Recording Studio Sitemaps
 
-Internal template for building Rails engine addons on top of Recording Studio 4.x.
+A public `/sitemap.xml` of the pages people can find. Built from Publishable URLs that are indexable. Generation logs remember when the list was written. Admin lists what is in the sitemap and why a live page was left out.
 
-## What's Included
+This gem owns the XML list, the build log, and the Admin view of that list. Publishable still owns per-page search tags (`indexable?`, robots, canonical). Do not treat this as a second SEO gem.
 
-- **Recording Studio** 4.x gem pinned and configured
-- **Devise** authentication with a pre-seeded admin user
-- **Workspace**, **Folder**, and **Page** recordables seeded into the dummy host app
-- **FlatPack** UI component library for all views
-- **Dummy app** (`test/dummy/`) with a FlatPack sign-in screen, a home page on Recording Studio's default layout, mounted Recording Studio routes, and FlatPack's built-in rounded theme
+## What is included
 
-Authenticated dummy pages use Recording Studio's shared default layout (`RecordingStudio::UsesDefaultLayout`) plus FlatPack CSS and JS. Devise keeps its own sign-in layout. Dummy `/docs/*` pages stay in the dummy app as a host-app sandbox; they are not the product README.
+A page appears when Publishable says it is indexable: currently published, not marked noindex, with a usable canonical or public URL, and not in the trash.
 
-## Quick Start
+- `loc` is the canonical override when set, otherwise the public URL
+- `lastmod` is the publish time
+- No `changefreq` or `priority`
 
-### GitHub Codespaces (Recommended)
+There is one sitemap for the public host, not one per workspace. `/sitemap.xml` is logged-out and has no actor. If the findable URL count heads toward 50,000, Admin warns. This slice does not split into a sitemap index.
 
-1. Click **Code** → **Codespaces** → **Create codespace**
-2. Wait for setup to complete
-3. Run:
-   ```bash
-   cd test/dummy
-   bin/rails db:setup
-   bin/dev
-   ```
-4. Open port 3000 — you'll land on the dummy app home page and can sign in at `/users/sign_in`
+Sitemap rows are not recordings. They are derived and can be rebuilt. Each rebuild writes a **log** (when, count, errors). Admin reads those logs.
 
-The dummy app is intended as a host-app validation surface for authentication, FlatPack rendering, Tailwind source scanning, and Recording Studio route wiring.
+## Domain action
 
-### Login Credentials
-
-| Field    | Value             |
-|----------|-------------------|
-| Email    | admin@admin.com   |
-| Password | Password          |
-
-The login form is prefilled with these credentials for fast access.
-
-### Useful Routes
-
-- `/` — dummy app home page
-- `/users/sign_in` — Devise sign-in page
-- `/recording_studio` — redirect to `/` while the mounted Recording Studio engine remains data/API-focused
-- `/docs/install`, `/docs/config`, `/docs/recordable_types`, `/docs/recordings_tree`, `/docs/gem_views`, `/docs/methods` — dummy-only starter pages
-
-The home page in `test/dummy/app/views/home/index.html.erb` is a starting point for a minimal demo of the gem's primary behavior. Keep deeper explanations on the dummy docs pages, not in this README.
-
-## Architecture
-
-### Root Recording Pattern
-
-This template follows Recording Studio's root recording pattern:
-
-- **Workspace** is the top-level recordable
-- **Folder** and **Page** demonstrate nested recordables under the workspace root
-- Each configured recordable declares `recording_studio_recordable(...)`; strict declaration validation stays enabled
-- A root `RecordingStudio::Recording` wraps the Workspace
-- `Current.actor` is set from `current_user` (Devise) in `ApplicationController`
-
-### Extending Recording Studio
-
-To add new recordable types:
-
-1. Create your model (e.g., `Page`, `Comment`)
-2. Register it in `config/initializers/recording_studio.rb`:
-   ```ruby
-   RecordingStudio.configure do |config|
-     config.recordable_types = ["Workspace", "YourNewType"]
-   end
-   ```
-3. Declare whether the model can be a root and which parents may contain it:
-   ```ruby
-   class YourNewType < ApplicationRecord
-     recording_studio_recordable label: "Your new type",
-                                 root: false,
-                                 allowed_parent_types: ["Workspace", "Folder"]
-   end
-   ```
-4. Validate declarations and create recordings under the root:
-   ```ruby
-   RecordingStudio.validate_recordable_declarations!
-   root_recording = RecordingStudio.root_recording_for(workspace)
-   root_recording.record(YourNewType) do |record|
-     record.title = "Example"
-   end
-   ```
-
-### Recordable Declarations
-
-Every configured ActiveRecord recordable type must declare its hierarchy rules. Declarations are required; they are not version-specific.
-
-- `Workspace` declares `root: true`
-- `Folder` and `Page` declare `root: false, allowed_parent_types: ["Workspace", "Folder"]`
-- `config.require_recordable_declarations = true` remains enabled in the dummy app initializer
-
-Useful console checks:
+`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild button both call it.
 
 ```ruby
-RecordingStudio.validate_recordable_declarations!
-RecordingStudio.root_recordable_types
-RecordingStudio.allowed_parent_types_for("Page")
+RecordingStudioSitemaps.rebuild!(source: :admin)
 ```
 
-### Capabilities
-
-Capability mixins are opt-in. Installing this gem does not enable mixins on host types.
-
-The dummy Workspace enables Accessible because that addon is bundled:
+## Install
 
 ```ruby
-RecordingStudio.enable_capability(:accessible, on: Workspace)
+# Gemfile
+gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.2.0"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.6.1"
+gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "2.0.1"
+gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.2.0"
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.133"
+gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps"
 ```
-
-The template also ships one example mixin that uses core 4.2.0's `include_for` factory:
 
 ```ruby
-include RecordingStudio::Capabilities::Example.to(label: "dummy workspace")
+# gemspec / host Gemfile constraints
+gem "recording_studio", "~> 4.2"
+gem "recording_studio_accessible", "~> 0.6"
+gem "recording_studio_admin", "~> 2.0"
+gem "recording_studio_publishable", "= 0.2.0"
 ```
 
-`.to` wraps `RecordingStudio::Capabilities.include_for`. It does not add a fourth verb and it does not call `enable_capability` / `set_capability_options` itself. Folder and Page stay without the example mixin.
+Then:
 
-Use core `RecordingStudio::Hooks` and `RecordingStudio::Services::BaseService`. Do not copy those classes into a new addon.
+```bash
+bundle install
+bin/rails generate recording_studio_sitemaps:install
+bin/rails generate recording_studio_sitemaps:migrations
+bin/rails db:migrate
+```
 
-### FlatPack UI Components
+The install generator mounts `/sitemap.xml` and the engine rebuild path. Set the public host:
 
-All views use FlatPack ViewComponents. Available components include:
+```ruby
+RecordingStudioSitemaps.configure do |config|
+  config.public_base_url = "https://www.example.com"
+end
+```
 
-- `FlatPack::Button::Component` — Buttons (`:primary`, `:secondary`, `:ghost`)
-- `FlatPack::Card::Component` — Cards (`:default`, `:elevated`, `:outlined`)
-- `FlatPack::Alert::Component` — Alerts (`:success`, `:error`, `:warning`, `:info`)
-- `FlatPack::Badge::Component` — Status badges
-- `FlatPack::Table::Component` — Data tables
-- `FlatPack::TextInput::Component`, `EmailInput`, `PasswordInput` — Form inputs
-- `FlatPack::PageNav::Component` — Default-layout page navigation
-- `FlatPack::PageTitle::Component` — Page titles
+Enable Publishable on the types that should appear:
 
-Use the live FlatPack demo app at [flatpack.bowerbird.io](https://flatpack.bowerbird.io/) as the approved UI reference for current shared patterns. Its component table is the fastest way to discover available FlatPack components before introducing new custom UI.
+```ruby
+class Page < ApplicationRecord
+  recording_studio_recordable label: "Page", root: false, allowed_parent_types: %w[Workspace Folder]
 
-See the [FlatPack README](https://github.com/bowerbird-app/flatpack) for full documentation.
+  include RecordingStudio::Capabilities::Publishable.to(
+    public_controller: "pages",
+    public_action: :show
+  )
+end
+```
 
-## Tech Stack
+Enable the Admin section on the admin root and grant Accessible access. Do not use `user.admin?`.
 
-| Component       | Version |
-|-----------------|---------|
-| Ruby            | 3.3+    |
-| Rails           | 8.1+    |
-| PostgreSQL      | 16      |
-| TailwindCSS     | 4       |
-| RecordingStudio | 4.x (`~> 4.1` in the gemspec; dummy GitHub tag `v4.2.0`) |
-| Accessible      | dummy GitHub tag `v0.6.0` |
-| Root Switchable | dummy GitHub tag `v0.5.0` |
-| FlatPack        | dummy GitHub tag `v0.1.133` |
-| Devise          | latest  |
+```ruby
+class AdminRoot < ApplicationRecord
+  include RecordingStudio::Recordable
+  include RecordingStudioAdmin::AllowsAdminSections
 
-The dummy Gemfile keeps `github:` sources so Bundler can fetch those gems. The gemspec still pins `recording_studio` to `~> 4.1` so copied addons declare the core dependency even when GitHub is the fetch source.
+  recording_studio_recordable label: "Admin", root: true, shared: false
+  RecordingStudio.enable_capability(:accessible, on: self)
 
-## Documentation
+  recording_studio_admin_sections do
+    section :sitemaps
+  end
+end
+```
 
-The original gem template documentation is preserved in `docs/gem_template/` as architectural reference material. Use it as background on the engine conventions; this README and the dummy app are the source of truth for the Recording Studio addon workflow.
+## Admin
+
+The Sitemaps section is four equal cards in one row, then Open sitemap / Rebuild. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
+
+- **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
+- **Coverage** — findable pages over published Publishable pages, as a progress bar
+- **In the sitemap** — each findable page, with its type
+- **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
+
+Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
+
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. The DateRangeInput trigger shows that preset name (`Last 30 days`), not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+
+Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
+
+## Dummy host
+
+`test/dummy/` is a host that proves the gem. It is not the product.
+
+Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot. Dummy sets `avatar_resolver` and overrides Admin’s section grid to Flatpack `cols: 4` so the four Sitemaps cards share one equal-width row.
+
+Dummy kit pins:
+
+| Gem | Pin |
+|-----|-----|
+| Recording Studio | `v4.2.0` |
+| Accessible | `v0.6.1` |
+| Admin | `2.0.1` |
+| Publishable | `v0.2.0` |
+| Root Switchable | `v0.5.0` |
+| FlatPack | `v0.1.133` |
+
+```bash
+cd test/dummy
+bin/rails db:setup
+bin/dev
+```
+
+Seed creates one findable page and one published page hidden from search. During seed it rebuilds after the first page, again after a second findable page, then after that page is hidden — so Index size has a short honest history. Coverage still ends at 1/2. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps` or `/admin/screens/build_history`.
+
+## Out of scope
+
+Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, JSON API, Embeddable, and Support or Press kit special cases.
+
+## Engine internals
+
+`docs/gem_template/` stays as engine-internal reference from the original addon template. This README is the product.

@@ -6,24 +6,14 @@ Rails.application.routes.draw do
   get "/recording_studio", to: redirect("/"), as: nil
   mount RecordingStudio::Engine, at: "/recording_studio"
   mount RecordingStudioRootSwitchable::Engine, at: "/recording_studio_root_switchable"
+  mount RecordingStudioPublishable::Engine, at: "/"
+  mount RecordingStudioAccessible::Engine, at: "/admin/access"
+  recording_studio_admin_for :admin, at: "/admin", root_section: :sitemaps
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  get "sitemap.xml", to: RecordingStudioSitemaps::SitemapsController.action(:show), as: :sitemap
+  mount RecordingStudioSitemaps::Engine, at: "/recording_studio_sitemaps"
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  get "docs/install", to: "docs#install", as: :docs_install
-  get "docs/config", to: "docs#configuration", as: :docs_config
-  get "docs/recordable_types", to: "docs#recordable_types", as: :docs_recordable_types
-  get "docs/recordings_tree", to: "docs#recordings_tree", as: :docs_recordings_tree
-  get "docs/gem_views", to: "docs#gem_views", as: :docs_gem_views
-  get "docs/methods", to: "docs#methods", as: :docs_methods
-
-  # Defines the root path route ("/")
   root "home#index"
 end
