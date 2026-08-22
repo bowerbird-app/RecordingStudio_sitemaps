@@ -102,6 +102,28 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes default_layout_head, "dummy_page_nav"
   end
 
+  def test_dummy_admin_section_uses_equal_widget_row_and_accessible_avatars
+    section_view = File.read(
+      File.expand_path("dummy/app/views/recording_studio_admin/sections/show.html.erb", __dir__)
+    )
+    accessible = File.read(
+      File.expand_path("dummy/config/initializers/recording_studio_accessible.rb", __dir__)
+    )
+    section_definition = File.read(
+      File.expand_path("../lib/recording_studio_sitemaps/admin/section.rb", __dir__)
+    )
+
+    assert_includes section_view, "recording_studio_accessible_avatars"
+    assert_includes section_view, "button_style: :primary"
+    assert_includes section_view, "cols: 4"
+    refute_includes section_view, "Sign out"
+    refute_includes section_view, "recording_studio_root_switch"
+    refute_includes section_view, "+ Access"
+    assert_includes accessible, "avatar_resolver"
+    refute_includes section_definition, "view_variant: :compact"
+    refute_includes section_definition, "link :last_build"
+  end
+
   def test_dummy_tailwind_keeps_flatpack_theme_selection_in_flatpack
     tailwind_source = File.read(File.expand_path("dummy/app/assets/tailwind/application.css", __dir__))
 

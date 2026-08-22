@@ -37,8 +37,8 @@ module RecordingStudioSitemaps
     end
 
     class << self
-      def index_size_chart_options(height:)
-        max_pages = [index_size_points.map { |point| point[:y] }.max || 0, 1].max
+      def index_size_chart_options(height:, logs: nil, range: nil)
+        max_pages = [index_size_points(logs: logs, range: range).map { |point| point[:y] }.max || 0, 1].max
         ChartOptions.for_index_size(height: height, max_pages: max_pages)
       end
     end

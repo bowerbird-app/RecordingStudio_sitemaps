@@ -25,7 +25,13 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_select "html[data-theme=rounded]", count: 1
     assert_select "body[data-recording-studio-default-layout=true]", count: 1
     assert_includes response.body, "flat_pack/application"
-    assert_includes response.body, "Last built"
+    assert_includes response.body, "lg:grid-cols-4"
+    refute_includes response.body, "widget_view_variant=compact"
+    assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
+    assert_select "a", text: /Last built/, count: 0
+    assert_select "a", text: "Open sitemap", count: 1
+    assert_select "a", text: "Rebuild", count: 1
+    assert_select "a", text: "Build history", count: 0
     assert_includes response.body, "Coverage"
     assert_includes response.body, "#{coverage.included} / #{coverage.published}"
     assert_operator coverage.included, :>, 0
@@ -40,6 +46,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "Index size"
     assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 1
+    assert_includes response.body, "Sitemaps Admin"
+    refute_includes response.body, "+ Access"
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
@@ -73,6 +81,10 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_select "body[data-recording-studio-default-layout=true]", count: 1
     assert_includes response.body, "Build history"
     assert_includes response.body, "Every rebuild, and whether the list grew or shrank."
+    assert_includes response.body, 'name="start_date"'
+    assert_includes response.body, 'name="end_date"'
+    assert_includes response.body, 'name="date_range_preset"'
+    assert_includes response.body, "last_30_days"
     assert_includes response.body, "recording_studio_sitemaps/apexcharts"
     assert_includes response.body, "/admin/screens/build_history/chart"
     assert_includes response.body, "/admin/screens/build_history/table"
@@ -97,6 +109,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Pages"
     assert_includes response.body, "Ok"
     assert_includes response.body, stamp
+    refute_includes response.body, RecordingStudioSitemaps::Admin.format_when(@old_history_log)
     refute_includes response.body, "Worked"
     refute_includes response.body, "Worker"
   end
@@ -147,6 +160,12 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
 
   def write_history_logs!
     RecordingStudioSitemaps::GenerationLog.delete_all
+    @old_history_log = RecordingStudioSitemaps::GenerationLog.create!(
+      built_at: 60.days.ago,
+      status: RecordingStudioSitemaps::GenerationLog::SUCCESS,
+      url_count: 9,
+      source: "test"
+    )
     RecordingStudioSitemaps::GenerationLog.create!(
       built_at: 2.days.ago,
       status: RecordingStudioSitemaps::GenerationLog::SUCCESS,

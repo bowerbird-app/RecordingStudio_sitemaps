@@ -10,6 +10,7 @@ module RecordingStudioSitemaps
       blast_radius :site
 
       query { |_context| GenerationLog.order(:built_at) }
+      filter :date_range, field: :built_at, default: :last_30_days
 
       summary do
         hide_metric
@@ -20,8 +21,15 @@ module RecordingStudioSitemaps
       chart do
         title "Pages in the sitemap"
         type :area
-        options { RecordingStudioSitemaps::Admin.index_size_chart_options(height: 320) }
-        series { |_context| RecordingStudioSitemaps::Admin.index_size_series }
+        options do |context|
+          RecordingStudioSitemaps::Admin.index_size_chart_options(
+            height: 320,
+            logs: context.query_result.relation
+          )
+        end
+        series do |context|
+          RecordingStudioSitemaps::Admin.index_size_series(logs: context.query_result.relation)
+        end
       end
 
       table do

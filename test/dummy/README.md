@@ -14,7 +14,8 @@ This Rails app exists to prove Recording Studio Sitemaps in a real host. It is n
 - Recording Studio default layout (back/close chrome), Flatpack CSS/JS, Turbo, and Tailwind source scanning
 - `html data-theme="rounded"` on both the login layout and the default layout
 - Signed-in `/` as a thin workspace slice (seeded workspace title, then folders and pages)
-- Root Switchable stays on its own page. Sign out and the workspace switcher are not stuffed into the default-layout PageNav slot
+- Root Switchable stays on its own page. The Admin PageNav slot is Accessible avatars (`avatar_resolver` plus `recording_studio_accessible_avatars`). Sign out and the workspace switcher are not stuffed into that slot
+- Admin Sitemaps uses a Flatpack four-column widget row so Index size, Coverage, In the sitemap, and Missing stay equal
 
 ## Quick Start
 
@@ -45,7 +46,7 @@ Devise sign-in keeps `layouts/application` so the login card can stay centered. 
 - `tailwind`
 - Importmap JS, including `@hotwired/turbo-rails`
 
-The host injects `flat_pack/application` through `app/views/recording_studio/_default_layout_head.html.erb`. That partial loads Flatpack CSS only. Core owns back/close. Do not put Sign out, a login link, or the workspace switcher in the PageNav right slot. Signed-in pages set `page_nav_back_url` and `page_nav_anchor_url` so default-layout PageNav actually gets back and close.
+The host injects `flat_pack/application` through `app/views/recording_studio/_default_layout_head.html.erb`. That partial loads Flatpack CSS only. Core owns back/close. Admin’s section view uses Accessible avatars in the PageNav right slot and Flatpack Grid `cols: 4` for the Sitemaps cards. Do not put Sign out, a login link, or the workspace switcher in that slot. Signed-in pages set `page_nav_back_url` and `page_nav_anchor_url` so default-layout PageNav actually gets back and close.
 
 Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/bundle`, `/usr/local/bundle` (CI), and mise installs. Rebuild with `bin/rails tailwindcss:build` if back/close icon buttons look like tiny dots.
 

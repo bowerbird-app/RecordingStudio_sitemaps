@@ -52,7 +52,10 @@ module RecordingStudioSitemaps
       hide_period
       chart_type :area
       chart_options { {} }
-      series { |_| RecordingStudioSitemaps::Admin.index_size_series(format_x: false) }
+      series do |context|
+        range = context.widget_time_range(default_preset_key: :last_30_days)
+        RecordingStudioSitemaps::Admin.index_size_series(format_x: false, range: range)
+      end
       link_label "Build history"
       link_to { |context| context.admin_screen_path("build_history") }
     end

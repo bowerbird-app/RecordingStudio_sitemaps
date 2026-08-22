@@ -92,20 +92,24 @@ end
 
 ## Admin
 
-The Sitemaps section is Coverage plus two lists, an Index size chart, then Open sitemap / Rebuild:
+The Sitemaps section is four equal cards in one row, then Open sitemap / Rebuild. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
 
+- **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
 - **Coverage** — findable pages over published Publishable pages, as a progress bar
 - **In the sitemap** — each findable page, with its type
 - **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
-- **Index size** — how many pages made the sitemap each rebuild, from generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Last build time and status sit as a quiet line next to Rebuild and open that screen. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
+
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+
+Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
 
 ## Dummy host
 
 `test/dummy/` is a host that proves the gem. It is not the product.
 
-Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot.
+Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot. Dummy sets `avatar_resolver` and overrides Admin’s section grid to Flatpack `cols: 4` so the four Sitemaps cards share one equal-width row.
 
 Dummy kit pins:
 

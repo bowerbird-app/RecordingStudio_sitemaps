@@ -9,9 +9,20 @@ class AdminTest < Minitest::Test
     end
   end
 
-  FakeContext = Struct.new(:path, keyword_init: true) do
+  FakeContext = Struct.new(:path, :params, keyword_init: true) do
+    def initialize(path: nil, params: {})
+      super(path: path, params: params)
+    end
+
     def admin_screen_path(key)
       "/admin/screens/#{key}"
+    end
+
+    def widget_time_range(default_preset_key: nil, **)
+      return unless default_preset_key
+
+      period = RecordingStudioAdmin::Period.from_preset_key(default_preset_key)
+      period.start_date.beginning_of_day..period.end_date.end_of_day
     end
   end
 
@@ -33,7 +44,7 @@ class AdminTest < Minitest::Test
 
   def test_last_build_line_without_log
     RecordingStudioSitemaps::GenerationLog.stub(:latest, nil) do
-      assert_equal "No sitemap written yet.", RecordingStudioSitemaps::Admin.last_build_line
+      assert_equal "No sitemap written yet", RecordingStudioSitemaps::Admin.last_build_line
     end
   end
 
@@ -41,11 +52,11 @@ class AdminTest < Minitest::Test
     built_at = Time.utc(2026, 8, 21, 15, 30, 0)
 
     RecordingStudioSitemaps::GenerationLog.stub(:latest, FakeLog.new(built_at: built_at, status: "success")) do
-      assert_equal "Last built 21 Aug 2026, 15:30.", RecordingStudioSitemaps::Admin.last_build_line
+      assert_equal "Last built 21 Aug 2026, 15:30", RecordingStudioSitemaps::Admin.last_build_line
     end
 
     RecordingStudioSitemaps::GenerationLog.stub(:latest, FakeLog.new(built_at: built_at, status: "error")) do
-      assert_equal "Last build failed 21 Aug 2026, 15:30.", RecordingStudioSitemaps::Admin.last_build_line
+      assert_equal "Last build failed 21 Aug 2026, 15:30", RecordingStudioSitemaps::Admin.last_build_line
     end
   end
 
@@ -156,6 +167,20 @@ class AdminTest < Minitest::Test
     end
   end
 
+  def test_index_size_series_honors_time_range
+    logs = [
+      FakeLog.new(built_at: Time.utc(2026, 6, 1, 12), url_count: 9, status: "success"),
+      FakeLog.new(built_at: Time.utc(2026, 8, 20, 12), url_count: 2, status: "success")
+    ]
+    range = Time.utc(2026, 8, 1)..Time.utc(2026, 8, 31)
+
+    RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
+      series = RecordingStudioSitemaps::Admin.index_size_series(range: range)
+
+      assert_equal [{ x: "20 Aug 2026, 12:00", y: 2 }], series.first[:data]
+    end
+  end
+
   def test_index_size_widget_is_a_chart_linked_to_history
     logs = [FakeLog.new(built_at: Time.utc(2026, 8, 1, 12), url_count: 1, status: "success")]
     widget = nil
@@ -186,6 +211,10 @@ class AdminTest < Minitest::Test
     assert_equal :site, screen.blast_radius
     assert_equal "Build history", screen.title
     assert_equal "Every rebuild, and whether the list grew or shrank.", screen.subtitle
+    date_range = screen.filters.find { |filter| filter.type == :date_range }
+    assert date_range
+    assert_equal :built_at, date_range.options[:field]
+    assert_equal :last_30_days, date_range.options[:default]
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)
@@ -200,23 +229,47 @@ class AdminTest < Minitest::Test
     refute_equal "success", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
   end
 
-  def test_last_build_link_sits_next_to_rebuild
+  def test_section_widgets_are_equal_and_not_compact
+    usages = RecordingStudioSitemaps::Admin::Section.widget_usages
+
+    assert_equal(
+      [
+        RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE,
+        RecordingStudioSitemaps::Admin::WIDGET_COVERAGE,
+        RecordingStudioSitemaps::Admin::WIDGET_FINDABLE,
+        RecordingStudioSitemaps::Admin::WIDGET_MISSING
+      ],
+      usages.map(&:key)
+    )
+    assert usages.all? { |usage| usage.view_variant.nil? }
+    refute usages.any? { |usage| usage.view_variant == :compact }
+  end
+
+  def test_section_subtitle_is_last_built_and_rebuild_has_no_last_built_button
     names = RecordingStudioSitemaps::Admin::Section.links.map(&:name)
 
-    assert_equal %i[open_sitemap rebuild last_build], names
-    assert_equal :last_build, names[names.index(:rebuild) + 1]
-    assert_equal "The public list of pages search engines may find.",
-                 RecordingStudioSitemaps::Admin::Section.subtitle
+    assert_equal %i[open_sitemap rebuild build_history], names
+    refute_includes names, :last_build
+
+    section_context = FakeContext.new(params: { key: "sitemaps" })
+    visible = RecordingStudioSitemaps::Admin::Section.links.filter_map do |link|
+      link.resolve(section_context)&.name
+    end
+    assert_equal %i[open_sitemap rebuild], visible
+
+    screen_context = FakeContext.new(params: { key: "build_history" })
+    history = RecordingStudioSitemaps::Admin::Section.links.find { |link| link.name == :build_history }
+    assert_equal "/admin/screens/build_history", history.resolve(screen_context).url
 
     built_at = Time.utc(2026, 8, 21, 15, 30, 0)
-    context = FakeContext.new
     RecordingStudioSitemaps::GenerationLog.stub(:latest, FakeLog.new(built_at: built_at, status: "success")) do
-      link = RecordingStudioSitemaps::Admin::Section.links.find { |item| item.name == :last_build }
+      subtitle = RecordingStudioSitemaps::Admin::Section.evaluate(
+        RecordingStudioSitemaps::Admin::Section.subtitle,
+        FakeContext.new
+      )
 
-      assert_equal :ghost, link.style
-      resolved = link.resolve(context)
-      assert_equal "Last built 21 Aug 2026, 15:30.", resolved.text
-      assert_equal "/admin/screens/build_history", resolved.url
+      assert_equal "Last built 21 Aug 2026, 15:30", subtitle
+      assert_equal "Last built 21 Aug 2026, 15:30", RecordingStudioSitemaps::Admin.last_build_line
     end
   end
 

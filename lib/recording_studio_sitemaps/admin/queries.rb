@@ -5,14 +5,14 @@ module RecordingStudioSitemaps
     WHEN_FORMAT = "%d %b %Y, %H:%M"
 
     class << self
-      def index_size_points(format_x: true)
-        GenerationLog.order(:built_at).map.with_index do |log, index|
+      def index_size_points(format_x: true, logs: nil, range: nil)
+        generation_logs(logs: logs, range: range).map.with_index do |log, index|
           { x: format_x ? format_when(log) : index, y: log.url_count.to_i }
         end
       end
 
-      def index_size_series(format_x: true)
-        [{ name: "Pages", data: index_size_points(format_x: format_x) }]
+      def index_size_series(format_x: true, logs: nil, range: nil)
+        [{ name: "Pages", data: index_size_points(format_x: format_x, logs: logs, range: range) }]
       end
 
       def format_when(value)
@@ -32,12 +32,17 @@ module RecordingStudioSitemaps
 
       def last_build_line
         log = GenerationLog.latest
-        return "No sitemap written yet." if log.blank?
+        return "No sitemap written yet" if log.blank?
 
         stamp = build_when(log)
-        return "Last built #{stamp}." if log.success?
+        return "Last built #{stamp}" if log.success?
 
-        "Last build failed #{stamp}."
+        "Last build failed #{stamp}"
+      end
+
+      def build_history_screen?(context)
+        params = context.respond_to?(:params) ? context.params.to_h : {}
+        params.stringify_keys["key"].to_s == SCREEN_BUILD_HISTORY
       end
 
       def coverage_metadata
@@ -84,6 +89,17 @@ module RecordingStudioSitemaps
       end
 
       private
+
+      def generation_logs(logs: nil, range: nil)
+        relation = logs || GenerationLog.order(:built_at)
+        return relation if range.blank?
+
+        if relation.respond_to?(:where)
+          relation.where(built_at: range)
+        else
+          Array(relation).select { |log| range.cover?(log.built_at) }
+        end
+      end
 
       def findable_item_for(recordable)
         list_item(title_for(recordable), trailing: type_for(recordable))
