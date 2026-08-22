@@ -10,10 +10,6 @@ class AdminTest < Minitest::Test
   end
 
   FakeContext = Struct.new(:path, :params, keyword_init: true) do
-    def initialize(path: nil, params: {})
-      super
-    end
-
     def admin_screen_path(key)
       "/admin/screens/#{key}"
     end

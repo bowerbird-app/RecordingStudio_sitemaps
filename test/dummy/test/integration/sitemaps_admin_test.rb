@@ -28,9 +28,9 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "lg:grid-cols-4"
     refute_includes response.body, "widget_view_variant=compact"
     assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
+    assert_includes response.body, "Open sitemap"
+    assert_includes response.body, "Rebuild"
     assert_select "a", text: /Last built/, count: 0
-    assert_select "a", text: "Open sitemap", count: 1
-    assert_select "a", text: "Rebuild", count: 1
     assert_select "a", text: "Build history", count: 0
     assert_includes response.body, "Coverage"
     assert_includes response.body, "#{coverage.included} / #{coverage.published}"

@@ -116,6 +116,10 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes section_view, "recording_studio_accessible_avatars"
     assert_includes section_view, "button_style: :primary"
     assert_includes section_view, "cols: 4"
+    widget_view = File.read(
+      File.expand_path("dummy/app/views/recording_studio_admin/shared/_widget.html.erb", __dir__)
+    )
+    assert_includes widget_view, 'aria: { label: "Open #{widget_link_label}" }'
     refute_includes section_view, "Sign out"
     refute_includes section_view, "recording_studio_root_switch"
     refute_includes section_view, "+ Access"
