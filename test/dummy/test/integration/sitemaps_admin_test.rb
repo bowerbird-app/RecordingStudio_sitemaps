@@ -39,7 +39,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "Index size"
-    assert_includes response.body, "/admin/screens/build_history"
+    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 1
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
@@ -73,6 +73,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_select "body[data-recording-studio-default-layout=true]", count: 1
     assert_includes response.body, "Build history"
     assert_includes response.body, "Every rebuild, and whether the list grew or shrank."
+    assert_includes response.body, "recording_studio_sitemaps/apexcharts"
     assert_includes response.body, "/admin/screens/build_history/chart"
     assert_includes response.body, "/admin/screens/build_history/table"
     refute_includes response.body, "Sign out"
@@ -86,6 +87,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Pages in the sitemap"
     assert_includes response.body, stamp
     assert_includes response.body, "decimalsInFloat"
+    assert_includes response.body, "stepSize"
     refute_match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, response.body)
 
     get "/admin/screens/build_history/table"

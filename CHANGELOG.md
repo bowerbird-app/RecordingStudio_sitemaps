@@ -16,7 +16,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Public `/sitemap.xml` of Publishable indexable URLs (`loc` + `lastmod` only)
 - Generation logs for when a sitemap was written, how many URLs it held, and any error
 - Admin Sitemaps section: Coverage progress, findable page list, Missing rows, Index size chart, last build next to Rebuild, Open sitemap, Rebuild
-- Build history Admin screen (`build_history`) from generation logs: pages-over-time chart and when / pages / result table. Result is `Ok` or `Failed` (or the real error). Chart x uses the same date language as the table; y stays on whole page counts.
+- Build history Admin screen (`build_history`) from generation logs: pages-over-time chart and when / pages / result table. Result is `Ok` or `Failed` (or the real error). Chart x uses the same date language as the table; y stays on whole page counts. Dummy pins ApexCharts through `recording_studio_sitemaps/apexcharts.js` so ticks read `0`, `1`, `2` instead of `0.0`.
 - Warning when the findable URL count heads toward 50,000
 - Install generator mounts `/sitemap.xml` and asks the host for `public_base_url`
 - Dummy seed with one findable page, one published page left out of the sitemap, and a short rebuild history so Index size is not a single point
@@ -38,6 +38,7 @@ Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
 - Enable Publishable on types that should appear
 - Enable `section :sitemaps` on the admin root and grant Accessible access. Do not use `user.admin?`
 - If a host copied Sign out or a root switcher into `_default_layout_head.html.erb`, remove them. That partial should load Flatpack CSS only
+- Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`
 - Drop any `recording_studio_sitemaps_pages` table if a host copied the old engine migration
 
 ## [0.1.0] - 2026-08-21

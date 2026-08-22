@@ -81,6 +81,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes application_js, 'import "@hotwired/turbo-rails"'
     refute_includes application_js, 'import { application } from "controllers/application"'
     assert_includes importmap, 'pin "@hotwired/turbo-rails", to: "turbo.min.js"'
+    assert_includes importmap, 'pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"'
+
+    wrapper = File.read(File.expand_path("../app/javascript/recording_studio_sitemaps/apexcharts.js", __dir__))
+    assert_includes wrapper, "decimalsInFloat"
+    assert_includes wrapper, "Math.round"
   end
 
   def test_dummy_default_layout_head_loads_flatpack_css_only

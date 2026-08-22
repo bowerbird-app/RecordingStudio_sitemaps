@@ -19,6 +19,7 @@ This slice ships the public sitemap, generation logs, and Admin.
 5. Enable `section :sitemaps` on the admin root and grant Accessible access to that root. Admin requires the current root to be that admin root.
 6. Drop `recording_studio_sitemaps_pages` if a host copied the old engine migration. Sitemap URLs are derived; only generation logs are stored.
 7. Do not put Sign out or a root switcher in `_default_layout_head.html.erb`. That partial loads Flatpack CSS. Core owns back/close. Index size and Build history read generation logs. Build history result is Ok / Failed (or the error). Chart dates match the When column; page-count ticks stay whole numbers.
+8. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y-axis labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`.
 
 `RecordingStudioSitemaps.rebuild!` is the one write path. Publish/unpublish and Admin Rebuild both call it.
 

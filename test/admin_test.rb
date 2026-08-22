@@ -150,6 +150,7 @@ class AdminTest < Minitest::Test
       assert_equal 0, options.dig(:yaxis, :min)
       assert_equal 2, options.dig(:yaxis, :max)
       assert_equal 2, options.dig(:yaxis, :tickAmount)
+      assert_equal 1, options.dig(:yaxis, :stepSize)
       assert_equal false, options.dig(:yaxis, :forceNiceScale)
       assert_equal "category", options.dig(:xaxis, :type)
     end
@@ -166,6 +167,8 @@ class AdminTest < Minitest::Test
     assert_equal :chart, widget.type
     assert_equal :area, widget.chart_type
     assert_equal "Index size", widget.title
+    assert_equal RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE, widget.key
+    assert_equal "Build history", widget.link_label
     assert_equal "/admin/screens/build_history", widget.link_to
     assert_equal "Pages", widget.series.first[:name]
     refute widget.show_change

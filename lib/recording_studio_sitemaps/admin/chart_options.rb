@@ -30,6 +30,7 @@ module RecordingStudioSitemaps
           min: 0,
           max: max_pages,
           tickAmount: max_pages,
+          stepSize: 1,
           forceNiceScale: false
         }
       end

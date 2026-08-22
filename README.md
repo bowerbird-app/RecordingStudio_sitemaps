@@ -97,9 +97,9 @@ The Sitemaps section is Coverage plus two lists, an Index size chart, then Open 
 - **Coverage** — findable pages over published Publishable pages, as a progress bar
 - **In the sitemap** — each findable page, with its type
 - **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
-- **Index size** — how many pages made the sitemap each rebuild, from generation logs. Opens **Build history**
+- **Index size** — how many pages made the sitemap each rebuild, from generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Last build time and status sit as a quiet line next to Rebuild and open that screen. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Last build time and status sit as a quiet line next to Rebuild and open that screen. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 ## Dummy host
 

@@ -103,7 +103,9 @@ module RecordingStudioSitemaps
       end
     end
 
-    initializer "recording_studio_sitemaps.admin" do
+    initializer "recording_studio_sitemaps.admin" do |app|
+      app.config.assets.paths << root.join("app/javascript") if app.config.respond_to?(:assets)
+
       config.to_prepare do
         RecordingStudioSitemaps::Admin.register!
       end
