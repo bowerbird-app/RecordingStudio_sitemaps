@@ -33,10 +33,17 @@ module RecordingStudioSitemaps
       end
 
       def install_date_range_last_30_days!
-        return unless defined?(FlatPack::DateRangeInput::Component)
-        return if FlatPack::DateRangeInput::Component.ancestors.include?(DateRangeLast30Days)
+        component = date_range_input_component
+        return unless component
+        return if component.ancestors.include?(DateRangeLast30Days)
 
-        FlatPack::DateRangeInput::Component.prepend(DateRangeLast30Days)
+        component.prepend(DateRangeLast30Days)
+      end
+
+      def date_range_input_component
+        FlatPack::DateRangeInput::Component
+      rescue NameError
+        nil
       end
     end
   end
