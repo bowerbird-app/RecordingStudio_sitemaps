@@ -182,17 +182,20 @@ class AdminTest < Minitest::Test
   def test_last_build_link_sits_next_to_rebuild
     names = RecordingStudioSitemaps::Admin::Section.links.map(&:name)
 
-    assert_equal %i[open_sitemap build_history rebuild last_build], names
+    assert_equal %i[open_sitemap rebuild last_build], names
     assert_equal :last_build, names[names.index(:rebuild) + 1]
     assert_equal "The public list of pages search engines may find.",
                  RecordingStudioSitemaps::Admin::Section.subtitle
 
     built_at = Time.utc(2026, 8, 21, 15, 30, 0)
+    context = FakeContext.new
     RecordingStudioSitemaps::GenerationLog.stub(:latest, FakeLog.new(built_at: built_at, status: "success")) do
       link = RecordingStudioSitemaps::Admin::Section.links.find { |item| item.name == :last_build }
 
       assert_equal :ghost, link.style
-      assert_equal "Last built 21 Aug 2026, 15:30.", link.resolve(nil).text
+      resolved = link.resolve(context)
+      assert_equal "Last built 21 Aug 2026, 15:30.", resolved.text
+      assert_equal "/admin/screens/build_history", resolved.url
     end
   end
 

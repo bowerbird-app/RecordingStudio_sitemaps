@@ -39,7 +39,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "Index size"
-    assert_includes response.body, "Build history"
+    assert_includes response.body, "/admin/screens/build_history"
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"

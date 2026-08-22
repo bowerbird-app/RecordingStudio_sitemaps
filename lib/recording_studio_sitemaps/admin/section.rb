@@ -14,11 +14,6 @@ module RecordingStudioSitemaps
            url: ->(_context) { "/sitemap.xml" },
            style: :secondary
 
-      link :build_history,
-           text: "Build history",
-           url: ->(context) { context.admin_screen_path(SCREEN_BUILD_HISTORY) },
-           style: :secondary
-
       link :rebuild,
            text: "Rebuild",
            url: ->(_context) { "/recording_studio_sitemaps/rebuild" },
@@ -26,7 +21,7 @@ module RecordingStudioSitemaps
 
       link :last_build,
            text: ->(_context) { RecordingStudioSitemaps::Admin.last_build_line },
-           url: ->(_context) { "#" },
+           url: ->(context) { context.admin_screen_path(SCREEN_BUILD_HISTORY) },
            style: :ghost
 
       widget WIDGET_COVERAGE

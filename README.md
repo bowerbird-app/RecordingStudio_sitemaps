@@ -92,14 +92,14 @@ end
 
 ## Admin
 
-The Sitemaps section is Coverage plus two lists, an Index size chart, then Open sitemap / Build history / Rebuild:
+The Sitemaps section is Coverage plus two lists, an Index size chart, then Open sitemap / Rebuild:
 
 - **Coverage** — findable pages over published Publishable pages, as a progress bar
 - **In the sitemap** — each findable page, with its type
 - **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
 - **Index size** — how many pages made the sitemap each rebuild, from generation logs. Opens **Build history**
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Last build time and status sit as a quiet line next to Rebuild, not a number card. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. Last build time and status sit as a quiet line next to Rebuild and open that screen. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 ## Dummy host
 
