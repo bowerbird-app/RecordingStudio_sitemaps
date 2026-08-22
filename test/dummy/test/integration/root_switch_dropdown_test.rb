@@ -29,9 +29,16 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     sign_in user
 
     workspace = Workspace.create!(name: "Dropdown Workspace")
-    RecordingStudio.root_recording_for(workspace)
+    root_recording = RecordingStudio.root_recording_for(workspace)
 
-    get root_path
+    patch "/recording_studio_root_switchable/v1/root_switch", params: {
+      scope: "all_workspaces",
+      root_switch: {
+        root_recording_id: root_recording.id,
+        return_to: "/"
+      }
+    }
+    follow_redirect!
 
     assert_response :success
     assert_includes response.body, workspace.name
