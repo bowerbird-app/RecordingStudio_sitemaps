@@ -5,14 +5,14 @@ module RecordingStudioSitemaps
     WHEN_FORMAT = "%d %b %Y, %H:%M"
 
     class << self
-      def index_size_points
-        GenerationLog.order(:built_at).map do |log|
-          { x: format_when(log), y: log.url_count.to_i }
+      def index_size_points(format_x: true)
+        GenerationLog.order(:built_at).map.with_index do |log, index|
+          { x: format_x ? format_when(log) : index, y: log.url_count.to_i }
         end
       end
 
-      def index_size_series
-        [{ name: "Pages", data: index_size_points }]
+      def index_size_series(format_x: true)
+        [{ name: "Pages", data: index_size_points(format_x: format_x) }]
       end
 
       def format_when(value)

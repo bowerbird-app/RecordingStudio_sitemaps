@@ -5,10 +5,18 @@ function integerLabel(value) {
   return Number.isFinite(number) ? String(Math.round(number)) : String(value)
 }
 
+function axesFrom(yaxis) {
+  if (!yaxis) return []
+  return Array.isArray(yaxis) ? yaxis : [yaxis]
+}
+
+function needsIntegerTicks(yaxis) {
+  return axesFrom(yaxis).some((axis) => axis && (axis.decimalsInFloat === 0 || axis.stepSize === 1))
+}
+
 function integerizeAxis(yaxis) {
   if (Array.isArray(yaxis)) return yaxis.map(integerizeAxis)
   if (!yaxis) return yaxis
-  if (yaxis.decimalsInFloat !== 0 && yaxis.stepSize !== 1) return yaxis
 
   return {
     ...yaxis,
@@ -20,15 +28,17 @@ function integerizeAxis(yaxis) {
 }
 
 function withIntegerPageCounts(options = {}) {
-  const next = {
-    ...options,
-    yaxis: integerizeAxis(options.yaxis)
-  }
+  if (!needsIntegerTicks(options.yaxis)) return options
+
   const tooltip = { ...(options.tooltip || {}) }
   const tooltipY = { ...(tooltip.y || {}) }
   if (typeof tooltipY.formatter !== "function") tooltipY.formatter = integerLabel
-  next.tooltip = { ...tooltip, y: tooltipY }
-  return next
+
+  return {
+    ...options,
+    yaxis: integerizeAxis(options.yaxis),
+    tooltip: { ...tooltip, y: tooltipY }
+  }
 }
 
 function rewriteAxisLabels(element) {
@@ -40,20 +50,21 @@ function rewriteAxisLabels(element) {
   })
 }
 
-export default class extends ApexCharts {
-  constructor(el, options) {
-    super(el, withIntegerPageCounts(options))
-    this._sitemapsElement = el
-  }
+export default function WrappedApexCharts(el, options) {
+  const chart = new ApexCharts(el, withIntegerPageCounts(options))
+  if (!needsIntegerTicks(options?.yaxis)) return chart
 
-  render() {
-    const rendered = super.render()
+  const originalRender = chart.render.bind(chart)
+  chart.render = () => {
+    const rendered = originalRender()
     const finish = (value) => {
-      rewriteAxisLabels(this._sitemapsElement)
+      rewriteAxisLabels(el)
       return value
     }
 
     if (rendered && typeof rendered.then === "function") return rendered.then(finish)
     return finish(rendered)
   }
+
+  return chart
 }
