@@ -200,7 +200,7 @@ class AdminTest < Minitest::Test
   end
 
   def test_index_size_widget_is_a_chart_linked_to_history
-    logs = [FakeLog.new(built_at: Time.utc(2026, 8, 1, 12), url_count: 1, status: "success")]
+    logs = [FakeLog.new(built_at: Time.current, url_count: 1, status: "success")]
     widget = nil
 
     RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
