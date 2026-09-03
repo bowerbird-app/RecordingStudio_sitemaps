@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-09-03
+
+Cloud Agent Builds fetch Cursor skills at install. Product is unchanged.
+
+### Added
+- `.cursor/environment.json`, `.cursor/install.sh`, `.cursor/fetch-skills.sh`, and `.cursor/start.sh` so Cloud Agent Builds provision a cold image, skip warm provision, and always fetch the skill pack last
+- Gitignore for `.cursor/skills/` and `.cursor/rules/` so the fetched pack is not vendored
+
+### Upgrade notes
+- No host or schema changes. Rebuild the Cloud Agent environment with Draft off so Build loads the pack.
+
 ## [0.2.1] - 2026-08-21
 
 Public `/sitemap.xml`, generation logs, and the Admin Sitemaps section.
@@ -69,6 +80,7 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.1.0
