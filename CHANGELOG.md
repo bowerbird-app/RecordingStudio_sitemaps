@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-09-16
+
+Dependency pins for Accessible and Publishable.
+
+### Changed
+- Gemspec `recording_studio_accessible` constraint is `~> 0.9`
+- Gemspec `recording_studio_publishable` constraint is `~> 0.2.0`
+- Root and dummy GitHub tags are Accessible `v0.9.1` and Publishable `v0.2.1`
+- Dummy `recording_studio_accesses` includes `depends_on_recording_id`
+
+### Upgrade notes
+- Accessible requirement is `~> 0.9`. Example GitHub tag is `v0.9.1`.
+- Publishable requirement is `~> 0.2.0`. Example GitHub tag is `v0.2.1`. The hard pin `= 0.2.0` is gone.
+- Hosts on Accessible `0.7.x` or older need the Accessible `depends_on_recording_id` migration. Sitemaps adds no new engine migration.
+
 ## [0.2.2] - 2026-09-03
 
 Cloud Agent Builds fetch Cursor skills at install. Product is unchanged.
@@ -80,7 +95,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.1.0

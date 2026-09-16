@@ -29,9 +29,9 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 ```ruby
 # Gemfile
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.2.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.6.1"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.9.1"
 gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "2.0.1"
-gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.2.0"
+gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.2.1"
 gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.133"
 gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps"
 ```
@@ -39,9 +39,9 @@ gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps
 ```ruby
 # gemspec / host Gemfile constraints
 gem "recording_studio", "~> 4.2"
-gem "recording_studio_accessible", "~> 0.6"
+gem "recording_studio_accessible", "~> 0.9"
 gem "recording_studio_admin", "~> 2.0"
-gem "recording_studio_publishable", "= 0.2.0"
+gem "recording_studio_publishable", "~> 0.2.0"
 ```
 
 Then:
@@ -116,9 +116,9 @@ Dummy kit pins:
 | Gem | Pin |
 |-----|-----|
 | Recording Studio | `v4.2.0` |
-| Accessible | `v0.6.1` |
+| Accessible | `v0.9.1` |
 | Admin | `2.0.1` |
-| Publishable | `v0.2.0` |
+| Publishable | `v0.2.1` |
 | Root Switchable | `v0.5.0` |
 | FlatPack | `v0.1.133` |
 

@@ -8,12 +8,12 @@ GIT
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_accessible.git
-  revision: eb898857241bc2211803e39086a11fab63ce2f76
-  tag: v0.6.1
+  revision: bdff3ee3ace5cf3bfe33ba40476c1522cf1b6d61
+  tag: v0.9.1
   specs:
-    recording_studio_accessible (0.6.1)
+    recording_studio_accessible (0.9.1)
       rails (~> 8.1.0)
-      recording_studio (~> 4.1)
+      recording_studio (~> 4.2)
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_admin.git
@@ -27,10 +27,10 @@ GIT
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_publishable.git
-  revision: cba1087352609388549edaa24b15a0d2f8d19528
-  tag: v0.2.0
+  revision: 4725693151c275e4551bbac3a5c83857c025182a
+  tag: v0.2.1
   specs:
-    recording_studio_publishable (0.2.0)
+    recording_studio_publishable (0.2.1)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
       view_component (>= 3.0, < 5.0)
@@ -49,13 +49,13 @@ GIT
 PATH
   remote: .
   specs:
-    recording_studio_sitemaps (0.2.2)
+    recording_studio_sitemaps (0.2.3)
       flat_pack (~> 0.1.129)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
-      recording_studio_accessible (~> 0.6)
+      recording_studio_accessible (~> 0.9)
       recording_studio_admin (~> 2.0)
-      recording_studio_publishable (= 0.2.0)
+      recording_studio_publishable (~> 0.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -351,9 +351,9 @@ DEPENDENCIES
   flat_pack (~> 0.1.129)!
   puma
   recording_studio (~> 4.2)!
-  recording_studio_accessible (~> 0.6)!
+  recording_studio_accessible (~> 0.9)!
   recording_studio_admin (~> 2.0)!
-  recording_studio_publishable (= 0.2.0)!
+  recording_studio_publishable (~> 0.2.0)!
   recording_studio_sitemaps!
   rubocop
   rubocop-rails
@@ -437,10 +437,10 @@ CHECKSUMS
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
   rdoc (6.16.1) sha256=71357cc208e6da77ba0c4494e01ae870dd18b437c7c7d801dd73ee2f340b9f5c
   recording_studio (4.2.0)
-  recording_studio_accessible (0.6.1)
+  recording_studio_accessible (0.9.1)
   recording_studio_admin (2.0.1)
-  recording_studio_publishable (0.2.0)
-  recording_studio_sitemaps (0.2.2)
+  recording_studio_publishable (0.2.1)
+  recording_studio_sitemaps (0.2.3)
   regexp_parser (2.11.3) sha256=ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   responders (3.2.0) sha256=89c2d6ac0ae16f6458a11524cae4a8efdceba1a3baea164d28ee9046bd3df55a
