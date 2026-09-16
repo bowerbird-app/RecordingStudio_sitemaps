@@ -1,5 +1,26 @@
 # Upgrade notes
 
+## 0.2.3
+
+Raise Accessible to `~> 0.9` and relax Publishable to `~> 0.2.0`.
+
+- Accessible `~> 0.9` (dummy GitHub tag `v0.9.1`)
+- Publishable `~> 0.2.0` (dummy GitHub tag `v0.2.1`)
+
+### Host app
+
+1. Pin Accessible at `~> 0.9` and resolve it from GitHub tag `v0.9.1`.
+2. Pin Publishable at `~> 0.2.0` and resolve it from GitHub tag `v0.2.1`. Remove any `= 0.2.0` pin.
+3. If you are on Accessible `0.7.x` or older, run `bin/rails generate recording_studio_accessible:migrations`. Then run `bin/rails db:migrate`. That adds `depends_on_recording_id` on `recording_studio_accesses`. Sitemaps adds no new engine migration.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
 ## 0.2.1
 
 This slice ships the public sitemap, generation logs, and Admin.

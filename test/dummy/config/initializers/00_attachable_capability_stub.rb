@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Publishable v0.2.0 includes Attachable on its child recordable for social images.
+# Publishable v0.2.1 includes Attachable on its child recordable for social images.
 # Sitemaps does not depend on Attachable. This dummy-only stub lets Publishable boot.
 unless defined?(RecordingStudio::Capabilities::Attachable)
   module RecordingStudio
