@@ -7,11 +7,11 @@ module AdminAccessHelpers
     "admin" => 3
   }.freeze
 
-  def grant_admin_access_for_test!(recording:, actor:, role: :admin)
+  def grant_admin_access_for_test!(recording:, actor:, role: "admin")
     current_role = RecordingStudioAccessible.role_for(actor: actor, recording: recording)
     return recording if role_covers?(current_role, role)
 
-    if role.to_sym == :admin
+    if role.to_s == "admin"
       bootstrap_result = RecordingStudioAccessible.bootstrap_owner_access!(
         recording: recording,
         actor: actor

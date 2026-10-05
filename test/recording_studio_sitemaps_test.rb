@@ -15,9 +15,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
     gemspec = File.read(File.expand_path("../recording_studio_sitemaps.gemspec", __dir__))
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.9"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.11"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", "~> 2.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.2.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.4"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
     refute_includes gemspec, "= 0.2.0"
@@ -32,15 +32,23 @@ class RecordingStudioSitemapsTest < Minitest::Test
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.2"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.9.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "2.0.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.2.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.11.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.0.4"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.4.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.3"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.6.0"'
     refute_includes gemfile, 'tag: "v0.1.197"'
     refute_includes gemfile, 'tag: "0.3.1"'
+  end
+
+  def test_dummy_schema_uses_accessible_0_11_string_roles
+    schema = File.read(File.expand_path("dummy/db/schema.rb", __dir__))
+
+    assert_includes schema, 'create_table "recording_studio_access_invitations"'
+    assert_includes schema, 't.string "role", default: "view", null: false'
+    refute_includes schema, 't.integer "role"'
   end
 
   def test_does_not_ship_copied_core_hooks_or_template_leftovers
@@ -173,11 +181,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.2.2"
-    assert_includes readme, "v0.9.1"
+    assert_includes readme, "v0.11.1"
     assert_includes readme, "v0.1.198"
     assert_includes readme, "/sitemap.xml"
-    assert_includes readme, "v0.2.1"
-    assert_includes readme, "2.0.1"
+    assert_includes readme, "v0.4.2"
+    assert_includes readme, "v2.0.4"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"

@@ -15,7 +15,7 @@ grant_seed_admin_access = lambda do |recording:, actor:|
     RecordingStudioAccessible.grant_access(
       recording: recording,
       actor: actor,
-      role: :admin,
+      role: "admin",
       manager_actor: actor
     )
   ensure

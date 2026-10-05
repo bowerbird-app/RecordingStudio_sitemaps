@@ -1,6 +1,6 @@
 # Update summary
 
-0.2.3 pins Accessible `~> 0.9` (tag `v0.9.1`) and Publishable `~> 0.2.0` (tag `v0.2.1`).
+Unreleased pins Accessible `~> 0.11` (tag `v0.11.1`) and Publishable `~> 0.4` (tag `v0.4.2`).
 
 - `RecordingStudioSitemaps.rebuild!` is the one write path
 - `/sitemap.xml` lists Publishable indexable URLs
@@ -9,4 +9,4 @@
 - Dummy PageNav slot is Accessible avatars, not Sign out or a root switcher
 - Build history is a child Admin screen of generation logs
 - Dummy default-layout head loads Flatpack CSS only
-- Dummy pins Accessible `v0.9.1`, Admin `2.0.1`, and Publishable `v0.2.1`
+- Dummy pins Accessible `v0.11.1`, Admin `v2.0.4`, Publishable `v0.4.2`, and Root Switchable `v0.5.3`
