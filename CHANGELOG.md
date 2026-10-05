@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Dummy and root GitHub pin for Recording Studio is `v4.2.2`
+
 ## [0.2.3] - 2026-09-16
 
 Dependency pins for Accessible and Publishable.
