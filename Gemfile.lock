@@ -8,29 +8,29 @@ GIT
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_accessible.git
-  revision: bdff3ee3ace5cf3bfe33ba40476c1522cf1b6d61
-  tag: v0.9.1
+  revision: fe2d86aa2d96b843bc05651dc25023fd4546ab37
+  tag: v0.11.1
   specs:
-    recording_studio_accessible (0.9.1)
+    recording_studio_accessible (0.11.0)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_admin.git
-  revision: e5f0ba8acaf04b5f36e940e89e5a43709cb25e03
-  tag: 2.0.1
+  revision: 2d94e2f1f17cde64bfde756ac9df5dddefbe64ca
+  tag: v2.0.4
   specs:
-    recording_studio_admin (2.0.1)
+    recording_studio_admin (2.0.2)
       flat_pack (~> 0.1.129)
       rails (~> 8.1.0)
       recording_studio_accessible (~> 0.6)
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_publishable.git
-  revision: 4725693151c275e4551bbac3a5c83857c025182a
-  tag: v0.2.1
+  revision: 7cfe3d5a827b5d0cd4e62a6adfaf9ddccae3d254
+  tag: v0.4.2
   specs:
-    recording_studio_publishable (0.2.1)
+    recording_studio_publishable (0.4.0)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
       view_component (>= 3.0, < 5.0)
@@ -53,9 +53,9 @@ PATH
       flat_pack (~> 0.1.129)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
-      recording_studio_accessible (~> 0.9)
+      recording_studio_accessible (~> 0.11)
       recording_studio_admin (~> 2.0)
-      recording_studio_publishable (~> 0.2.0)
+      recording_studio_publishable (~> 0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -351,9 +351,9 @@ DEPENDENCIES
   flat_pack (~> 0.1.129)!
   puma
   recording_studio (~> 4.2)!
-  recording_studio_accessible (~> 0.9)!
+  recording_studio_accessible (~> 0.11)!
   recording_studio_admin (~> 2.0)!
-  recording_studio_publishable (~> 0.2.0)!
+  recording_studio_publishable (~> 0.4)!
   recording_studio_sitemaps!
   rubocop
   rubocop-rails
@@ -437,9 +437,9 @@ CHECKSUMS
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
   rdoc (6.16.1) sha256=71357cc208e6da77ba0c4494e01ae870dd18b437c7c7d801dd73ee2f340b9f5c
   recording_studio (4.2.1)
-  recording_studio_accessible (0.9.1)
-  recording_studio_admin (2.0.1)
-  recording_studio_publishable (0.2.1)
+  recording_studio_accessible (0.11.0)
+  recording_studio_admin (2.0.2)
+  recording_studio_publishable (0.4.0)
   recording_studio_sitemaps (0.2.3)
   regexp_parser (2.11.3) sha256=ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
@@ -472,4 +472,4 @@ CHECKSUMS
   zeitwerk (2.7.3) sha256=b2e86b4a9b57d26ba68a15230dcc7fe6f040f06831ce64417b0621ad96ba3e85
 
 BUNDLED WITH
-   4.0.0
+   2.5.22

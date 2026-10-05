@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dummy and root GitHub pin for Recording Studio is `v4.2.2`
+- Gemspec `recording_studio_accessible` constraint is `~> 0.11` (GitHub tag `v0.11.1`)
+- Gemspec `recording_studio_publishable` constraint is `~> 0.4` (GitHub tag `v0.4.2`)
+- Dummy Admin GitHub tag is `v2.0.4`; dummy Root Switchable is `v0.5.3`
+- Dummy Accessible schema uses string roles, `depends_on_recording_id`, and the access invitations table. Grants go through `bootstrap_owner_access!` / `grant_access`
+
+### Upgrade notes
+- Accessible requirement is `~> 0.11`. Example GitHub tag is `v0.11.1`. Hosts on Accessible `0.9.x` or older need Accessible's 0.8–0.11 migrations (depends-on recording, invitations, role integer → string) and must grant via Accessible services, not by writing `RecordingStudio::Access` rows.
+- Publishable requirement is `~> 0.4`. Example GitHub tag is `v0.4.2`.
+- Admin example GitHub tag is `v2.0.4` (`~> 2.0` is unchanged). Dummy Root Switchable example tag is `v0.5.3`.
 
 ## [0.2.3] - 2026-09-16
 
