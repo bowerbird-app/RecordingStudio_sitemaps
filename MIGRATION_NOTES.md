@@ -6,14 +6,14 @@ Raise Accessible to `~> 0.11` and Publishable to `~> 0.4`. Admin stays `~> 2.0`.
 
 - Accessible `~> 0.11` (dummy GitHub tag `v0.11.1`)
 - Publishable `~> 0.4` (dummy GitHub tag `v0.4.2`)
-- Admin dummy GitHub tag `v2.0.6` (requires FlatPack `v0.1.207`)
+- Admin dummy GitHub tag `v2.0.7` (requires FlatPack `v0.1.207`)
 - Dummy Root Switchable tag `v0.5.3`
 
 ### Host app
 
 1. Pin Accessible at `~> 0.11` and resolve it from GitHub tag `v0.11.1`.
 2. Pin Publishable at `~> 0.4` and resolve it from GitHub tag `v0.4.2`.
-3. Pin Admin at GitHub tag `v2.0.6` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches).
+3. Pin Admin at GitHub tag `v2.0.7` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches).
 4. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
 5. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
 6. Sitemaps adds no new engine migration.
