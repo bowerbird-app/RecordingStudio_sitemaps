@@ -33,13 +33,13 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.2.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.11.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.0.4"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.0.6"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.4.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.3"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.198"'
+    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.6.0"'
-    refute_includes gemfile, 'tag: "v0.1.197"'
+    refute_includes gemfile, 'tag: "v0.1.198"'
     refute_includes gemfile, 'tag: "0.3.1"'
   end
 
@@ -182,10 +182,10 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.2.2"
     assert_includes readme, "v0.11.1"
-    assert_includes readme, "v0.1.198"
+    assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.4.2"
-    assert_includes readme, "v2.0.4"
+    assert_includes readme, "v2.0.6"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
