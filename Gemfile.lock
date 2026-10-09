@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_accessible.git
-  revision: fe2d86aa2d96b843bc05651dc25023fd4546ab37
-  tag: v0.11.1
+  revision: bc0f62cf104bf6f6223bc81fadf56f44f7e7e920
+  tag: v0.13.0
   specs:
-    recording_studio_accessible (0.11.0)
+    recording_studio_accessible (0.13.0)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
 
@@ -53,7 +53,7 @@ PATH
       flat_pack (~> 0.1.129)
       rails (~> 8.1.0)
       recording_studio (~> 4.2)
-      recording_studio_accessible (~> 0.11)
+      recording_studio_accessible (~> 0.13)
       recording_studio_admin (~> 2.0)
       recording_studio_publishable (~> 0.4)
 
@@ -351,7 +351,7 @@ DEPENDENCIES
   flat_pack (~> 0.1.129)!
   puma
   recording_studio (~> 4.2)!
-  recording_studio_accessible (~> 0.11)!
+  recording_studio_accessible (~> 0.13)!
   recording_studio_admin (~> 2.0)!
   recording_studio_publishable (~> 0.4)!
   recording_studio_sitemaps!
@@ -437,7 +437,7 @@ CHECKSUMS
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
   rdoc (6.16.1) sha256=71357cc208e6da77ba0c4494e01ae870dd18b437c7c7d801dd73ee2f340b9f5c
   recording_studio (4.4.0)
-  recording_studio_accessible (0.11.0)
+  recording_studio_accessible (0.13.0)
   recording_studio_admin (2.0.7)
   recording_studio_publishable (0.4.0)
   recording_studio_sitemaps (0.2.3)
