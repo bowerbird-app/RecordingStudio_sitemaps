@@ -17,11 +17,12 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.13"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", "~> 2.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.4"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.6"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
     refute_includes gemspec, "= 0.2.0"
-    refute_includes gemspec, "~> 0.6"
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.4"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.6"'
     refute_includes gemspec, "internal template"
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_sitemaps"
     refute_includes gemspec, "https://github.com/bowerbird-app/recording_studio_sitemaps"
@@ -34,7 +35,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.4.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.13.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.1.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.4.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.6.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.6.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
     refute_includes gemfile, "recording_studio/v3.0.0"
@@ -184,7 +185,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "v0.13.0"
     assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
-    assert_includes readme, "v0.4.2"
+    assert_includes readme, "v0.6.0"
     assert_includes readme, "v2.1.0"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
