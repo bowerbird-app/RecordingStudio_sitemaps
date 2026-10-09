@@ -7,7 +7,7 @@ Raise Accessible to `~> 0.13`. Publishable stays `~> 0.4`. Admin stays `~> 2.0`.
 - Accessible `~> 0.13` (dummy GitHub tag `v0.13.0`) — i18n for Accessible screens and mail; English output unchanged
 - Publishable `~> 0.4` (dummy GitHub tag `v0.4.2`)
 - Admin dummy GitHub tag `v2.0.7` (requires FlatPack `v0.1.207`)
-- Dummy Root Switchable tag `v0.5.3`
+- Dummy Root Switchable tag `v0.6.0` (i18n release; requires Accessible `~> 0.11`, satisfied by `v0.13.0`; no new host migration)
 
 ### Host app
 
