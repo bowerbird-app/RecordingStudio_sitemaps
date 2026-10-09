@@ -6,14 +6,14 @@ Raise Accessible to `~> 0.13`. Publishable stays `~> 0.4`. Admin stays `~> 2.0`.
 
 - Accessible `~> 0.13` (dummy GitHub tag `v0.13.0`) — i18n for Accessible screens and mail; English output unchanged
 - Publishable `~> 0.4` (dummy GitHub tag `v0.4.2`)
-- Admin dummy GitHub tag `v2.0.7` (requires FlatPack `v0.1.207`)
+- Admin dummy GitHub tag `v2.1.0` (i18n release; requires FlatPack `v0.1.207`; English output unchanged; no host migration)
 - Dummy Root Switchable tag `v0.6.0` (i18n release; requires Accessible `~> 0.11`, satisfied by `v0.13.0`; no new host migration)
 
 ### Host app
 
 1. Pin Accessible at `~> 0.13` and resolve it from GitHub tag `v0.13.0`. No Accessible migration between `0.11.x` and `0.13.0`.
 2. Pin Publishable at `~> 0.4` and resolve it from GitHub tag `v0.4.2`.
-3. Pin Admin at GitHub tag `v2.0.7` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches).
+3. Pin Admin at GitHub tag `v2.1.0` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches). English hosts need no locale change.
 4. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
 5. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
 6. To translate Accessible UI/mail, copy `recording_studio.accessible.*` into host locale files. English hosts need no locale change.
