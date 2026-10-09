@@ -15,7 +15,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     gemspec = File.read(File.expand_path("../recording_studio_sitemaps.gemspec", __dir__))
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.2"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.11"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.13"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", "~> 2.0"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.4"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
@@ -32,7 +32,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.4.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.11.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.13.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.0.7"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.4.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.5.3"'
@@ -181,7 +181,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.4.0"
-    assert_includes readme, "v0.11.1"
+    assert_includes readme, "v0.13.0"
     assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.4.2"
