@@ -53,6 +53,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes schema, 't.integer "role"'
     assert_includes schema, 'create_table "recording_studio_access_constraints"'
     assert_includes schema, 'create_table "recording_studio_access_rules"'
+    assert_includes schema, 't.uuid "social_image_attachment_recording_id"'
   end
 
   def test_does_not_ship_copied_core_hooks_or_template_leftovers
