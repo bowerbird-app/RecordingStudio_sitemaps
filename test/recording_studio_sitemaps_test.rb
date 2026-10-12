@@ -32,11 +32,12 @@ class RecordingStudioSitemapsTest < Minitest::Test
   def test_dummy_gemfile_pins_verified_4x_github_tags
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.4.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.13.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.5.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.15.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.1.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.6.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.6.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.8.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.5.3"'
@@ -50,6 +51,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes schema, 'create_table "recording_studio_access_invitations"'
     assert_includes schema, 't.string "role", default: "view", null: false'
     refute_includes schema, 't.integer "role"'
+    assert_includes schema, 'create_table "recording_studio_access_constraints"'
+    assert_includes schema, 'create_table "recording_studio_access_rules"'
   end
 
   def test_does_not_ship_copied_core_hooks_or_template_leftovers
@@ -181,11 +184,13 @@ class RecordingStudioSitemapsTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "Recording Studio Sitemaps"
-    assert_includes readme, "v4.4.0"
-    assert_includes readme, "v0.13.0"
+    assert_includes readme, "v4.5.0"
+    assert_includes readme, "v0.15.0"
     assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.6.0"
+    assert_includes readme, "v0.8.0"
+    assert_includes readme, "v0.2.0"
     assert_includes readme, "v2.1.0"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"

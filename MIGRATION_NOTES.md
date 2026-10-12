@@ -2,22 +2,25 @@
 
 ## Unreleased
 
-Raise Accessible to `~> 0.13`. Raise Publishable to `~> 0.6`. Admin stays `~> 2.0`.
+Raise Accessible to GitHub tag `v0.15.0` (`~> 0.13` still matches). Raise Publishable to `~> 0.6`. Admin stays `~> 2.0`. Raise Recording Studio to `v4.5.0`. Raise dummy Root Switchable to `v0.8.0`.
 
-- Accessible `~> 0.13` (dummy GitHub tag `v0.13.0`) — i18n for Accessible screens and mail; English output unchanged
+- Recording Studio `~> 4.2` (GitHub tag `v4.5.0`) — translatable `Labels.empty_label`; English output unchanged; no host migration
+- Accessible `~> 0.13` (GitHub tag `v0.15.0`) — i18n wave 2 for non-view copy; English output unchanged. `0.14.0` adds optional action-audience tables (`access_constraints`, `access_rules`); `0.15.0` is translation-only
 - Publishable `~> 0.6` (dummy GitHub tag `v0.6.0`) — i18n for Publishable views; English output unchanged; no host migration
 - Admin dummy GitHub tag `v2.1.0` (i18n release; requires FlatPack `v0.1.207`; English output unchanged; no host migration)
-- Dummy Root Switchable tag `v0.6.0` (i18n release; requires Accessible `~> 0.11`, satisfied by `v0.13.0`; no new host migration)
+- Dummy Root Switchable tag `v0.8.0` (translatable `page_copy`; English output unchanged; requires Accessible `~> 0.13` and Metrics `~> 0.2`; no new host migration)
 
 ### Host app
 
-1. Pin Accessible at `~> 0.13` and resolve it from GitHub tag `v0.13.0`. No Accessible migration between `0.11.x` and `0.13.0`.
-2. Pin Publishable at `~> 0.6` and resolve it from GitHub tag `v0.6.0`. No Publishable migration between `0.4.x` and `0.6.0`. English hosts need no locale change.
-3. Pin Admin at GitHub tag `v2.1.0` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches). English hosts need no locale change.
-4. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
-5. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
-6. To translate Accessible UI/mail, copy `recording_studio.accessible.*` into host locale files. English hosts need no locale change.
-7. Sitemaps adds no new engine migration.
+1. Pin Recording Studio at GitHub tag `v4.5.0` (`~> 4.2` still matches). No core migration between `4.4.x` and `4.5.0`. English hosts need no locale change. Prefer `Labels.empty_label` over identity checks against `Labels::EMPTY_LABEL` when the locale may not be English.
+2. Pin Accessible at GitHub tag `v0.15.0` (`~> 0.13` still matches). From `0.13.x`, run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` so `0.14.0` action-audience tables land (`recording_studio_access_constraints`, `recording_studio_access_rules`). `0.15.0` itself needs no migration. English hosts need no locale change.
+3. Pin Publishable at `~> 0.6` and resolve it from GitHub tag `v0.6.0`. No Publishable migration between `0.4.x` and `0.6.0`. English hosts need no locale change.
+4. Pin Admin at GitHub tag `v2.1.0` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches). English hosts need no locale change.
+5. If the host uses Root Switchable, pin it at GitHub tag `v0.8.0` and Metrics at `v0.2.0` (Root Switchable `0.7+` depends on Metrics `~> 0.2`, which is not on RubyGems). No Root Switchable migration between `0.6.x` and `0.8.0`. English hosts that leave `page_copy` unset or use plain Strings need no locale change. Do not set required `page_copy` keys to `nil`.
+6. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
+7. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
+8. To translate Accessible UI/mail, copy `recording_studio.accessible.*` into host locale files. English hosts need no locale change.
+9. Sitemaps adds no new engine migration.
 
 ### Verify
 
