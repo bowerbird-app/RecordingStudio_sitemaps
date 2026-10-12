@@ -35,7 +35,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.15.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.1.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.6.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
@@ -53,6 +53,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes schema, 't.integer "role"'
     assert_includes schema, 'create_table "recording_studio_access_constraints"'
     assert_includes schema, 'create_table "recording_studio_access_rules"'
+    assert_includes schema, 't.uuid "social_image_attachment_recording_id"'
   end
 
   def test_does_not_ship_copied_core_hooks_or_template_leftovers
@@ -188,7 +189,6 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "v0.15.0"
     assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
-    assert_includes readme, "v0.6.0"
     assert_includes readme, "v0.8.0"
     assert_includes readme, "v0.2.0"
     assert_includes readme, "v2.1.0"
