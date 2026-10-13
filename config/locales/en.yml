@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+# English interface copy for Recording Studio Sitemaps.
+# Hosts override by defining the same keys under recording_studio.sitemaps
+# in their own config/locales. Rails engines load config/locales automatically.
+en:
+  recording_studio:
+    sitemaps:
+      flashes:
+        rebuilt: "Sitemap rebuilt."
+        rebuild_failed: "Sitemap rebuild hit a snag. Check the last build."

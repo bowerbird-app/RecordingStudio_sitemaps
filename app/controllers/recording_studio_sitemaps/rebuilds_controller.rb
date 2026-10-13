@@ -7,9 +7,9 @@ module RecordingStudioSitemaps
     def create
       log = RecordingStudioSitemaps.rebuild!(source: :admin)
       if log&.success?
-        redirect_to sitemaps_admin_path, notice: "Sitemap rebuilt."
+        redirect_to sitemaps_admin_path, notice: Copy.t("flashes.rebuilt")
       else
-        redirect_to sitemaps_admin_path, alert: "Sitemap rebuild hit a snag. Check the last build."
+        redirect_to sitemaps_admin_path, alert: Copy.t("flashes.rebuild_failed")
       end
     end
 

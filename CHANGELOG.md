@@ -7,17 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-13
+
+i18n WAVE 2: translate non-view rebuild flashes through Rails I18n. Translation-only — English output stays byte-identical to main when hosts leave defaults alone. Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main's English string literals. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log error messages stay main's English literals.
+
+### Added
+- English Rails I18n keys under `recording_studio.sitemaps.flashes` for rebuild success and failure alerts.
+- `Copy.t` helper that looks up `recording_studio.sitemaps.*` keys. English comes only from `config/locales/en.yml` (no English `default:` on call sites).
+- Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the rebuild success flash.
+- Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_boot_override.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert (file present, `I18n.t` returns HOST, `I18n.load_path` untouched, main English absent).
+- Locale regression: every translated flash call site must use `Copy.t` (not an English notice/alert literal); every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`; gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`; gem `config/locales/*.yml` ships only real product keys (no HOST / probe / test-only keys — those stay under `test/dummy`).
+
 ### Changed
 - Dummy and root GitHub pin for Recording Studio is `v4.2.2`
 - Gemspec `recording_studio_accessible` constraint is `~> 0.11` (GitHub tag `v0.11.1`)
 - Gemspec `recording_studio_publishable` constraint is `~> 0.4` (GitHub tag `v0.4.2`)
 - Dummy Admin GitHub tag is `v2.0.4`; dummy Root Switchable is `v0.5.3`
 - Dummy Accessible schema uses string roles, `depends_on_recording_id`, and the access invitations table. Grants go through `bootstrap_owner_access!` / `grant_access`
+- Rebuild controller flashes resolve through `Copy.t` (keys in `en.yml`).
 
 ### Upgrade notes
 - Accessible requirement is `~> 0.11`. Example GitHub tag is `v0.11.1`. Hosts on Accessible `0.9.x` or older need Accessible's 0.8–0.11 migrations (depends-on recording, invitations, role integer → string) and must grant via Accessible services, not by writing `RecordingStudio::Access` rows.
 - Publishable requirement is `~> 0.4`. Example GitHub tag is `v0.4.2`.
 - Admin example GitHub tag is `v2.0.4` (`~> 2.0` is unchanged). Dummy Root Switchable example tag is `v0.5.3`.
+- Install Sitemaps `0.3.0`. No migration.
+- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` keys into host locale files when translating. English is only in `config/locales/en.yml`; call sites do not pass English `default:`.
+- Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.
+- Admin DSL values stay main's English literals (not callables, no admin locale keys).
+- Public helpers `Admin.last_build_line`, `coverage_info`, `findable_items`, `missing_items`, and `index_size_series` still return main's English literals. Exclusion reason strings stay English.
 
 ## [0.2.3] - 2026-09-16
 
@@ -107,7 +124,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1

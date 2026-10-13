@@ -1,0 +1,11 @@
+# Always-loaded host override for a real, rarely shown gem key
+# (`flashes.rebuild_failed`). Proves Rails boot order lets host config/locales
+# win over the gem without a test-time load_path append. No probe keys — the gem
+# package keeps only product keys in config/locales. Keep the test-only success
+# flash fixture under test/locales alongside this file. Happy-path Admin UI
+# still shows gem English.
+en:
+  recording_studio:
+    sitemaps:
+      flashes:
+        rebuild_failed: "HOST rebuild failed — check the last build."
