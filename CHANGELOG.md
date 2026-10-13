@@ -16,7 +16,7 @@ i18n WAVE 2: translate non-view rebuild flashes through Rails I18n. Translation-
 - `Copy.t` helper that looks up `recording_studio.sitemaps.*` keys. English comes only from `config/locales/en.yml` (no English `default:` on call sites).
 - Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the rebuild success flash.
 - Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_boot_override.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert (file present, `I18n.t` returns HOST, `I18n.load_path` untouched, main English absent).
-- Locale regression: every translated flash call site must use `Copy.t` (not an English notice/alert literal); every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`; gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`.
+- Locale regression: every translated flash call site must use `Copy.t` (not an English notice/alert literal); every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`; gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`; gem `config/locales/*.yml` ships only real product keys (no HOST / probe / test-only keys — those stay under `test/dummy`).
 
 ### Changed
 - Dummy and root GitHub pin for Recording Studio is `v4.2.2`

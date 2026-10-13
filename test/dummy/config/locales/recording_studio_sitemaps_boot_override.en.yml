@@ -1,7 +1,9 @@
-# Always-loaded host override for a rarely shown gem key. Proves Rails boot
-# order lets host config/locales win over the gem without a test-time load_path
-# append. Keep HostLocaleOverrideTest's test-only fixture alongside this file.
-# Happy-path Admin UI still shows gem English (only rebuild_failed is overridden).
+# Always-loaded host override for a real, rarely shown gem key
+# (`flashes.rebuild_failed`). Proves Rails boot order lets host config/locales
+# win over the gem without a test-time load_path append. No probe keys — the gem
+# package keeps only product keys in config/locales. Keep the test-only success
+# flash fixture under test/locales alongside this file. Happy-path Admin UI
+# still shows gem English.
 en:
   recording_studio:
     sitemaps:

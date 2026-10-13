@@ -20,6 +20,28 @@ class LocalesTest < Minitest::Test
     refute root.key?("admin"), "Admin DSL copy must not ship locale keys"
   end
 
+  # Wave-wide: probe / test-only keys must not ship in the gem package.
+  # Host-override probes live under test/dummy (boot override or test/locales).
+  def test_gem_packaged_locales_have_no_probe_or_test_only_keys
+    locales_dir = File.expand_path("../config/locales", __dir__)
+    Dir.glob(File.join(locales_dir, "*.yml")).each do |path|
+      source = File.read(path)
+      refute_match(/\bHOST\b/, source, "#{path} must not ship HOST / probe copy")
+      refute_match(/\bprobe\b/i, source, "#{path} must not ship probe keys")
+      refute_match(/\btest[_-]only\b/i, source, "#{path} must not ship test-only keys")
+
+      tree = YAML.safe_load_file(path, aliases: true)
+      root = tree.fetch("en").fetch("recording_studio").fetch("sitemaps")
+      leaf_keys = flatten_leaf_keys(root)
+      assert_equal EXPECTED.keys.sort, leaf_keys.sort,
+                   "#{path} must ship only real product keys (#{EXPECTED.keys.inspect})"
+    end
+
+    gemspec = File.read(File.expand_path("../recording_studio_sitemaps.gemspec", __dir__))
+    refute_includes gemspec, "test/dummy",
+                    "gemspec must not package dummy host-override / probe locale files"
+  end
+
   def test_copy_t_resolves_english_from_en_yml
     path = File.expand_path("../config/locales/en.yml", __dir__)
     backend_before = I18n.backend
@@ -123,5 +145,14 @@ class LocalesTest < Minitest::Test
 
   def dig(hash, parts)
     parts.reduce(hash) { |node, part| node.fetch(part) }
+  end
+
+  def flatten_leaf_keys(node, prefix = nil)
+    case node
+    when Hash
+      node.flat_map { |key, value| flatten_leaf_keys(value, [prefix, key].compact.join(".")) }
+    else
+      [prefix]
+    end
   end
 end
