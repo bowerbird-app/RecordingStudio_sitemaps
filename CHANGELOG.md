@@ -13,10 +13,10 @@ i18n WAVE 2: translate the gem's remaining user-facing English outside views (co
 
 ### Added
 - English Rails I18n keys under `recording_studio.sitemaps` for rebuild flashes, Admin section/screen/widget copy, and chart series name at the Admin series call site.
-- `Copy.t` helper that always accepts an English `default:`.
+- `Copy.t` helper that looks up `recording_studio.sitemaps.*` keys. English comes only from `config/locales/en.yml` (no English `default:` on call sites).
 - Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the Admin Sitemaps section title.
 - Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_host.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert.
-- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
+- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`, and gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`.
 
 ### Changed
 - Dummy and root GitHub pin for Recording Studio is `v4.2.2`
@@ -24,7 +24,7 @@ i18n WAVE 2: translate the gem's remaining user-facing English outside views (co
 - Gemspec `recording_studio_publishable` constraint is `~> 0.4` (GitHub tag `v0.4.2`)
 - Dummy Admin GitHub tag is `v2.0.4`; dummy Root Switchable is `v0.5.3`
 - Dummy Accessible schema uses string roles, `depends_on_recording_id`, and the access invitations table. Grants go through `bootstrap_owner_access!` / `grant_access`
-- Rebuild controller flashes resolve through `Copy.t` with English `default:`.
+- Rebuild controller flashes resolve through `Copy.t` (keys in `en.yml`).
 - Admin DSL `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, and widget `title` / `info` / `link_label` now return callables evaluated at render. Hosts that read those readers directly must evaluate them (for example via Admin `evaluate` or by calling the callable). Screen `subtitle` stays the main plain string so Admin search indexing works. Table title and column headers stay plain English. Build result cell values stay `Ok` / `Failed` (or the persisted error).
 - Chart series name is translated at the widget/screen `series` call site. `Admin.index_size_series` still returns main's English `"Pages"`.
 
@@ -33,7 +33,7 @@ i18n WAVE 2: translate the gem's remaining user-facing English outside views (co
 - Publishable requirement is `~> 0.4`. Example GitHub tag is `v0.4.2`.
 - Admin example GitHub tag is `v2.0.4` (`~> 2.0` is unchanged). Dummy Root Switchable example tag is `v0.5.3`.
 - Install Sitemaps `0.3.0`. No migration.
-- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating.
+- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating. English is only in `config/locales/en.yml`; call sites do not pass English `default:`.
 - Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.
 - If a host reads `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, or widget `title` / `info` / `link_label` directly, evaluate the callable at use time. Admin already evaluates these at render.
 - Public helpers `Admin.last_build_line`, `coverage_info`, `findable_items`, `missing_items`, and `index_size_series` still return main's English literals. Exclusion reason strings stay English.

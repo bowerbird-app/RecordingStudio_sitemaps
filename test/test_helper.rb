@@ -8,6 +8,12 @@ require "rails"
 require "active_support/time"
 Time.zone ||= "UTC"
 require "recording_studio_sitemaps"
+require "i18n"
+
+# Gem suite does not boot a Rails app, so the engine never appends its
+# config/locales. Load English into the backend without mutating
+# I18n.load_path (wave-2 locale-loading rule).
+I18n.backend.load_translations(File.expand_path("../config/locales/en.yml", __dir__))
 
 unless RecordingStudioSitemaps.const_defined?(:GenerationLog, false)
   generation_log = Class.new do

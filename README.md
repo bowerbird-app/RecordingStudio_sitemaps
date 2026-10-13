@@ -147,7 +147,7 @@ with Draft off to load a new pack. See
 
 ## Internationalization
 
-User-facing copy in controller flashes and Admin DSL (where Admin evaluates callables at render) uses Rails I18n under `recording_studio.sitemaps.*`. English ships in `config/locales/en.yml`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
+User-facing copy in controller flashes and Admin DSL (where Admin evaluates callables at render) uses Rails I18n under `recording_studio.sitemaps.*`. English ships only in `config/locales/en.yml` — call sites do not pass English `default:`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
 
 `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, and widget `title` / `info` / `link_label` return callables evaluated at render — hosts reading them directly must evaluate them. See `UPGRADING.md`.
 

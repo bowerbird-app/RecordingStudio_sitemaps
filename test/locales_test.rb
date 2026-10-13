@@ -34,7 +34,7 @@ class LocalesTest < Minitest::Test
     end
   end
 
-  def test_copy_t_resolves_english_without_default
+  def test_copy_t_resolves_english_from_en_yml
     path = File.expand_path("../config/locales/en.yml", __dir__)
     backend_before = I18n.backend
     I18n.backend = I18n::Backend::Simple.new
@@ -47,6 +47,25 @@ class LocalesTest < Minitest::Test
     I18n.backend = backend_before
   end
 
+  def test_missing_copy_key_behaves_like_plain_i18n_miss
+    path = File.expand_path("../config/locales/en.yml", __dir__)
+    backend_before = I18n.backend
+    exception_before = I18n.exception_handler
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.backend.load_translations(path)
+    I18n.exception_handler = I18n::ExceptionHandler.new
+
+    missing_key = "flashes.does_not_exist_#{SecureRandom.hex(4)}"
+    direct = I18n.t("recording_studio.sitemaps.#{missing_key}")
+    via_copy = RecordingStudioSitemaps::Copy.t(missing_key)
+
+    assert_equal direct, via_copy
+    assert_match(/translation missing/i, via_copy)
+  ensure
+    I18n.exception_handler = exception_before if exception_before
+    I18n.backend = backend_before
+  end
+
   def test_lib_files_do_not_set_i18n_load_path
     lib_root = File.expand_path("../lib", __dir__)
     Dir.glob(File.join(lib_root, "**", "*.rb")).each do |path|
@@ -54,6 +73,23 @@ class LocalesTest < Minitest::Test
 
       refute_includes source, "i18n.load_path", path
       refute_includes source, "I18n.load_path", path
+    end
+  end
+
+  def test_gem_call_sites_do_not_pass_english_default_to_copy_t
+    roots = [
+      File.expand_path("../lib", __dir__),
+      File.expand_path("../app", __dir__)
+    ]
+    roots.each do |root|
+      Dir.glob(File.join(root, "**", "*.rb")).each do |path|
+        source = File.read(path)
+        next unless source.include?("Copy.t") || source.match?(/\bt\(/)
+
+        source.scan(/Copy\.t\([^)]*\)/m).each do |call|
+          refute_match(/\bdefault\s*:/, call, "#{path} passes default: to Copy.t: #{call}")
+        end
+      end
     end
   end
 

@@ -22,4 +22,4 @@ Hosts that read those values directly must evaluate them (call the callable, or 
 
 ### Translating
 
-Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating. Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.
+Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating. English ships only in the gem’s `config/locales/en.yml`; call sites do not pass English `default:`. A missing key behaves like a normal I18n miss. Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.

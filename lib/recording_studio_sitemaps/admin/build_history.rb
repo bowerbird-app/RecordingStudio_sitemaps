@@ -4,7 +4,7 @@ module RecordingStudioSitemaps
   module Admin
     class BuildHistory < RecordingStudioAdmin::Screen
       key SCREEN_BUILD_HISTORY
-      title ->(_context) { Copy.t("admin.screen.title", default: "Build history") }
+      title ->(_context) { Copy.t("admin.screen.title") }
       # Plain string: Admin indexes screen.subtitle without evaluate in
       # available_admin_items_resolver#link_item_search_text (needs Marco to fix).
       subtitle "Every rebuild, and whether the list grew or shrank."
@@ -21,7 +21,7 @@ module RecordingStudioSitemaps
       end
 
       chart do
-        title ->(_context) { Copy.t("admin.screen.chart_title", default: "Pages in the sitemap") }
+        title ->(_context) { Copy.t("admin.screen.chart_title") }
         type :area
         options do |context|
           RecordingStudioSitemaps::Admin.index_size_chart_options(
