@@ -7,7 +7,7 @@ Raise Accessible to GitHub tag `v0.15.0` (`~> 0.13` still matches). Raise Publis
 - Recording Studio `~> 4.2` (GitHub tag `v4.5.0`) — translatable `Labels.empty_label`; English output unchanged; no host migration
 - Accessible `~> 0.13` (GitHub tag `v0.15.0`) — i18n wave 2 for non-view copy; English output unchanged. `0.14.0` adds optional action-audience tables (`access_constraints`, `access_rules`); `0.15.0` is translation-only
 - Publishable `~> 0.6` (GitHub tag `v0.8.0`) — i18n wave 2 for non-view copy plus `0.7` visibility notifications; English output unchanged; no host migration
-- Admin dummy GitHub tag `v2.2.0` (i18n wave 2 for search group / date-preset labels; requires FlatPack `v0.1.207`; English output unchanged; no host migration)
+- Admin dummy GitHub tag `v2.3.0` (Trashable query helpers `~> 0.10`; pin Metrics `v0.2.0` and Trashable `v0.10.0` with `require: false` next to Admin; `~> 2.0` still matches; no host migration)
 - Dummy Root Switchable tag `v0.8.0` (translatable `page_copy`; English output unchanged; requires Accessible `~> 0.13` and Metrics `~> 0.2`; no new host migration)
 
 ### Host app
@@ -15,7 +15,7 @@ Raise Accessible to GitHub tag `v0.15.0` (`~> 0.13` still matches). Raise Publis
 1. Pin Recording Studio at GitHub tag `v4.5.0` (`~> 4.2` still matches). No core migration between `4.4.x` and `4.5.0`. English hosts need no locale change. Prefer `Labels.empty_label` over identity checks against `Labels::EMPTY_LABEL` when the locale may not be English.
 2. Pin Accessible at GitHub tag `v0.15.0` (`~> 0.13` still matches). From `0.13.x`, run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` so `0.14.0` action-audience tables land (`recording_studio_access_constraints`, `recording_studio_access_rules`). `0.15.0` itself needs no migration. English hosts need no locale change.
 3. Pin Publishable at GitHub tag `v0.8.0` (`~> 0.6` still matches). English hosts need no locale change. Optional: subscribe to `RecordingStudioPublishable.subscribe` for published/unpublished/revised notifications added in `0.7.0`. Hosts missing `social_image_attachment_recording_id` on `recording_studio_publishable_publishables` should run `bin/rails generate recording_studio_publishable:migrations` then `bin/rails db:migrate` (revising a publishable requires that column).
-4. Pin Admin at GitHub tag `v2.2.0` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches). English hosts need no locale change.
+4. Pin Admin at GitHub tag `v2.3.0` and FlatPack at `v0.1.207` if you use Admin (`~> 2.0` still matches). Also pin Metrics `v0.2.0` and Trashable `v0.10.0` with `require: false` next to Admin (Bundler needs Metrics for Trashable’s gemspec). English hosts need no locale change.
 5. If the host uses Root Switchable, pin it at GitHub tag `v0.8.0` and Metrics at `v0.2.0` (Root Switchable `0.7+` depends on Metrics `~> 0.2`, which is not on RubyGems). No Root Switchable migration between `0.6.x` and `0.8.0`. English hosts that leave `page_copy` unset or use plain Strings need no locale change. Do not set required `page_copy` keys to `nil`.
 6. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
 7. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
