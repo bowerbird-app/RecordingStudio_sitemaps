@@ -147,11 +147,9 @@ with Draft off to load a new pack. See
 
 ## Internationalization
 
-User-facing copy in controller flashes and Admin DSL (where Admin evaluates callables at render) uses Rails I18n under `recording_studio.sitemaps.*`. English ships only in `config/locales/en.yml` — call sites do not pass English `default:`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
+Rebuild flashes use Rails I18n under `recording_studio.sitemaps.flashes.*`. English ships only in `config/locales/en.yml` — call sites do not pass English `default:`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
 
-`Section.title`, section `link.text`, `BuildHistory.title`, chart titles, and widget `title` / `info` / `link_label` return callables evaluated at render — hosts reading them directly must evaluate them. See `UPGRADING.md`.
-
-Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), persisted generation-log errors, the Build history screen subtitle, table title, and column headers stay English literals. Generator CLI text and developer-facing messages stay English.
+Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main’s English string literals. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log errors stay English literals. Generator CLI text and developer-facing messages stay English. See `UPGRADING.md`.
 
 ## Out of scope
 

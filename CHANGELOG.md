@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2026-10-13
 
-i18n WAVE 2: translate the gem's remaining user-facing English outside views (controller flashes, Admin DSL copy where Admin evaluates callables). Translation-only — English output stays byte-identical to main when hosts leave defaults alone. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), persisted generation-log error messages, screen subtitle, table title, and column headers stay main's English literals.
+i18n WAVE 2: translate non-view rebuild flashes through Rails I18n. Translation-only — English output stays byte-identical to main when hosts leave defaults alone. Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main's English string literals. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log error messages stay main's English literals.
 
 ### Added
-- English Rails I18n keys under `recording_studio.sitemaps` for rebuild flashes, Admin section/screen/widget copy, and chart series name at the Admin series call site.
+- English Rails I18n keys under `recording_studio.sitemaps.flashes` for rebuild success and failure alerts.
 - `Copy.t` helper that looks up `recording_studio.sitemaps.*` keys. English comes only from `config/locales/en.yml` (no English `default:` on call sites).
-- Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the Admin Sitemaps section title.
+- Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the rebuild success flash.
 - Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_host.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert.
 - Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`, and gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`.
 
@@ -25,17 +25,15 @@ i18n WAVE 2: translate the gem's remaining user-facing English outside views (co
 - Dummy Admin GitHub tag is `v2.0.4`; dummy Root Switchable is `v0.5.3`
 - Dummy Accessible schema uses string roles, `depends_on_recording_id`, and the access invitations table. Grants go through `bootstrap_owner_access!` / `grant_access`
 - Rebuild controller flashes resolve through `Copy.t` (keys in `en.yml`).
-- Admin DSL `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, and widget `title` / `info` / `link_label` now return callables evaluated at render. Hosts that read those readers directly must evaluate them (for example via Admin `evaluate` or by calling the callable). Screen `subtitle` stays the main plain string so Admin search indexing works. Table title and column headers stay plain English. Build result cell values stay `Ok` / `Failed` (or the persisted error).
-- Chart series name is translated at the widget/screen `series` call site. `Admin.index_size_series` still returns main's English `"Pages"`.
 
 ### Upgrade notes
 - Accessible requirement is `~> 0.11`. Example GitHub tag is `v0.11.1`. Hosts on Accessible `0.9.x` or older need Accessible's 0.8–0.11 migrations (depends-on recording, invitations, role integer → string) and must grant via Accessible services, not by writing `RecordingStudio::Access` rows.
 - Publishable requirement is `~> 0.4`. Example GitHub tag is `v0.4.2`.
 - Admin example GitHub tag is `v2.0.4` (`~> 2.0` is unchanged). Dummy Root Switchable example tag is `v0.5.3`.
 - Install Sitemaps `0.3.0`. No migration.
-- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating. English is only in `config/locales/en.yml`; call sites do not pass English `default:`.
+- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` keys into host locale files when translating. English is only in `config/locales/en.yml`; call sites do not pass English `default:`.
 - Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.
-- If a host reads `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, or widget `title` / `info` / `link_label` directly, evaluate the callable at use time. Admin already evaluates these at render.
+- Admin DSL values stay main's English literals (not callables, no admin locale keys).
 - Public helpers `Admin.last_build_line`, `coverage_info`, `findable_items`, `missing_items`, and `index_size_series` still return main's English literals. Exclusion reason strings stay English.
 
 ## [0.2.3] - 2026-09-16

@@ -6,7 +6,7 @@ require "devise/test/integration_helpers"
 class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
-  FRENCH_SECTION_TITLE = "Plans de site FR"
+  FRENCH_REBUILT = "Plan reconstruit FR"
 
   setup do
     @user = User.find_or_create_by!(email: "sitemaps-i18n-render@example.com") do |record|
@@ -18,7 +18,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     switch_to_admin_root!(@admin_recording)
   end
 
-  test "admin sitemaps section renders gem english from locale keys" do
+  test "admin sitemaps section renders main english literals" do
     get "/admin/sections/sitemaps"
 
     assert_response :success
@@ -43,22 +43,20 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Sitemap rebuilt."
   end
 
-  test "stored french translations render on the real admin sitemaps section" do
+  test "stored french flash translations render on the real admin section after rebuild" do
     previous_locales = I18n.available_locales
     previous_backend = I18n.backend
     I18n.available_locales = previous_locales | [:fr]
     I18n.backend = I18n::Backend::Simple.new
     I18n.reload!
-    I18n.t("recording_studio.sitemaps.admin.section.title")
+    I18n.t("recording_studio.sitemaps.flashes.rebuilt")
     I18n.backend.store_translations(
       :fr,
       {
         recording_studio: {
           sitemaps: {
-            admin: {
-              section: {
-                title: FRENCH_SECTION_TITLE
-              }
+            flashes: {
+              rebuilt: FRENCH_REBUILT
             }
           }
         }
@@ -66,12 +64,16 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     )
 
     I18n.with_locale(:fr) do
-      assert_equal FRENCH_SECTION_TITLE, I18n.t("recording_studio.sitemaps.admin.section.title")
+      assert_equal FRENCH_REBUILT, I18n.t("recording_studio.sitemaps.flashes.rebuilt")
 
-      get "/admin/sections/sitemaps"
+      get "/recording_studio_sitemaps/rebuild"
+
+      assert_response :redirect
+      follow_redirect!
 
       assert_response :success
-      assert_includes response.body, FRENCH_SECTION_TITLE
+      assert_includes response.body, FRENCH_REBUILT
+      refute_includes response.body, "Sitemap rebuilt."
     end
   ensure
     I18n.backend = previous_backend if previous_backend
@@ -169,24 +171,15 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     I18n.available_locales = previous_locales | [:fr]
     I18n.backend = I18n::Backend::Simple.new
     I18n.reload!
-    I18n.t("recording_studio.sitemaps.admin.section.title")
+    I18n.t("recording_studio.sitemaps.flashes.rebuilt")
     I18n.backend.store_translations(
       :fr,
       {
         recording_studio: {
           sitemaps: {
             flashes: {
-              rebuilt: "Plan reconstruit FR",
+              rebuilt: FRENCH_REBUILT,
               rebuild_failed: "Echec FR"
-            },
-            admin: {
-              section: { title: FRENCH_SECTION_TITLE },
-              widgets: {
-                coverage: { title: "Couverture FR" },
-                findable: { title: "Dans le plan FR", info: "Info FR" },
-                missing: { title: "Manquant FR", info: "Info manquant FR" },
-                index_size: { title: "Taille FR", info: "Info taille FR", link_label: "Historique FR" }
-              }
             }
           }
         }
@@ -197,8 +190,8 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
       {
         recording_studio: {
           sitemaps: {
-            admin: {
-              section: { title: "HOST Sitemaps" }
+            flashes: {
+              rebuilt: "HOST rebuild succeeded."
             }
           }
         }

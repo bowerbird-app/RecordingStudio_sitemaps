@@ -6,11 +6,12 @@ module RecordingStudioSitemaps
   # Rails I18n lookups for Sitemaps user-facing copy. English ships only in
   # `config/locales/en.yml` under `recording_studio.sitemaps.*`. Call sites do
   # not pass English `default:` — a missing key behaves like a normal I18n
-  # miss (translation missing / raise-on-missing), same as main for unknown keys.
+  # miss (translation missing / raise-on-missing).
   #
-  # Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`,
-  # `missing_items`, `index_size_series`) and Exclusions reasons stay main's
-  # English literals. Controllers and Admin DSL call sites call `Copy.t`.
+  # Admin DSL values (titles, link text, column titles, subtitles, widget
+  # title/info/link_label) stay main's English string literals. Public Admin
+  # helpers and Exclusions reasons stay main's English literals. Controllers
+  # call `Copy.t` for flashes.
   module Copy
     PREFIX = "recording_studio.sitemaps"
 

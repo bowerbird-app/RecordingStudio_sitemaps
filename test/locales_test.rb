@@ -6,22 +6,7 @@ require "yaml"
 class LocalesTest < Minitest::Test
   EXPECTED = {
     "flashes.rebuilt" => "Sitemap rebuilt.",
-    "flashes.rebuild_failed" => "Sitemap rebuild hit a snag. Check the last build.",
-    "admin.section.title" => "Sitemaps",
-    "admin.section.open_sitemap" => "Open sitemap",
-    "admin.section.rebuild" => "Rebuild",
-    "admin.section.build_history" => "Build history",
-    "admin.screen.title" => "Build history",
-    "admin.screen.chart_title" => "Pages in the sitemap",
-    "admin.widgets.coverage.title" => "Coverage",
-    "admin.widgets.findable.title" => "In the sitemap",
-    "admin.widgets.findable.info" => "Pages search engines can pick up from this sitemap.",
-    "admin.widgets.missing.title" => "Missing",
-    "admin.widgets.missing.info" => "Published pages that did not make the sitemap, and why.",
-    "admin.widgets.index_size.title" => "Index size",
-    "admin.widgets.index_size.info" => "How many pages made the sitemap each rebuild.",
-    "admin.widgets.index_size.link_label" => "Build history",
-    "admin.chart.pages_series" => "Pages"
+    "flashes.rebuild_failed" => "Sitemap rebuild hit a snag. Check the last build."
   }.freeze
 
   def test_en_yml_ships_expected_english_under_recording_studio_sitemaps
@@ -32,6 +17,7 @@ class LocalesTest < Minitest::Test
     EXPECTED.each do |key, english|
       assert_equal english, dig(root, key.split(".")), "expected #{key.inspect} => #{english.inspect}"
     end
+    refute root.key?("admin"), "Admin DSL copy must not ship locale keys"
   end
 
   def test_copy_t_resolves_english_from_en_yml
@@ -84,13 +70,37 @@ class LocalesTest < Minitest::Test
     roots.each do |root|
       Dir.glob(File.join(root, "**", "*.rb")).each do |path|
         source = File.read(path)
-        next unless source.include?("Copy.t") || source.match?(/\bt\(/)
+        next unless source.include?("Copy.t")
 
         source.scan(/Copy\.t\([^)]*\)/m).each do |call|
           refute_match(/\bdefault\s*:/, call, "#{path} passes default: to Copy.t: #{call}")
         end
       end
     end
+  end
+
+  def test_admin_dsl_titles_and_link_text_stay_literal_strings
+    section = RecordingStudioSitemaps::Admin::Section
+    screen = RecordingStudioSitemaps::Admin::BuildHistory
+
+    assert_instance_of String, section.title
+    assert_equal "Sitemaps", section.title
+    section.links.each do |link|
+      assert_instance_of String, link.text, link.name
+    end
+    assert_instance_of String, screen.title
+    assert_equal "Build history", screen.title
+    assert_instance_of String, screen.subtitle
+    assert_instance_of String, screen.chart_value.title
+    assert_instance_of String, screen.table_value.title
+    screen.table_value.columns.each do |column|
+      assert_instance_of String, column.title, column.key
+    end
+
+    widget = RecordingStudioSitemaps::Admin.index_size_widget
+    assert_instance_of String, widget.title
+    assert_instance_of String, widget.info
+    assert_instance_of String, widget.link_label
   end
 
   private

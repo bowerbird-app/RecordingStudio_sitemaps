@@ -8,27 +8,3 @@ en:
       flashes:
         rebuilt: "Sitemap rebuilt."
         rebuild_failed: "Sitemap rebuild hit a snag. Check the last build."
-      admin:
-        section:
-          title: "Sitemaps"
-          open_sitemap: "Open sitemap"
-          rebuild: "Rebuild"
-          build_history: "Build history"
-        screen:
-          title: "Build history"
-          chart_title: "Pages in the sitemap"
-        widgets:
-          coverage:
-            title: "Coverage"
-          findable:
-            title: "In the sitemap"
-            info: "Pages search engines can pick up from this sitemap."
-          missing:
-            title: "Missing"
-            info: "Published pages that did not make the sitemap, and why."
-          index_size:
-            title: "Index size"
-            info: "How many pages made the sitemap each rebuild."
-            link_label: "Build history"
-        chart:
-          pages_series: "Pages"

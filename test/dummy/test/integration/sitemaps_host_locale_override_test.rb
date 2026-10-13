@@ -6,9 +6,9 @@ require "devise/test/integration_helpers"
 class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
-  HOST_SECTION_TITLE = "HOST Sitemaps"
+  HOST_REBUILT = "HOST rebuild succeeded."
   HOST_REBUILD_FAILED = "HOST rebuild failed — check the last build."
-  SECTION_TITLE_KEY = "recording_studio.sitemaps.admin.section.title"
+  REBUILT_KEY = "recording_studio.sitemaps.flashes.rebuilt"
   REBUILD_FAILED_KEY = "recording_studio.sitemaps.flashes.rebuild_failed"
   BOOT_HOST_LOCALE = Rails.root.join("config/locales/recording_studio_sitemaps_host.en.yml")
   FRESH_HOST_LOCALE = Rails.root.join("test/locales/sitemaps_host_override.en.yml")
@@ -62,34 +62,41 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   # Test-only fixture: swap to a fresh Simple backend loaded from the current
   # load_path, then layer the fixture via load_translations. Restore by putting
   # the previous backend object back — never write @translations / @initialized.
-  test "host locale file overrides gem sitemaps section title on the real admin section" do
+  test "host locale file overrides gem rebuild flash on the real admin section" do
     assert File.exist?(FRESH_HOST_LOCALE), "expected test-only host override fixture at #{FRESH_HOST_LOCALE}"
-    assert_includes File.read(FRESH_HOST_LOCALE), HOST_SECTION_TITLE
+    assert_includes File.read(FRESH_HOST_LOCALE), HOST_REBUILT
 
     previous_backend = I18n.backend
     I18n.backend = I18n::Backend::Simple.new
     I18n.reload!
-    I18n.t(SECTION_TITLE_KEY)
+    I18n.t(REBUILT_KEY)
     I18n.backend.load_translations(FRESH_HOST_LOCALE.to_s)
 
     assert_equal @load_path_before, I18n.load_path
-    assert_equal HOST_SECTION_TITLE, I18n.t(SECTION_TITLE_KEY)
+    assert_equal HOST_REBUILT, I18n.t(REBUILT_KEY)
     assert_equal HOST_REBUILD_FAILED, I18n.t(REBUILD_FAILED_KEY)
 
-    get "/admin/sections/sitemaps"
+    get "/recording_studio_sitemaps/rebuild"
+
+    assert_response :redirect
+    follow_redirect!
 
     assert_response :success
-    assert_includes response.body, HOST_SECTION_TITLE
+    assert_includes response.body, HOST_REBUILT
+    refute_includes response.body, "Sitemap rebuilt."
   ensure
     I18n.backend = previous_backend if previous_backend
   end
 
-  test "default english section title is unchanged outside the host override" do
-    get "/admin/sections/sitemaps"
+  test "default english rebuild flash is unchanged outside the host override" do
+    get "/recording_studio_sitemaps/rebuild"
+
+    assert_response :redirect
+    follow_redirect!
 
     assert_response :success
-    assert_includes response.body, "Sitemaps"
-    refute_includes response.body, HOST_SECTION_TITLE
+    assert_includes response.body, "Sitemap rebuilt."
+    refute_includes response.body, HOST_REBUILT
   end
 
   private

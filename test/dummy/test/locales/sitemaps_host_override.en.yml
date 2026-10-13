@@ -2,6 +2,5 @@
 en:
   recording_studio:
     sitemaps:
-      admin:
-        section:
-          title: "HOST Sitemaps"
+      flashes:
+        rebuilt: "HOST rebuild succeeded."
