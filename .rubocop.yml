@@ -21,10 +21,6 @@ Metrics/ClassLength:
   Exclude:
     - 'test/**/*'
 
-Metrics/ModuleLength:
-  Exclude:
-    - 'lib/recording_studio_sitemaps/admin/queries.rb'
-
 Metrics/MethodLength:
   Exclude:
     - 'test/**/*'

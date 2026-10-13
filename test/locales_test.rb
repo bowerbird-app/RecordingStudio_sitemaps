@@ -4,7 +4,6 @@ require "test_helper"
 require "yaml"
 
 class LocalesTest < Minitest::Test
-  # rubocop:disable Style/FormatStringToken -- I18n tokens use %{stamp}.
   EXPECTED = {
     "flashes.rebuilt" => "Sitemap rebuilt.",
     "flashes.rebuild_failed" => "Sitemap rebuild hit a snag. Check the last build.",
@@ -22,22 +21,8 @@ class LocalesTest < Minitest::Test
     "admin.widgets.index_size.title" => "Index size",
     "admin.widgets.index_size.info" => "How many pages made the sitemap each rebuild.",
     "admin.widgets.index_size.link_label" => "Build history",
-    "admin.last_build.none" => "No sitemap written yet",
-    "admin.last_build.success" => "Last built %{stamp}",
-    "admin.last_build.failed" => "Last build failed %{stamp}",
-    "admin.coverage.no_published_pages" => "No published pages yet.",
-    "admin.coverage.url_cap_warning" =>
-      "This list is getting close to the 50,000 URL cap. A split is not available yet.",
-    "admin.findable.empty" => "Nothing findable yet.",
-    "admin.missing.empty" => "Nothing missing. Nice.",
-    "admin.missing.none_in_sitemap" => "None in the sitemap",
-    "admin.exclusions.in_the_trash" => "In the trash",
-    "admin.exclusions.hidden_from_search" => "Hidden from search",
-    "admin.exclusions.no_public_url" => "No public URL",
-    "admin.exclusions.left_out" => "Left out of the sitemap",
     "admin.chart.pages_series" => "Pages"
   }.freeze
-  # rubocop:enable Style/FormatStringToken
 
   def test_en_yml_ships_expected_english_under_recording_studio_sitemaps
     path = File.expand_path("../config/locales/en.yml", __dir__)
@@ -56,16 +41,8 @@ class LocalesTest < Minitest::Test
     I18n.backend.load_translations(path)
 
     EXPECTED.each do |key, english|
-      next if english.include?("%{")
-
       assert_equal english, RecordingStudioSitemaps::Copy.t(key)
     end
-
-    assert_equal "Last built 01 Jan 2026, 12:00",
-                 RecordingStudioSitemaps::Copy.t(
-                   "admin.last_build.success",
-                   stamp: "01 Jan 2026, 12:00"
-                 )
   ensure
     I18n.backend = backend_before
   end

@@ -51,20 +51,24 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
       get "/recording_studio_sitemaps/rebuild"
     end
 
-    follow_redirect! if response.redirect?
+    assert_response :redirect
+    follow_redirect!
 
     assert_response :success
     assert_includes response.body, HOST_REBUILD_FAILED
     refute_includes response.body, "Sitemap rebuild hit a snag. Check the last build."
   end
 
-  # Test-only fixture applied via backend.load_translations(file) on top of the
-  # already-initialized backend — never mutates I18n.load_path (Marshal).
+  # Test-only fixture: swap to a fresh Simple backend loaded from the current
+  # load_path, then layer the fixture via load_translations. Restore by putting
+  # the previous backend object back — never write @translations / @initialized.
   test "host locale file overrides gem sitemaps section title on the real admin section" do
     assert File.exist?(FRESH_HOST_LOCALE), "expected test-only host override fixture at #{FRESH_HOST_LOCALE}"
     assert_includes File.read(FRESH_HOST_LOCALE), HOST_SECTION_TITLE
 
-    snapshot = i18n_backend_translations_snapshot
+    previous_backend = I18n.backend
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.reload!
     I18n.t(SECTION_TITLE_KEY)
     I18n.backend.load_translations(FRESH_HOST_LOCALE.to_s)
 
@@ -77,7 +81,7 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, HOST_SECTION_TITLE
   ensure
-    restore_i18n_backend_translations(snapshot) if snapshot
+    I18n.backend = previous_backend if previous_backend
   end
 
   test "default english section title is unchanged outside the host override" do
@@ -122,36 +126,5 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     yield
   ensure
     singleton.define_method(method_name, original)
-  end
-
-  def i18n_backend_translations_snapshot
-    backend = I18n.backend
-    backend.send(:init_translations) unless backend.initialized?
-    translations =
-      if backend.respond_to?(:translations)
-        backend.translations
-      else
-        backend.instance_variable_get(:@translations)
-      end
-    return unless translations
-
-    deep_plain_copy(translations)
-  end
-
-  def restore_i18n_backend_translations(snapshot)
-    backend = I18n.backend
-    backend.instance_variable_set(:@translations, snapshot)
-    backend.instance_variable_set(:@initialized, true) if backend.instance_variable_defined?(:@initialized)
-  end
-
-  def deep_plain_copy(value)
-    case value
-    when Hash
-      value.each_with_object({}) { |(key, child), copy| copy[key] = deep_plain_copy(child) }
-    when Array
-      value.map { |child| deep_plain_copy(child) }
-    else
-      value
-    end
   end
 end

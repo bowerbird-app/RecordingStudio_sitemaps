@@ -30,7 +30,9 @@ module RecordingStudioSitemaps
           )
         end
         series do |context|
-          RecordingStudioSitemaps::Admin.index_size_series(logs: context.query_result.relation)
+          RecordingStudioSitemaps::Admin.index_size_series_for_render(
+            logs: context.query_result.relation
+          )
         end
       end
 

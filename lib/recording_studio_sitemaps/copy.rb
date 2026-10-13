@@ -7,9 +7,9 @@ module RecordingStudioSitemaps
   # `default:` English so a host locale without a fallback never shows
   # "translation missing". Keys live under `recording_studio.sitemaps.*`.
   #
-  # Public lib return values (Exclusions reasons, persisted error messages)
-  # stay main's English literals. Controllers and Admin render helpers call
-  # `Copy.t` at display time.
+  # Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`,
+  # `missing_items`, `index_size_series`) and Exclusions reasons stay main's
+  # English literals. Controllers and Admin DSL call sites call `Copy.t`.
   module Copy
     PREFIX = "recording_studio.sitemaps"
 

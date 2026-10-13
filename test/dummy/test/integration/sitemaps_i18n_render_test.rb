@@ -6,6 +6,8 @@ require "devise/test/integration_helpers"
 class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
+  FRENCH_SECTION_TITLE = "Plans de site FR"
+
   setup do
     @user = User.find_or_create_by!(email: "sitemaps-i18n-render@example.com") do |record|
       record.password = "Password123!"
@@ -33,30 +35,47 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
 
   test "rebuild flash renders gem english notice" do
     get "/recording_studio_sitemaps/rebuild"
-    follow_redirect! if response.redirect?
+
+    assert_response :redirect
+    follow_redirect!
 
     assert_response :success
     assert_includes response.body, "Sitemap rebuilt."
   end
 
-  test "admin copy helpers keep english under fr locale via default" do
-    with_french_locale do
-      assert_equal "No sitemap written yet",
-                   RecordingStudioSitemaps::Copy.t(
-                     "admin.last_build.none",
-                     default: "No sitemap written yet"
-                   )
-      assert_equal "Nothing findable yet.",
-                   RecordingStudioSitemaps::Copy.t(
-                     "admin.findable.empty",
-                     default: "Nothing findable yet."
-                   )
-      assert_equal "In the trash",
-                   RecordingStudioSitemaps::Copy.t(
-                     "admin.exclusions.in_the_trash",
-                     default: "In the trash"
-                   )
+  test "stored french translations render on the real admin sitemaps section" do
+    previous_locales = I18n.available_locales
+    previous_backend = I18n.backend
+    I18n.available_locales = previous_locales | [:fr]
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.reload!
+    I18n.t("recording_studio.sitemaps.admin.section.title")
+    I18n.backend.store_translations(
+      :fr,
+      {
+        recording_studio: {
+          sitemaps: {
+            admin: {
+              section: {
+                title: FRENCH_SECTION_TITLE
+              }
+            }
+          }
+        }
+      }
+    )
+
+    I18n.with_locale(:fr) do
+      assert_equal FRENCH_SECTION_TITLE, I18n.t("recording_studio.sitemaps.admin.section.title")
+
+      get "/admin/sections/sitemaps"
+
+      assert_response :success
+      assert_includes response.body, FRENCH_SECTION_TITLE
     end
+  ensure
+    I18n.backend = previous_backend if previous_backend
+    I18n.available_locales = previous_locales if previous_locales
   end
 
   test "exclusions public api stays english under fr locale" do
@@ -127,6 +146,81 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
         assert_equal "Hidden from search", reasons.first.reason
       end
     end
+  end
+
+  test "public sitemap xml and robots stay byte-identical under en fr and host override" do
+    get "/sitemap.xml"
+    assert_response :success
+    sitemap_en = response.body
+
+    get "/robots.txt"
+    assert_response :success
+    robots_en = response.body
+
+    I18n.with_locale(:en) do
+      get "/sitemap.xml"
+      assert_equal sitemap_en, response.body
+      get "/robots.txt"
+      assert_equal robots_en, response.body
+    end
+
+    previous_locales = I18n.available_locales
+    previous_backend = I18n.backend
+    I18n.available_locales = previous_locales | [:fr]
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.reload!
+    I18n.t("recording_studio.sitemaps.admin.section.title")
+    I18n.backend.store_translations(
+      :fr,
+      {
+        recording_studio: {
+          sitemaps: {
+            flashes: {
+              rebuilt: "Plan reconstruit FR",
+              rebuild_failed: "Echec FR"
+            },
+            admin: {
+              section: { title: FRENCH_SECTION_TITLE },
+              widgets: {
+                coverage: { title: "Couverture FR" },
+                findable: { title: "Dans le plan FR", info: "Info FR" },
+                missing: { title: "Manquant FR", info: "Info manquant FR" },
+                index_size: { title: "Taille FR", info: "Info taille FR", link_label: "Historique FR" }
+              }
+            }
+          }
+        }
+      }
+    )
+    I18n.backend.store_translations(
+      :en,
+      {
+        recording_studio: {
+          sitemaps: {
+            admin: {
+              section: { title: "HOST Sitemaps" }
+            }
+          }
+        }
+      }
+    )
+
+    I18n.with_locale(:fr) do
+      get "/sitemap.xml"
+      assert_equal sitemap_en, response.body
+      get "/robots.txt"
+      assert_equal robots_en, response.body
+    end
+
+    I18n.with_locale(:en) do
+      get "/sitemap.xml"
+      assert_equal sitemap_en, response.body
+      get "/robots.txt"
+      assert_equal robots_en, response.body
+    end
+  ensure
+    I18n.backend = previous_backend if previous_backend
+    I18n.available_locales = previous_locales if previous_locales
   end
 
   private

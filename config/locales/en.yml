@@ -30,22 +30,5 @@ en:
             title: "Index size"
             info: "How many pages made the sitemap each rebuild."
             link_label: "Build history"
-        last_build:
-          none: "No sitemap written yet"
-          success: "Last built %{stamp}"
-          failed: "Last build failed %{stamp}"
-        coverage:
-          no_published_pages: "No published pages yet."
-          url_cap_warning: "This list is getting close to the 50,000 URL cap. A split is not available yet."
-        findable:
-          empty: "Nothing findable yet."
-        missing:
-          empty: "Nothing missing. Nice."
-          none_in_sitemap: "None in the sitemap"
-        exclusions:
-          in_the_trash: "In the trash"
-          hidden_from_search: "Hidden from search"
-          no_public_url: "No public URL"
-          left_out: "Left out of the sitemap"
         chart:
           pages_series: "Pages"

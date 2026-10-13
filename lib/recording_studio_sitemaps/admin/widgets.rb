@@ -7,6 +7,7 @@ module RecordingStudioSitemaps
         @coverage_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_COVERAGE) do
           type :progress
           title ->(_context) { Copy.t("admin.widgets.coverage.title", default: "Coverage") }
+          # coverage_info is a public helper and stays English.
           info { |_| RecordingStudioSitemaps::Admin.coverage_info }
           hide_change
           hide_period
@@ -18,7 +19,7 @@ module RecordingStudioSitemaps
         @findable_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_FINDABLE) do
           type :list
           title ->(_context) { Copy.t("admin.widgets.findable.title", default: "In the sitemap") }
-          info ->(_context) { RecordingStudioSitemaps::Admin.findable_info }
+          info ->(_context) { RecordingStudioSitemaps::Admin.findable_widget_info }
           list_options({ divider: true })
           items { |_| RecordingStudioSitemaps::Admin.findable_items }
         end
@@ -28,7 +29,7 @@ module RecordingStudioSitemaps
         @missing_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_MISSING) do
           type :list
           title ->(_context) { Copy.t("admin.widgets.missing.title", default: "Missing") }
-          info ->(_context) { RecordingStudioSitemaps::Admin.missing_info }
+          info ->(_context) { RecordingStudioSitemaps::Admin.missing_widget_info }
           list_options({ divider: true })
           items { |_| RecordingStudioSitemaps::Admin.missing_items }
         end
@@ -42,21 +43,22 @@ module RecordingStudioSitemaps
         )
       end
 
-      def findable_info
+      # Widget call-site copy (not public data helpers).
+      def findable_widget_info
         Copy.t(
           "admin.widgets.findable.info",
           default: "Pages search engines can pick up from this sitemap."
         )
       end
 
-      def missing_info
+      def missing_widget_info
         Copy.t(
           "admin.widgets.missing.info",
           default: "Published pages that did not make the sitemap, and why."
         )
       end
 
-      def index_size_info
+      def index_size_widget_info
         Copy.t(
           "admin.widgets.index_size.info",
           default: "How many pages made the sitemap each rebuild."
@@ -66,12 +68,18 @@ module RecordingStudioSitemaps
       def index_size_link_label
         Copy.t("admin.widgets.index_size.link_label", default: "Build history")
       end
+
+      def index_size_series_for_render(**)
+        index_size_series(**).map do |entry|
+          entry.merge(name: Copy.t("admin.chart.pages_series", default: "Pages"))
+        end
+      end
     end
 
     INDEX_SIZE_WIDGET = proc do
       type :chart
       title ->(_context) { Copy.t("admin.widgets.index_size.title", default: "Index size") }
-      info { |_| RecordingStudioSitemaps::Admin.index_size_info }
+      info { |_| RecordingStudioSitemaps::Admin.index_size_widget_info }
       hide_metric
       hide_change
       hide_period
@@ -86,7 +94,7 @@ module RecordingStudioSitemaps
       end
       series do |context|
         range = context.widget_time_range(default_preset_key: :last_30_days)
-        RecordingStudioSitemaps::Admin.index_size_series(format_x: false, range: range)
+        RecordingStudioSitemaps::Admin.index_size_series_for_render(format_x: false, range: range)
       end
       link_label { |_| RecordingStudioSitemaps::Admin.index_size_link_label }
       link_to { |context| context.admin_screen_path("build_history") }

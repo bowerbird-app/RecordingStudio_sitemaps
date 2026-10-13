@@ -30,6 +30,16 @@ BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
 bundle exec rake test:all
 ```
 
+## 0.3.0
+
+Install Sitemaps `0.3.0`. No migration. English hosts need no locale change.
+
+Admin DSL readers that hosts might read directly now return callables evaluated at render: `Section.title`, section `link.text`, `BuildHistory.title`, chart titles, and widget `title` / `info` / `link_label`. Evaluate them (or use Admin `evaluate`) instead of treating them as Strings. See `UPGRADING.md`.
+
+Public helpers `Admin.last_build_line`, `coverage_info`, `findable_items`, `missing_items`, and `index_size_series` still return main's English literals. Exclusion reasons stay English.
+
+Copy new `recording_studio.sitemaps.*` keys into host locale files when translating.
+
 ## 0.2.3
 
 Raise Accessible to `~> 0.9` and relax Publishable to `~> 0.2.0`.
