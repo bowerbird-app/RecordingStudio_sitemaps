@@ -19,6 +19,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Publishable requirement is `~> 0.4`. Example GitHub tag is `v0.4.2`.
 - Admin example GitHub tag is `v2.0.4` (`~> 2.0` is unchanged). Dummy Root Switchable example tag is `v0.5.3`.
 
+## [0.3.0] - 2026-10-13
+
+i18n WAVE 2: translate the gem's remaining user-facing English outside views (controller flashes, Admin DSL copy where Admin evaluates callables, Admin render helpers). Translation-only — English output stays byte-identical to main when hosts leave defaults alone. `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), persisted generation-log error messages, screen subtitle, table title, and column headers stay main's English literals.
+
+### Added
+- English Rails I18n keys under `recording_studio.sitemaps` for rebuild flashes, Admin section/screen/widget copy, last-build lines, coverage / findable / missing empty states, and exclusion reason labels at Admin display.
+- `Copy.t` helper that always accepts an English `default:`.
+- Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the Admin Sitemaps section title.
+- Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_host.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert.
+- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`.
+
+### Changed
+- Rebuild controller flashes resolve through `Copy.t` with English `default:`.
+- Admin DSL titles, link labels, widget titles/info/link_label, and screen/chart titles use callables where Admin evaluates them at render. Screen `subtitle` stays the main plain string so Admin search indexing works. Table title and column headers stay plain English. Build result cell values stay `Ok` / `Failed` (or the persisted error).
+- Admin render helpers (`last_build_line`, coverage info, findable/missing empty states, exclusion reason labels at display, chart series name) resolve through `Copy.t`. `Exclusions.items` still returns main's English reason literals.
+
+### Upgrade notes
+- Install Sitemaps `0.3.0`. No migration.
+- English hosts need no change. Copy new `recording_studio.sitemaps.flashes.*` and `recording_studio.sitemaps.admin.*` keys into host locale files when translating.
+- Hosts override by defining the same nested keys in their own `config/locales`. The engine does not add an explicit `i18n.load_path` initializer.
+
 ## [0.2.3] - 2026-09-16
 
 Dependency pins for Accessible and Publishable.
@@ -107,7 +128,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
 [0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1

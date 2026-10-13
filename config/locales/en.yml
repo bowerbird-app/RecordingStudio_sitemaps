@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+# English interface copy for Recording Studio Sitemaps.
+# Hosts override by defining the same keys under recording_studio.sitemaps
+# in their own config/locales. Rails engines load config/locales automatically.
+en:
+  recording_studio:
+    sitemaps:
+      flashes:
+        rebuilt: "Sitemap rebuilt."
+        rebuild_failed: "Sitemap rebuild hit a snag. Check the last build."
+      admin:
+        section:
+          title: "Sitemaps"
+          open_sitemap: "Open sitemap"
+          rebuild: "Rebuild"
+          build_history: "Build history"
+        screen:
+          title: "Build history"
+          chart_title: "Pages in the sitemap"
+        widgets:
+          coverage:
+            title: "Coverage"
+          findable:
+            title: "In the sitemap"
+            info: "Pages search engines can pick up from this sitemap."
+          missing:
+            title: "Missing"
+            info: "Published pages that did not make the sitemap, and why."
+          index_size:
+            title: "Index size"
+            info: "How many pages made the sitemap each rebuild."
+            link_label: "Build history"
+        last_build:
+          none: "No sitemap written yet"
+          success: "Last built %{stamp}"
+          failed: "Last build failed %{stamp}"
+        coverage:
+          no_published_pages: "No published pages yet."
+          url_cap_warning: "This list is getting close to the 50,000 URL cap. A split is not available yet."
+        findable:
+          empty: "Nothing findable yet."
+        missing:
+          empty: "Nothing missing. Nice."
+          none_in_sitemap: "None in the sitemap"
+        exclusions:
+          in_the_trash: "In the trash"
+          hidden_from_search: "Hidden from search"
+          no_public_url: "No public URL"
+          left_out: "Left out of the sitemap"
+        chart:
+          pages_series: "Pages"

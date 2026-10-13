@@ -4,6 +4,14 @@ module RecordingStudioSitemaps
   module Admin
     WHEN_FORMAT = "%d %b %Y, %H:%M"
 
+    EXCLUSION_REASON_KEYS = {
+      "In the trash" => "admin.exclusions.in_the_trash",
+      "Hidden from search" => "admin.exclusions.hidden_from_search",
+      "No public URL" => "admin.exclusions.no_public_url",
+      "Left out of the sitemap" => "admin.exclusions.left_out"
+    }.freeze
+
+    # rubocop:disable Metrics/ClassLength -- Admin render helpers share this singleton.
     class << self
       def index_size_points(format_x: true, logs: nil, range: nil)
         generation_logs(logs: logs, range: range).map.with_index do |log, index|
@@ -12,7 +20,10 @@ module RecordingStudioSitemaps
       end
 
       def index_size_series(format_x: true, logs: nil, range: nil)
-        [{ name: "Pages", data: index_size_points(format_x: format_x, logs: logs, range: range) }]
+        [{
+          name: Copy.t("admin.chart.pages_series", default: "Pages"),
+          data: index_size_points(format_x: format_x, logs: logs, range: range)
+        }]
       end
 
       def format_when(value)
@@ -24,21 +35,24 @@ module RecordingStudioSitemaps
         format_when(log)
       end
 
+      # Admin cell values stay English like column headers (Marco accepted).
       def build_result(log)
         return "Ok" if log.success?
 
         log.try(:error_message).presence || "Failed"
       end
 
+      # rubocop:disable Style/FormatStringToken -- I18n tokens use %{stamp}.
       def last_build_line
         log = GenerationLog.latest
-        return "No sitemap written yet" if log.blank?
+        return Copy.t("admin.last_build.none", default: "No sitemap written yet") if log.blank?
 
         stamp = build_when(log)
-        return "Last built #{stamp}" if log.success?
+        return Copy.t("admin.last_build.success", stamp: stamp, default: "Last built %{stamp}") if log.success?
 
-        "Last build failed #{stamp}"
+        Copy.t("admin.last_build.failed", stamp: stamp, default: "Last build failed %{stamp}")
       end
+      # rubocop:enable Style/FormatStringToken
 
       def build_history_screen?(context)
         params = context.respond_to?(:params) ? context.params.to_h : {}
@@ -59,36 +73,58 @@ module RecordingStudioSitemaps
         }
       end
 
+      # rubocop:disable Metrics/MethodLength -- coverage breakdown plus optional URL-cap warning.
       def coverage_info
         snapshot = Coverage.snapshot
         breakdown = snapshot.types.map { |type| "#{type.label} #{type.included}/#{type.published}" }
-        parts = [breakdown.join("; ").presence || "No published pages yet."]
+        parts = [
+          breakdown.join("; ").presence ||
+            Copy.t("admin.coverage.no_published_pages", default: "No published pages yet.")
+        ]
         if RecordingStudioSitemaps.configuration.approaching_url_limit?(snapshot.included)
-          parts << "This list is getting close to the 50,000 URL cap. A split is not available yet."
+          parts << Copy.t(
+            "admin.coverage.url_cap_warning",
+            default: "This list is getting close to the 50,000 URL cap. A split is not available yet."
+          )
         end
         parts.join(" ")
       end
+      # rubocop:enable Metrics/MethodLength
 
       def findable_items
         entries = UrlSet.entries
-        return [list_item("Nothing findable yet.")] if entries.empty?
+        return [list_item(Copy.t("admin.findable.empty", default: "Nothing findable yet."))] if entries.empty?
 
         entries.map { |entry| findable_item_for(entry.recordable) }
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength -- exclusion rows plus empty/zero-type states.
       def missing_items
-        rows = Exclusions.items.map { |row| list_item(row.title, trailing: row.reason) }
+        rows = Exclusions.items.map do |row|
+          list_item(row.title, trailing: translate_exclusion_reason(row.reason))
+        end
         Coverage.snapshot.types.each do |type|
           next unless type.included.zero?
 
-          rows << list_item(type.label, trailing: "None in the sitemap")
+          rows << list_item(
+            type.label,
+            trailing: Copy.t("admin.missing.none_in_sitemap", default: "None in the sitemap")
+          )
         end
-        return [list_item("Nothing missing. Nice.")] if rows.empty?
+        return [list_item(Copy.t("admin.missing.empty", default: "Nothing missing. Nice."))] if rows.empty?
 
         rows
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       private
+
+      def translate_exclusion_reason(reason)
+        key = EXCLUSION_REASON_KEYS[reason]
+        return reason unless key
+
+        Copy.t(key, default: reason)
+      end
 
       def generation_logs(logs: nil, range: nil)
         relation = logs || GenerationLog.order(:built_at)
@@ -123,5 +159,6 @@ module RecordingStudioSitemaps
         recordable.class.model_name.human
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

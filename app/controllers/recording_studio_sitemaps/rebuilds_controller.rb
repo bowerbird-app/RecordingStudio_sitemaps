@@ -6,14 +6,23 @@ module RecordingStudioSitemaps
 
     def create
       log = RecordingStudioSitemaps.rebuild!(source: :admin)
-      if log&.success?
-        redirect_to sitemaps_admin_path, notice: "Sitemap rebuilt."
-      else
-        redirect_to sitemaps_admin_path, alert: "Sitemap rebuild hit a snag. Check the last build."
-      end
+      return redirect_to(sitemaps_admin_path, notice: rebuilt_notice) if log&.success?
+
+      redirect_to sitemaps_admin_path, alert: rebuild_failed_alert
     end
 
     private
+
+    def rebuilt_notice
+      Copy.t("flashes.rebuilt", default: "Sitemap rebuilt.")
+    end
+
+    def rebuild_failed_alert
+      Copy.t(
+        "flashes.rebuild_failed",
+        default: "Sitemap rebuild hit a snag. Check the last build."
+      )
+    end
 
     def authorize_sitemaps_rebuild!
       actor = current_admin_actor

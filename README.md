@@ -145,6 +145,12 @@ always runs last. `.cursor/start.sh` starts PostgreSQL on each boot. Rebuild
 with Draft off to load a new pack. See
 [Cursor skills in Cloud Agents](docs/cursor-skills.md).
 
+## Internationalization
+
+User-facing copy in controller flashes, Admin DSL (where Admin evaluates callables at render), and Admin render helpers uses Rails I18n under `recording_studio.sitemaps.*`. English ships in `config/locales/en.yml`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
+
+`Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), persisted generation-log errors, the Build history screen subtitle, table title, and column headers stay English literals. Generator CLI text and developer-facing messages stay English.
+
 ## Out of scope
 
 Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, JSON API, Embeddable, and Support or Press kit special cases.

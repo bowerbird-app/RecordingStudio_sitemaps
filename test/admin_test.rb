@@ -225,10 +225,11 @@ class AdminTest < Minitest::Test
 
   def test_build_history_screen_reads_logs
     screen = RecordingStudioSitemaps::Admin::BuildHistory
+    context = FakeContext.new
 
     assert_equal "build_history", screen.key
     assert_equal :site, screen.blast_radius
-    assert_equal "Build history", screen.title
+    assert_equal "Build history", screen.evaluate(screen.title, context)
     assert_equal "Every rebuild, and whether the list grew or shrank.", screen.subtitle
     date_range = screen.filters.find { |filter| filter.type == :date_range }
     assert date_range
@@ -243,7 +244,10 @@ class AdminTest < Minitest::Test
     assert_equal period.start_date.iso8601, picker.range_for("last_30_days")[:start]
     assert_equal period.end_date.iso8601, picker.range_for("last_30_days")[:end]
     assert_equal :area, screen.chart_value.type
-    assert_equal "Pages in the sitemap", screen.chart_value.title
+    chart_title = screen.chart_value.title
+    resolved_chart_title = chart_title.respond_to?(:call) ? chart_title.call(context) : chart_title
+    assert_equal "Pages in the sitemap", resolved_chart_title
+    assert_equal "Each rebuild", screen.table_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)
     assert_equal "Ok", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     assert_equal "Failed", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "error"))
