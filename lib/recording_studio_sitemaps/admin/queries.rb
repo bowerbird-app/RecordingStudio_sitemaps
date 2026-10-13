@@ -24,7 +24,6 @@ module RecordingStudioSitemaps
         format_when(log)
       end
 
-      # Admin cell values stay English like column headers (Marco accepted).
       def build_result(log)
         return "Ok" if log.success?
 
