@@ -15,8 +15,8 @@ i18n WAVE 2: translate non-view rebuild flashes through Rails I18n. Translation-
 - English Rails I18n keys under `recording_studio.sitemaps.flashes` for rebuild success and failure alerts.
 - `Copy.t` helper that looks up `recording_studio.sitemaps.*` keys. English comes only from `config/locales/en.yml` (no English `default:` on call sites).
 - Host English override coverage: test-only fixture `test/dummy/test/locales/sitemaps_host_override.en.yml` plus a real-page assert on the rebuild success flash.
-- Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_host.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert.
-- Locale regression: every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`, and gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`.
+- Always-loaded boot-order guard `test/dummy/config/locales/recording_studio_sitemaps_boot_override.en.yml` for the rarely shown `flashes.rebuild_failed` key, with a real failed-rebuild flash assert (file present, `I18n.t` returns HOST, `I18n.load_path` untouched, main English absent).
+- Locale regression: every translated flash call site must use `Copy.t` (not an English notice/alert literal); every `lib/**/*.rb` file must not mention `i18n.load_path` / `I18n.load_path`; gem `lib/` / `app/` call sites must not pass English `default:` to `Copy.t` / `t(`.
 
 ### Changed
 - Dummy and root GitHub pin for Recording Studio is `v4.2.2`
@@ -126,7 +126,7 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 
 [Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
-[0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
-[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
-[0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.1
+[0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.1.0...v0.2.1
 [0.1.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.1.0

@@ -103,6 +103,22 @@ class LocalesTest < Minitest::Test
     assert_instance_of String, widget.link_label
   end
 
+  # Reverting any translated flash to a string literal must fail this test.
+  def test_each_translated_flash_call_site_uses_copy_t_not_english_literals
+    path = File.expand_path("../app/controllers/recording_studio_sitemaps/rebuilds_controller.rb", __dir__)
+    source = File.read(path)
+
+    EXPECTED.each do |key, english|
+      assert_includes source, %(Copy.t("#{key}")),
+                      "expected Copy.t(#{key.inspect}); reverting #{key} to a literal would drop host overrides"
+      refute_match(
+        /(?:notice|alert):\s*"#{Regexp.escape(english)}"/,
+        source,
+        "controller must not embed #{english.inspect} as a notice/alert literal"
+      )
+    end
+  end
+
   private
 
   def dig(hash, parts)
