@@ -121,8 +121,9 @@ Dummy kit pins:
 | Accessible | `v0.15.0` |
 | Admin | `v2.2.0` |
 | Publishable | `v0.8.0` |
-| Root Switchable | `v0.8.0` |
+| Root Switchable | `v0.9.0` |
 | Metrics | `v0.2.0` |
+| Cache | `v0.5.0` |
 | FlatPack | `v0.1.207` |
 
 ```bash
