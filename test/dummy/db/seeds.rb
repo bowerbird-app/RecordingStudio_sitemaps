@@ -24,11 +24,12 @@ grant_seed_admin_access = lambda do |recording:, actor:|
 end
 
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|
-  RecordingStudio::Recording.find_by(
+  RecordingStudio::Recording.where(
+    RecordingStudio::Recording.recording_studio_trashable_kept_sql
+  ).find_by(
     root_recording: root_recording,
     parent_recording: parent_recording,
-    recordable: recordable,
-    trashed_at: nil
+    recordable: recordable
   ) || RecordingStudio.record!(
     action: "created",
     recordable: recordable,
