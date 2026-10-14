@@ -165,6 +165,29 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     Current.actor = nil
   end
 
+  test "build history status filter keeps only that result" do
+    RecordingStudioSitemaps::GenerationLog.delete_all
+    RecordingStudioSitemaps::GenerationLog.create!(built_at: 2.days.ago, status: "error", url_count: 4321,
+                                                   source: "test", error_message: "boom")
+    RecordingStudioSitemaps::GenerationLog.create!(built_at: 1.day.ago, status: "success", url_count: 8765,
+                                                   source: "test")
+
+    get "/admin/screens/build_history/table", params: { status: "error" }
+    assert_response :success
+    assert_includes response.body, "4321"
+    refute_includes response.body, "8765"
+
+    get "/admin/screens/build_history/table", params: { status: "success" }
+    assert_response :success
+    assert_includes response.body, "8765"
+    refute_includes response.body, "4321"
+
+    get "/admin/screens/build_history/table", params: { status: "nope" }
+    assert_response :success
+    assert_includes response.body, "8765"
+    assert_includes response.body, "4321"
+  end
+
   def write_history_logs!
     RecordingStudioSitemaps::GenerationLog.delete_all
     @old_history_log = RecordingStudioSitemaps::GenerationLog.create!(

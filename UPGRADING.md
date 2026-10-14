@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.5.0
+
+Install Sitemaps `0.5.0`. No migration. Build history gains a `status` filter (`success` / `error`, the same values as `sitemaps.last_build_status`).
+
 ## 0.4.0
 
 Install Sitemaps `0.4.0`. No migration. Add `recording_studio_metrics` at tag `v0.3.1` (`~> 0.3`) and call `RecordingStudioMetrics::Api.register!(api: :operations)` once to expose the `sitemaps.*` build metrics.
