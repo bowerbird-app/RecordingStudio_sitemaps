@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-14
+
+### Added
+- Operations metrics for the most recent sitemap build (`GenerationLog`, newest `built_at`):
+  - `sitemaps.last_build_status` (breakdown): one row keyed `success` or `error`.
+  - `sitemaps.last_build_age` (scalar, unit `seconds`): seconds since that build.
+  - `sitemaps.last_build_url_count` (scalar, unit `count`): pages in that build (0 when it failed).
+  - Each is empty before the first build. Site-wide, exposed to `:operations`, and gated by AdminRoot `:view` (`RecordingStudioSitemaps::Api::Access.can_view?`), the same as the Build history screen. Not cached, so age is current.
+  - Point-in-time values: no `from` / `to` / `interval`, no `group_by` (one build), and no filters (Build history only filters by date).
+
+### Changed
+- New runtime dependency `recording_studio_metrics` `~> 0.3` (GitHub tag `v0.3.1`); the dev Gemfile no longer loads it with `require: false`.
+
+### Upgrade notes
+- Bump to `0.4.0`. No migration. Pin `recording_studio_metrics` to tag `v0.3.1` and call `RecordingStudioMetrics::Api.register!(api: :operations)` once in the host.
+
 ## [0.3.0] - 2026-10-13
 
 i18n WAVE 2: translate non-view rebuild flashes through Rails I18n. Translation-only — English output stays byte-identical to main when hosts leave defaults alone. Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main's English string literals. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log error messages stay main's English literals.

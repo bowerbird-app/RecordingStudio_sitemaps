@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.3.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.4.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -37,7 +37,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.9.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.3.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.10.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
@@ -193,7 +193,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.8.0"
     assert_includes readme, "v0.9.0"
-    assert_includes readme, "v0.2.0"
+    assert_includes readme, "v0.3.1"
     assert_includes readme, "v0.5.0"
     assert_includes readme, "v2.3.0"
     assert_includes readme, "v0.10.0"
