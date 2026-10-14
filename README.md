@@ -29,7 +29,7 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 ```ruby
 # Gemfile
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.6.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.17.0"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"
 gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"
 gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0", require: false
 gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"
@@ -120,7 +120,7 @@ Dummy kit pins:
 | Gem | Pin |
 |-----|-----|
 | Recording Studio | `v4.6.0` |
-| Accessible | `v0.17.0` |
+| Accessible | `v0.18.0` |
 | Admin | `v2.3.0` |
 | Publishable | `v0.8.0` |
 | Root Switchable | `v0.9.0` |
