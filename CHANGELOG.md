@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-14
+
+### Added
+- Build history admin list `status` filter (`success` / `error`), matching `sitemaps.last_build_status`, so the metric can drill into the list. No migration.
+
 ## [0.4.0] - 2026-10-14
 
 ### Added

@@ -11,6 +11,10 @@ module RecordingStudioSitemaps
 
       query { |_context| GenerationLog.order(:built_at) }
       filter :date_range, field: :built_at, default: :last_30_days
+      # Same values as sitemaps.last_build_status, so the metric can link here.
+      filter :status,
+             title: "Result",
+             options: -> { [GenerationLog::SUCCESS, GenerationLog::ERROR] }
 
       summary do
         hide_metric
