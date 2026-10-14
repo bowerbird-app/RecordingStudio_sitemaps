@@ -30,6 +30,10 @@ BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
 bundle exec rake test:all
 ```
 
+## 0.4.0
+
+Install Sitemaps `0.4.0`. No migration. Add `recording_studio_metrics` at tag `v0.3.1` (`~> 0.3`) and call `RecordingStudioMetrics::Api.register!(api: :operations)` once to expose the `sitemaps.*` build metrics.
+
 ## 0.3.0
 
 Install Sitemaps `0.3.0`. No migration. English hosts need no locale change.

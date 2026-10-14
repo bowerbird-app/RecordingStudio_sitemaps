@@ -108,6 +108,7 @@ module RecordingStudioSitemaps
 
       config.to_prepare do
         RecordingStudioSitemaps::Admin.register!
+        RecordingStudioSitemaps::Metrics.register!
       end
     end
 

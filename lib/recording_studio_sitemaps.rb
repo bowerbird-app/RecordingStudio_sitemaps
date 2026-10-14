@@ -17,6 +17,7 @@ require "recording_studio_sitemaps/coverage"
 require "recording_studio_sitemaps/publish_hooks"
 require "recording_studio_sitemaps/services/generate"
 require "recording_studio_sitemaps/admin"
+require "recording_studio_sitemaps/metrics"
 
 module RecordingStudioSitemaps
   class << self

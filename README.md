@@ -31,7 +31,7 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.6.0"
 gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"
 gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"
-gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.2.0", require: false
+gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.3.1"
 gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"
 gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.10.0", require: false
 gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.207"
@@ -43,6 +43,7 @@ gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_accessible", "~> 0.13"
 gem "recording_studio_admin", "~> 2.0"
+gem "recording_studio_metrics", "~> 0.3"
 gem "recording_studio_publishable", "~> 0.6"
 ```
 
@@ -107,6 +108,24 @@ Do not mark any of those widgets `view_variant: :compact`. Compact cards render 
 
 Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
 
+## Operations metrics
+
+Sitemaps registers site-wide metrics about the most recent build. The host exposes them once:
+
+```ruby
+RecordingStudioMetrics::Api.register!(api: :operations)
+```
+
+Staff with AdminRoot `:view` (the Build history check, `RecordingStudioSitemaps::Api::Access.can_view?`) can read:
+
+| Path | Type / unit | Value |
+| --- | --- | --- |
+| `GET /recording_studio_api/apis/operations/v1/metrics/sitemaps/last_build_status` | breakdown | One row keyed `success` or `error` |
+| `GET /recording_studio_api/apis/operations/v1/metrics/sitemaps/last_build_age` | scalar / `seconds` | Seconds since the newest `built_at` |
+| `GET /recording_studio_api/apis/operations/v1/metrics/sitemaps/last_build_url_count` | scalar / `count` | `url_count` of that build (0 when it failed) |
+
+All three read the newest `GenerationLog` (any result) and are empty before the first build. They are point-in-time values, so they take no `from` / `to` / `interval`, no `group_by`, and no filters, and they skip the Metrics cache.
+
 ## Dummy host
 
 `test/dummy/` is a host that proves the gem. It is not the product.
@@ -124,7 +143,7 @@ Dummy kit pins:
 | Admin | `v2.3.0` |
 | Publishable | `v0.8.0` |
 | Root Switchable | `v0.9.0` |
-| Metrics | `v0.2.0` |
+| Metrics | `v0.3.1` |
 | Trashable | `v0.10.0` |
 | Cache | `v0.5.0` |
 | FlatPack | `v0.1.207` |
