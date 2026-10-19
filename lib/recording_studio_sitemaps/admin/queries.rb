@@ -30,6 +30,19 @@ module RecordingStudioSitemaps
         log.try(:error_message).presence || "Failed"
       end
 
+      def last_build_items(context = nil)
+        snapshot = last_build_snapshot(context)
+        if snapshot[:status].blank? && snapshot[:age].nil? && snapshot[:url_count].nil?
+          return [list_item("No sitemap written yet.")]
+        end
+
+        [
+          list_item("Result", trailing: last_build_status_label(snapshot[:status])),
+          list_item("Age", trailing: format_last_build_age(snapshot[:age])),
+          list_item("Pages", trailing: snapshot[:url_count].to_i.to_s)
+        ]
+      end
+
       def last_build_line
         log = GenerationLog.latest
         return "No sitemap written yet" if log.blank?
@@ -89,6 +102,52 @@ module RecordingStudioSitemaps
       end
 
       private
+
+      def last_build_snapshot(context)
+        status = execute_last_build_metric("sitemaps.last_build_status", context)
+        age = execute_last_build_metric("sitemaps.last_build_age", context)
+        count = execute_last_build_metric("sitemaps.last_build_url_count", context)
+
+        {
+          status: last_build_status_key(status),
+          age: age&.value,
+          url_count: count&.value
+        }
+      end
+
+      def execute_last_build_metric(identifier, context)
+        RecordingStudioMetrics::Admin.execute(
+          identifier,
+          admin_context: context || default_last_build_metrics_context,
+          scope: :site,
+          site_authorized: true,
+          cache: false
+        )
+      end
+
+      def default_last_build_metrics_context
+        RecordingStudioMetrics::Context.new(scope: :site, site_authorized: true, timezone: "UTC")
+      end
+
+      def last_build_status_key(result)
+        row = Array(result&.data).first
+        return unless row
+
+        (row[:key] || row["key"]).presence
+      end
+
+      def last_build_status_label(status)
+        return "Ok" if status.to_s == "success"
+        return "Failed" if status.to_s == "error"
+
+        status.to_s.presence || "Failed"
+      end
+
+      def format_last_build_age(seconds)
+        return "—" if seconds.nil?
+
+        ActiveSupport::Duration.build(seconds.to_i).inspect
+      end
 
       def generation_logs(logs: nil, range: nil)
         relation = logs || GenerationLog.order(:built_at)

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-19
+
+### Added
+- Admin Sitemaps section widget `widgets.sitemaps.last_build` lists the newest sitemap write: result (`Ok` / `Failed`), age, and page count. Values come from `RecordingStudioMetrics` (`sitemaps.last_build_status`, `sitemaps.last_build_age`, `sitemaps.last_build_url_count`). The card links to Build history. Empty before the first build.
+
+### Upgrade notes
+- Bump to `0.5.0`. No migration. No new gem. Hosts that already expose `sitemaps.*` operations metrics get the widget on the Sitemaps section.
+
 ## [0.4.0] - 2026-10-14
 
 ### Added

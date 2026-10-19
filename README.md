@@ -95,8 +95,9 @@ end
 
 ## Admin
 
-The Sitemaps section is four equal cards in one row, then Open sitemap / Rebuild. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
+The Sitemaps section is five cards in a four-column row (the fifth wraps), then Open sitemap / Rebuild. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
 
+- **Last build** — newest write from `RecordingStudioMetrics` (`sitemaps.last_build_status`, `sitemaps.last_build_age`, `sitemaps.last_build_url_count`): result, age, and page count. The card is a link to **Build history**
 - **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
 - **Coverage** — findable pages over published Publishable pages, as a progress bar
 - **In the sitemap** — each findable page, with its type
@@ -171,7 +172,7 @@ with Draft off to load a new pack. See
 
 Rebuild flashes use Rails I18n under `recording_studio.sitemaps.flashes.*`. English ships only in `config/locales/en.yml` — call sites do not pass English `default:`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
 
-Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main’s English string literals. Public Admin helpers (`last_build_line`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log errors stay English literals. Generator CLI text and developer-facing messages stay English. See `UPGRADING.md`.
+Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main’s English string literals. Public Admin helpers (`last_build_line`, `last_build_items`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log errors stay English literals. Generator CLI text and developer-facing messages stay English. See `UPGRADING.md`.
 
 ## Out of scope
 

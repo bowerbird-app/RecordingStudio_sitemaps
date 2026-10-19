@@ -60,6 +60,74 @@ class AdminTest < Minitest::Test
     )
   end
 
+  def stub_last_build_metrics(status:, age:, url_count:)
+    RecordingStudioMetrics::Admin.stub(:execute, lambda { |identifier, **|
+      case identifier
+      when "sitemaps.last_build_status"
+        Struct.new(:data).new(status ? [{ key: status, value: 1 }] : [])
+      when "sitemaps.last_build_age"
+        Struct.new(:value).new(age)
+      when "sitemaps.last_build_url_count"
+        Struct.new(:value).new(url_count)
+      else
+        flunk "unexpected metric #{identifier}"
+      end
+    }) do
+      yield
+    end
+  end
+
+  def test_last_build_items_without_metrics
+    stub_last_build_metrics(status: nil, age: nil, url_count: nil) do
+      assert_equal [{ text: "No sitemap written yet." }], RecordingStudioSitemaps::Admin.last_build_items
+    end
+  end
+
+  def test_last_build_items_from_success_and_failure_metrics
+    stub_last_build_metrics(status: "success", age: 30.minutes.to_i, url_count: 42) do
+      assert_equal(
+        [
+          { text: "Result", trailing: "Ok" },
+          { text: "Age", trailing: "30 minutes" },
+          { text: "Pages", trailing: "42" }
+        ],
+        RecordingStudioSitemaps::Admin.last_build_items
+      )
+    end
+
+    stub_last_build_metrics(status: "error", age: 90, url_count: 0) do
+      assert_equal(
+        [
+          { text: "Result", trailing: "Failed" },
+          { text: "Age", trailing: "1 minute and 30 seconds" },
+          { text: "Pages", trailing: "0" }
+        ],
+        RecordingStudioSitemaps::Admin.last_build_items
+      )
+    end
+  end
+
+  def test_last_build_widget_lists_metrics_and_links_to_history
+    widget = nil
+    stub_last_build_metrics(status: "error", age: 60, url_count: 0) do
+      widget = RecordingStudioSitemaps::Admin.last_build_widget.resolve(FakeContext.new)
+    end
+
+    assert_equal :list, widget.type
+    assert_equal "Last build", widget.title
+    assert_equal RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD, widget.key
+    assert_equal "Build history", widget.link_label
+    assert_equal "/admin/screens/build_history", widget.link_to
+    assert_equal(
+      [
+        { text: "Result", trailing: "Failed" },
+        { text: "Age", trailing: "1 minute" },
+        { text: "Pages", trailing: "0" }
+      ],
+      widget.items
+    )
+  end
+
   def test_last_build_line_without_log
     RecordingStudioSitemaps::GenerationLog.stub(:latest, nil) do
       assert_equal "No sitemap written yet", RecordingStudioSitemaps::Admin.last_build_line
@@ -261,6 +329,7 @@ class AdminTest < Minitest::Test
 
     assert_equal(
       [
+        RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD,
         RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE,
         RecordingStudioSitemaps::Admin::WIDGET_COVERAGE,
         RecordingStudioSitemaps::Admin::WIDGET_FINDABLE,
@@ -305,6 +374,7 @@ class AdminTest < Minitest::Test
     RecordingStudioSitemaps::Admin.instance_variable_set(:@findable_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@missing_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@index_size_widget, nil)
+    RecordingStudioSitemaps::Admin.instance_variable_set(:@last_build_widget, nil)
 
     RecordingStudioSitemaps::Admin.register!
 
@@ -314,7 +384,7 @@ class AdminTest < Minitest::Test
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_FINDABLE)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_MISSING)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE)
-    refute RecordingStudioAdmin.widget_for("widgets.sitemaps.last_build")
+    assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD)
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.indexable_count")
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.excluded")
   end

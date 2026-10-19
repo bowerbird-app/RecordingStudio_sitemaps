@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.5.0
+
+Install Sitemaps `0.5.0`. No migration. No new gem. The Sitemaps Admin section adds a Last build list widget that reads `sitemaps.last_build_status`, `sitemaps.last_build_age`, and `sitemaps.last_build_url_count` through `RecordingStudioMetrics`. The card links to Build history. Public helper `Admin.last_build_items` returns English literals.
+
 ## 0.4.0
 
 Install Sitemaps `0.4.0`. No migration. Add `recording_studio_metrics` at tag `v0.3.1` (`~> 0.3`) and call `RecordingStudioMetrics::Api.register!(api: :operations)` once to expose the `sitemaps.*` build metrics.
@@ -23,9 +27,9 @@ They are not callables and have no locale keys.
 
 ### Public helpers stay English
 
-`Admin.last_build_line`, `coverage_info`, `findable_items`, `missing_items`,
-and `index_size_series` still return main’s English literals. Exclusion reason
-strings stay English.
+`Admin.last_build_line`, `Admin.last_build_items`, `coverage_info`, `findable_items`,
+`missing_items`, and `index_size_series` still return main’s English literals.
+Exclusion reason strings stay English.
 
 ### Translating
 
