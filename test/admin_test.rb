@@ -60,7 +60,7 @@ class AdminTest < Minitest::Test
     )
   end
 
-  def stub_last_build_metrics(status:, age:, url_count:)
+  def stub_last_build_metrics(status:, age:, url_count:, &)
     RecordingStudioMetrics::Admin.stub(:execute, lambda { |identifier, **|
       case identifier
       when "sitemaps.last_build_status"
@@ -72,9 +72,7 @@ class AdminTest < Minitest::Test
       else
         flunk "unexpected metric #{identifier}"
       end
-    }) do
-      yield
-    end
+    }, &)
   end
 
   def test_last_build_items_without_metrics
@@ -101,6 +99,17 @@ class AdminTest < Minitest::Test
           { text: "Result", trailing: "Failed" },
           { text: "Age", trailing: "1 minute and 30 seconds" },
           { text: "Pages", trailing: "0" }
+        ],
+        RecordingStudioSitemaps::Admin.last_build_items
+      )
+    end
+
+    stub_last_build_metrics(status: "queued", age: nil, url_count: 3) do
+      assert_equal(
+        [
+          { text: "Result", trailing: "queued" },
+          { text: "Age", trailing: "—" },
+          { text: "Pages", trailing: "3" }
         ],
         RecordingStudioSitemaps::Admin.last_build_items
       )
