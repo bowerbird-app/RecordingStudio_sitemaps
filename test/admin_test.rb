@@ -60,81 +60,42 @@ class AdminTest < Minitest::Test
     )
   end
 
-  def stub_last_build_metrics(status:, age:, url_count:, &)
+  def stub_last_build_age(age, &)
     RecordingStudioMetrics::Admin.stub(:execute, lambda { |identifier, **|
-      case identifier
-      when "sitemaps.last_build_status"
-        Struct.new(:data).new(status ? [{ key: status, value: 1 }] : [])
-      when "sitemaps.last_build_age"
-        Struct.new(:value).new(age)
-      when "sitemaps.last_build_url_count"
-        Struct.new(:value).new(url_count)
-      else
-        flunk "unexpected metric #{identifier}"
-      end
+      assert_equal "sitemaps.last_build_age", identifier
+      Struct.new(:value).new(age)
     }, &)
   end
 
-  def test_last_build_items_without_metrics
-    stub_last_build_metrics(status: nil, age: nil, url_count: nil) do
-      assert_equal [{ text: "No sitemap written yet." }], RecordingStudioSitemaps::Admin.last_build_items
+  def test_last_build_value_without_metrics
+    stub_last_build_age(nil) do
+      assert_equal "No sitemap written yet", RecordingStudioSitemaps::Admin.last_build_value
     end
   end
 
-  def test_last_build_items_from_success_and_failure_metrics
-    stub_last_build_metrics(status: "success", age: 30.minutes.to_i, url_count: 42) do
-      assert_equal(
-        [
-          { text: "Result", trailing: "Ok" },
-          { text: "Age", trailing: "30 minutes" },
-          { text: "Pages", trailing: "42" }
-        ],
-        RecordingStudioSitemaps::Admin.last_build_items
-      )
+  def test_last_build_value_is_time_ago_in_words
+    stub_last_build_age(3.hours.to_i) do
+      assert_equal "3 hours ago", RecordingStudioSitemaps::Admin.last_build_value
     end
 
-    stub_last_build_metrics(status: "error", age: 90, url_count: 0) do
-      assert_equal(
-        [
-          { text: "Result", trailing: "Failed" },
-          { text: "Age", trailing: "1 minute and 30 seconds" },
-          { text: "Pages", trailing: "0" }
-        ],
-        RecordingStudioSitemaps::Admin.last_build_items
-      )
-    end
-
-    stub_last_build_metrics(status: "queued", age: nil, url_count: 3) do
-      assert_equal(
-        [
-          { text: "Result", trailing: "queued" },
-          { text: "Age", trailing: "—" },
-          { text: "Pages", trailing: "3" }
-        ],
-        RecordingStudioSitemaps::Admin.last_build_items
-      )
+    stub_last_build_age(60) do
+      assert_equal "1 minute ago", RecordingStudioSitemaps::Admin.last_build_value
     end
   end
 
-  def test_last_build_widget_lists_metrics_and_links_to_history
+  def test_last_build_widget_shows_time_ago_and_links_to_history
     widget = nil
-    stub_last_build_metrics(status: "error", age: 60, url_count: 0) do
+    stub_last_build_age(3.hours.to_i) do
       widget = RecordingStudioSitemaps::Admin.last_build_widget.resolve(FakeContext.new)
     end
 
-    assert_equal :list, widget.type
+    assert_equal :number, widget.type
     assert_equal "Last build", widget.title
     assert_equal RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD, widget.key
     assert_equal "Build history", widget.link_label
     assert_equal "/admin/screens/build_history", widget.link_to
-    assert_equal(
-      [
-        { text: "Result", trailing: "Failed" },
-        { text: "Age", trailing: "1 minute" },
-        { text: "Pages", trailing: "0" }
-      ],
-      widget.items
-    )
+    assert_equal "3 hours ago", widget.value
+    assert_nil widget.items
   end
 
   def test_last_build_line_without_log

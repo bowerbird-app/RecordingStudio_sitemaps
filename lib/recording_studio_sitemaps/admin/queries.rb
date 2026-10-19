@@ -30,8 +30,8 @@ module RecordingStudioSitemaps
         log.try(:error_message).presence || "Failed"
       end
 
-      def last_build_items(context = nil)
-        LastBuild.items(context)
+      def last_build_value(context = nil)
+        LastBuild.value(context)
       end
 
       def last_build_line

@@ -46,10 +46,9 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "Index size"
     assert_includes response.body, "Last build"
-    assert_includes response.body, "Result"
-    assert_includes response.body, "Age"
-    assert_includes response.body, "Pages"
-    assert_includes response.body, "Ok"
+    assert_includes response.body, "ago"
+    refute_includes response.body, "Result"
+    refute_includes response.body, ">Age<"
     assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
     assert_includes response.body, "Sitemaps Admin"
     refute_includes response.body, "+ Access"
@@ -151,8 +150,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, "Last build"
-    assert_includes response.body, "Failed"
-    assert_includes response.body, "Pages"
+    assert_includes response.body, "ago"
+    refute_includes response.body, "Failed"
     assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
     refute_includes response.body, "Disk was full"
   end

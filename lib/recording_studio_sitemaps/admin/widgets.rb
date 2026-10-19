@@ -76,11 +76,12 @@ module RecordingStudioSitemaps
     end
 
     LAST_BUILD_WIDGET = proc do
-      type :list
+      type :number
       title "Last build"
-      info "Newest sitemap write: result, age, and page count."
-      list_options({ divider: true })
-      items { |context| RecordingStudioSitemaps::Admin.last_build_items(context) }
+      info "How long since the newest sitemap write."
+      hide_change
+      hide_period
+      value { |context| RecordingStudioSitemaps::Admin.last_build_value(context) }
       link_label "Build history"
       link_to { |context| context.admin_screen_path("build_history") }
     end

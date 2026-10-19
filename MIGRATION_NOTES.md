@@ -33,7 +33,7 @@ bundle exec rake test:all
 
 ## 0.5.0
 
-Install Sitemaps `0.5.0`. No migration. The Sitemaps Admin section shows Last build from the existing `sitemaps.last_build_*` metrics. No new gem.
+Install Sitemaps `0.5.0`. No migration. The Sitemaps Admin section shows Last build as time ago from `sitemaps.last_build_age`. No new gem.
 
 ## 0.4.0
 
@@ -87,7 +87,7 @@ This slice ships the public sitemap, generation logs, and Admin.
 5. Enable `section :sitemaps` on the admin root and grant Accessible access to that root. Admin requires the current root to be that admin root.
 6. Drop `recording_studio_sitemaps_pages` if a host copied the old engine migration. Sitemap URLs are derived; only generation logs are stored.
 7. Do not put Sign out or a root switcher in `_default_layout_head.html.erb`. That partial loads Flatpack CSS. Core owns back/close. Set Accessible `avatar_resolver` so the Admin slot can show who has access.
-8. Last build reads `RecordingStudioMetrics` (`sitemaps.last_build_status`, `sitemaps.last_build_age`, `sitemaps.last_build_url_count`). Index size and Build history read generation logs. Build history uses Admin `filter :date_range, field: :built_at, default: :last_30_days`. The DateRangeInput trigger shows `Last 30 days`. Result is Ok / Failed (or the error). Chart dates match the When column; page-count ticks stay whole numbers. Do not mark Sitemaps widgets `view_variant: :compact`.
+8. Last build reads `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since stored `GenerationLog.built_at`) and shows time ago in words. Index size and Build history read generation logs. Build history uses Admin `filter :date_range, field: :built_at, default: :last_30_days`. The DateRangeInput trigger shows `Last 30 days`. Result is Ok / Failed (or the error). Chart dates match the When column; page-count ticks stay whole numbers. Do not mark Sitemaps widgets `view_variant: :compact`.
 9. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`.
 10. Admin’s section grid is three columns. The dummy host overrides that view to Flatpack `cols: 4`. Last build, Index size, Coverage, In the sitemap, and Missing share that row. The fifth card wraps.
 
