@@ -31,6 +31,10 @@ BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
 bundle exec rake test:all
 ```
 
+## 0.5.1
+
+Install Sitemaps `0.5.1`. No migration. `recording_studio_metrics` is `>= 0.3, < 0.6`. Example GitHub tag is `v0.5.0`. Hosts on Metrics `0.3.x` stay valid.
+
 ## 0.5.0
 
 Install Sitemaps `0.5.0`. No migration. The Sitemaps Admin section shows Last build as time ago from `sitemaps.last_build_age`. No new gem.

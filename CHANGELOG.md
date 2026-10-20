@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-20
+
+### Changed
+- Runtime dependency `recording_studio_metrics` is `>= 0.3, < 0.6` (was `~> 0.3`). Dummy kit pin is GitHub tag `v0.5.0`.
+
+### Upgrade notes
+- Bump to `0.5.1`. No migration. Hosts on Metrics `0.3.x` stay valid. Hosts moving to Metrics `0.5.x` can use tag `v0.5.0`. Metrics `0.5` `chart_series` points are `{ x:, y: }` hashes; this gem already emits that shape for Index size.
+
 ## [0.5.0] - 2026-10-19
 
 ### Added
