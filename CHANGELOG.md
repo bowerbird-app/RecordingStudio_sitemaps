@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime dependency `recording_studio_metrics` is `>= 0.3, < 0.6` so hosts can use Metrics `0.5.0` on the 0.4 line.
 
 ### Upgrade notes
-- Install Sitemaps `0.4.1`. No migration. Pin `recording_studio_metrics` to a 0.3–0.5 release (example GitHub tag `v0.5.0`). Metrics `0.5.0` `chart_series` points are `{ x:, y: }` hashes. Dummy kit example: Metrics `v0.5.0`, Flatpack `v0.1.272`, Root Switchable `v0.9.6`.
+- Install Sitemaps `0.4.1`. No migration. Pin `recording_studio_metrics` to a 0.3–0.5 release (example GitHub tag `v0.5.0`). Metrics `0.5.0` `chart_series` points are `{ x:, y: }` hashes. Dummy kit example: Metrics `v0.5.0`, Flatpack `v0.1.272`, Root Switchable `v0.9.6`. Hosts on Admin `2.3.x` plus Flatpack `0.1.237+` must replace Card `style: :outlined` (dummy already does; Admin `2.4.0` is the engine fix).
 
 ## [0.4.0] - 2026-10-14
 

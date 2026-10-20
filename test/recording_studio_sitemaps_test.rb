@@ -139,6 +139,18 @@ class RecordingStudioSitemapsTest < Minitest::Test
       File.expand_path("dummy/app/views/recording_studio_admin/shared/_widget.html.erb", __dir__)
     )
     assert_includes widget_view, 'aria: { label: "Open #{widget_link_label}" }'
+    assert_includes widget_view, "border: :strong"
+    refute_includes widget_view, "style: :outlined"
+    screen_show = File.read(
+      File.expand_path("dummy/app/views/recording_studio_admin/screens/show.html.erb", __dir__)
+    )
+    screen_chart = File.read(
+      File.expand_path("dummy/app/views/recording_studio_admin/screens/_chart.html.erb", __dir__)
+    )
+    refute_includes screen_show, "style: :outlined"
+    refute_includes screen_chart, "style: :outlined"
+    assert_includes screen_show, "border: :strong"
+    assert_includes screen_chart, "border: :strong"
     refute_includes section_view, "Sign out"
     refute_includes section_view, "recording_studio_root_switch"
     refute_includes section_view, "+ Access"
