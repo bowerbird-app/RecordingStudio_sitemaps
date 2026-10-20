@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-20
+
+### Changed
+- Runtime dependency `recording_studio_metrics` is `>= 0.3, < 0.6` so hosts can use Metrics `0.5.0` on the 0.4 line.
+
+### Upgrade notes
+- Install Sitemaps `0.4.1`. No migration. Pin `recording_studio_metrics` to a 0.3–0.5 release (example GitHub tag `v0.5.0`). Metrics `0.5.0` `chart_series` points are `{ x:, y: }` hashes. Dummy kit example: Metrics `v0.5.0`, Flatpack `v0.1.272`, Root Switchable `v0.9.6`.
+
 ## [0.4.0] - 2026-10-14
 
 ### Added
@@ -140,7 +148,9 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2

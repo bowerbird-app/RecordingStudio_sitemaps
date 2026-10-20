@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.4.1
+
+Install Sitemaps `0.4.1`. No migration. `recording_studio_metrics` is `>= 0.3, < 0.6`. Hosts can stay on Metrics `0.3.x` or move to `0.5.0` (GitHub tag `v0.5.0`) without taking newer Sitemaps. Metrics `0.5.0` `chart_series` points are `{ x:, y: }` hashes.
+
 ## 0.4.0
 
 Install Sitemaps `0.4.0`. No migration. Add `recording_studio_metrics` at tag `v0.3.1` (`~> 0.3`) and call `RecordingStudioMetrics::Api.register!(api: :operations)` once to expose the `sitemaps.*` build metrics.
