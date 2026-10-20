@@ -6,11 +6,13 @@ module RecordingStudioSitemaps
     WIDGET_FINDABLE = "widgets.sitemaps.findable"
     WIDGET_MISSING = "widgets.sitemaps.missing"
     WIDGET_INDEX_SIZE = "widgets.sitemaps.index_size"
+    WIDGET_LAST_BUILD = "widgets.sitemaps.last_build"
     SCREEN_BUILD_HISTORY = "build_history"
   end
 end
 
 require_relative "admin/queries"
+require_relative "admin/last_build"
 require_relative "admin/chart_options"
 require_relative "admin/widgets"
 require_relative "admin/section"
@@ -30,6 +32,7 @@ module RecordingStudioSitemaps
         RecordingStudioAdmin.register_widget(findable_widget)
         RecordingStudioAdmin.register_widget(missing_widget)
         RecordingStudioAdmin.register_widget(index_size_widget)
+        RecordingStudioAdmin.register_widget(last_build_widget)
       end
 
       def install_date_range_last_30_days!

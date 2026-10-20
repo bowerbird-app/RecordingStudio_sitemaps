@@ -10,7 +10,8 @@ module RecordingStudioSitemaps
   #
   # Admin DSL values (titles, link text, column titles, subtitles, widget
   # title/info/link_label) stay main's English string literals. Public Admin
-  # helpers and Exclusions reasons stay main's English literals. Controllers
+  # helpers (`last_build_line`, `last_build_value`, and the rest) and Exclusions
+  # reasons stay main's English literals. Controllers
   # call `Copy.t` for flashes.
   module Copy
     PREFIX = "recording_studio.sitemaps"

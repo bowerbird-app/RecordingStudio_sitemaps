@@ -45,7 +45,11 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "Index size"
-    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 1
+    assert_includes response.body, "Last build"
+    assert_includes response.body, "ago"
+    refute_includes response.body, "Result"
+    refute_includes response.body, ">Age<"
+    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
     assert_includes response.body, "Sitemaps Admin"
     refute_includes response.body, "+ Access"
     refute_includes response.body, "Sign out"
@@ -131,6 +135,25 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     get "/recording_studio_sitemaps/rebuild"
 
     assert_response :forbidden
+  end
+
+  test "admin last build widget shows a failed newest write" do
+    RecordingStudioSitemaps::GenerationLog.create!(
+      built_at: Time.current,
+      status: RecordingStudioSitemaps::GenerationLog::ERROR,
+      url_count: 0,
+      error_message: "Disk was full",
+      source: "test"
+    )
+
+    get "/admin/sections/sitemaps"
+
+    assert_response :success
+    assert_includes response.body, "Last build"
+    assert_includes response.body, "ago"
+    refute_includes response.body, "Failed"
+    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
+    refute_includes response.body, "Disk was full"
   end
 
   private

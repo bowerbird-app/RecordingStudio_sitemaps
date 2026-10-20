@@ -15,7 +15,7 @@ This Rails app exists to prove Recording Studio Sitemaps in a real host. It is n
 - `html data-theme="rounded"` on both the login layout and the default layout
 - Signed-in `/` as a thin workspace slice (seeded workspace title, then folders and pages)
 - Root Switchable stays on its own page. The Admin PageNav slot is Accessible avatars (`avatar_resolver` plus `recording_studio_accessible_avatars`). Sign out and the workspace switcher are not stuffed into that slot
-- Admin Sitemaps uses a Flatpack four-column widget row so Index size, Coverage, In the sitemap, and Missing stay equal
+- Admin Sitemaps uses a Flatpack four-column widget row. Last build sits with Index size, Coverage, In the sitemap, and Missing. The fifth card wraps.
 
 ## Quick Start
 

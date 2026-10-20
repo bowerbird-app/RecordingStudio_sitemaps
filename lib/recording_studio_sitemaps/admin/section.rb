@@ -28,6 +28,7 @@ module RecordingStudioSitemaps
            style: :ghost,
            visible_if: ->(context) { RecordingStudioSitemaps::Admin.build_history_screen?(context) }
 
+      widget WIDGET_LAST_BUILD
       widget WIDGET_INDEX_SIZE
       widget WIDGET_COVERAGE
       widget WIDGET_FINDABLE

@@ -30,6 +30,10 @@ module RecordingStudioSitemaps
         log.try(:error_message).presence || "Failed"
       end
 
+      def last_build_value(context = nil)
+        LastBuild.value(context)
+      end
+
       def last_build_line
         log = GenerationLog.latest
         return "No sitemap written yet" if log.blank?

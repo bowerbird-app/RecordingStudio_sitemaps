@@ -41,6 +41,14 @@ module RecordingStudioSitemaps
           &INDEX_SIZE_WIDGET
         )
       end
+
+      def last_build_widget
+        @last_build_widget ||= RecordingStudioAdmin::Widget.new(
+          WIDGET_LAST_BUILD,
+          blast_radius: :site,
+          &LAST_BUILD_WIDGET
+        )
+      end
     end
 
     INDEX_SIZE_WIDGET = proc do
@@ -63,6 +71,17 @@ module RecordingStudioSitemaps
         range = context.widget_time_range(default_preset_key: :last_30_days)
         RecordingStudioSitemaps::Admin.index_size_series(format_x: false, range: range)
       end
+      link_label "Build history"
+      link_to { |context| context.admin_screen_path("build_history") }
+    end
+
+    LAST_BUILD_WIDGET = proc do
+      type :number
+      title "Last build"
+      info "How long since the newest sitemap write."
+      hide_change
+      hide_period
+      value { |context| RecordingStudioSitemaps::Admin.last_build_value(context) }
       link_label "Build history"
       link_to { |context| context.admin_screen_path("build_history") }
     end

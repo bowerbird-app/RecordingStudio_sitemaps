@@ -29,6 +29,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "In the sitemap"
     assert_includes response.body, "Missing"
     assert_includes response.body, "Index size"
+    assert_includes response.body, "Last build"
     assert_includes response.body, "Hidden from search"
     assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
   end

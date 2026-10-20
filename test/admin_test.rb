@@ -60,6 +60,44 @@ class AdminTest < Minitest::Test
     )
   end
 
+  def stub_last_build_age(age, &)
+    RecordingStudioMetrics::Admin.stub(:execute, lambda { |identifier, **|
+      assert_equal "sitemaps.last_build_age", identifier
+      Struct.new(:value).new(age)
+    }, &)
+  end
+
+  def test_last_build_value_without_metrics
+    stub_last_build_age(nil) do
+      assert_equal "No sitemap written yet", RecordingStudioSitemaps::Admin.last_build_value
+    end
+  end
+
+  def test_last_build_value_is_time_ago_in_words
+    stub_last_build_age(3.hours.to_i) do
+      assert_equal "3 hours ago", RecordingStudioSitemaps::Admin.last_build_value
+    end
+
+    stub_last_build_age(60) do
+      assert_equal "1 minute ago", RecordingStudioSitemaps::Admin.last_build_value
+    end
+  end
+
+  def test_last_build_widget_shows_time_ago_and_links_to_history
+    widget = nil
+    stub_last_build_age(3.hours.to_i) do
+      widget = RecordingStudioSitemaps::Admin.last_build_widget.resolve(FakeContext.new)
+    end
+
+    assert_equal :number, widget.type
+    assert_equal "Last build", widget.title
+    assert_equal RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD, widget.key
+    assert_equal "Build history", widget.link_label
+    assert_equal "/admin/screens/build_history", widget.link_to
+    assert_equal "3 hours ago", widget.value
+    assert_nil widget.items
+  end
+
   def test_last_build_line_without_log
     RecordingStudioSitemaps::GenerationLog.stub(:latest, nil) do
       assert_equal "No sitemap written yet", RecordingStudioSitemaps::Admin.last_build_line
@@ -261,6 +299,7 @@ class AdminTest < Minitest::Test
 
     assert_equal(
       [
+        RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD,
         RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE,
         RecordingStudioSitemaps::Admin::WIDGET_COVERAGE,
         RecordingStudioSitemaps::Admin::WIDGET_FINDABLE,
@@ -305,6 +344,7 @@ class AdminTest < Minitest::Test
     RecordingStudioSitemaps::Admin.instance_variable_set(:@findable_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@missing_widget, nil)
     RecordingStudioSitemaps::Admin.instance_variable_set(:@index_size_widget, nil)
+    RecordingStudioSitemaps::Admin.instance_variable_set(:@last_build_widget, nil)
 
     RecordingStudioSitemaps::Admin.register!
 
@@ -314,7 +354,7 @@ class AdminTest < Minitest::Test
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_FINDABLE)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_MISSING)
     assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE)
-    refute RecordingStudioAdmin.widget_for("widgets.sitemaps.last_build")
+    assert RecordingStudioAdmin.widget_for(RecordingStudioSitemaps::Admin::WIDGET_LAST_BUILD)
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.indexable_count")
     refute RecordingStudioAdmin.widget_for("widgets.sitemaps.excluded")
   end

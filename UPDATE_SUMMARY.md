@@ -4,7 +4,7 @@ Unreleased pins Recording Studio `v4.7.0`, Accessible `v0.18.0` (`~> 0.13`), Pub
 
 - `RecordingStudioSitemaps.rebuild!` is the one write path
 - `/sitemap.xml` lists Publishable indexable URLs
-- Admin shows four equal cards: Index size, Coverage, findable pages, and Missing. The subtitle is the last rebuild. Index size opens Build history
+- Admin shows Last build, Index size, Coverage, findable pages, and Missing. The subtitle is the last rebuild. Last build and Index size open Build history
 - Build history uses Admin’s last-30-days date range. The filter control shows `Last 30 days`. Result is Ok / Failed (or the error). Chart x matches the When column; y is whole page counts
 - Dummy PageNav slot is Accessible avatars, not Sign out or a root switcher
 - Build history is a child Admin screen of generation logs

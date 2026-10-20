@@ -123,6 +123,11 @@ class LocalesTest < Minitest::Test
     assert_instance_of String, widget.title
     assert_instance_of String, widget.info
     assert_instance_of String, widget.link_label
+
+    last_build = RecordingStudioSitemaps::Admin.last_build_widget
+    assert_instance_of String, last_build.title
+    assert_instance_of String, last_build.info
+    assert_instance_of String, last_build.link_label
   end
 
   # Reverting any translated flash to a string literal must fail this test.
