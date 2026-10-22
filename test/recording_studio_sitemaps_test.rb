@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.1", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.5.2", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -18,7 +18,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", "~> 0.13"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", "~> 2.0"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.6"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.3", "< 0.6"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.3", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", "~> 0.3"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
