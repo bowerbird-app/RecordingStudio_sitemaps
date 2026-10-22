@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Runtime dependency `recording_studio_metrics` ceiling lifted to `< 1.0` (was `< 0.6`). (CI tested with Metrics 0.5.0). No code change.
+- Pin Ruby at `3.3.12` (was `3.3.6`) so GitHub runners can install the patch.
 
 ### Upgrade notes
 - Bump to `0.5.2`. No migration. No code change. Hosts on Metrics `0.3.x` through `0.5.x` stay valid.
