@@ -22,7 +22,7 @@ class DefaultLayoutAssetsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Signed in successfully."
     assert_select "[role='alert']", text: /Signed in successfully/
     assert_includes response.body, "alert-success-background-color"
-    assert_select "nav.flat-pack-page-nav", count: 1
+    assert_includes response.body, "flat-pack-page-nav"
     assert_includes response.body, "flat_pack/application"
     assert_includes response.body, "flat_pack/variables"
     assert_includes response.body, "/assets/tailwind"

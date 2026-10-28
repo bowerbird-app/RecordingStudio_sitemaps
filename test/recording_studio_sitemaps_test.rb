@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.4", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.5.3", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -34,16 +34,15 @@ class RecordingStudioSitemapsTest < Minitest::Test
   def test_dummy_gemfile_pins_verified_4x_github_tags
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
-    assert_includes gemfile, "widen_recording_studio_requirement"
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.1.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.21.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.5.1"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.7.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.6.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.3"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.329"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.9.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.5.3"'
     refute_includes gemfile, 'tag: "v0.1.198"'
@@ -73,16 +72,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
     application_controller_path = File.expand_path("dummy/app/controllers/application_controller.rb", __dir__)
     controller_source = File.read(application_controller_path)
 
-    assert_includes controller_source, "recording_studio_layout"
-    assert_includes controller_source, '"application" if devise_controller?'
-    refute_includes controller_source, "UsesDefaultLayout"
-    page_nav_helper = File.read(File.expand_path("dummy/app/helpers/page_nav_helper.rb", __dir__))
-    assert_includes page_nav_helper, "def recording_studio_page_nav"
-    root_switchable = File.read(
-      File.expand_path("dummy/config/initializers/recording_studio_root_switchable.rb", __dir__)
-    )
-    assert_includes root_switchable, "config.layout = nil"
-    refute_includes root_switchable, "config.layout = :application_layout"
+    assert_includes controller_source, "include RecordingStudio::UsesDefaultLayout"
+    assert_includes controller_source, '"recording_studio/default_layout"'
+    assert_includes controller_source, "return \"application\" if devise_controller?"
     refute_includes controller_source, "flat_pack_sidebar"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/flat_pack_sidebar.html.erb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/views/layouts/flat_pack/_sidebar.html.erb", __dir__))
@@ -146,7 +138,6 @@ class RecordingStudioSitemapsTest < Minitest::Test
     widget_view = File.read(
       File.expand_path("dummy/app/views/recording_studio_admin/shared/_widget.html.erb", __dir__)
     )
-    assert_includes widget_view, "border: :default"
     assert_includes widget_view, 'aria: { label: "Open #{widget_link_label}" }'
     refute_includes section_view, "Sign out"
     refute_includes section_view, "recording_studio_root_switch"
@@ -200,13 +191,13 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.7.0"
     assert_includes readme, "v0.18.0"
-    assert_includes readme, "v0.1.329"
+    assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.8.0"
-    assert_includes readme, "v0.11.0"
+    assert_includes readme, "v0.9.0"
     assert_includes readme, "v0.5.0"
-    assert_includes readme, "v2.5.1"
-    assert_includes readme, "v6.1.0"
+    assert_includes readme, "v2.3.0"
+    assert_includes readme, "v0.11.0"
     refute_includes readme, "v3 declarations"
     refute_includes readme, "RecordingStudio v3"
     refute_includes readme, "ExampleService"
@@ -219,14 +210,14 @@ class RecordingStudioSitemapsTest < Minitest::Test
     view_path = File.expand_path("dummy/app/views/home/index.html.erb", __dir__)
     view_source = File.read(view_path)
     controller_source = File.read(File.expand_path("dummy/app/controllers/home_controller.rb", __dir__))
-
     refute File.exist?(
       File.expand_path("dummy/config/initializers/recording_studio_page_nav_kwargs.rb", __dir__)
     )
+
     assert_includes controller_source, "current_root_recordable"
-    assert_includes view_source, "content_for :page_nav_back_url"
-    assert_includes view_source, "content_for :page_nav_anchor_url"
-    refute_includes view_source, "recording_studio_page_nav("
+    assert_includes view_source, "recording_studio_page_nav"
+    assert_includes view_source, "page_nav_back_url:"
+    assert_includes view_source, "page_nav_anchor_url:"
     assert_includes view_source, "FlatPack::PageTitle::Component"
     refute_includes view_source, "Dummy host"
     refute_includes view_source, "proves the"

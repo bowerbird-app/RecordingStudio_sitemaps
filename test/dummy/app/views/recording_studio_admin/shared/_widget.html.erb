@@ -17,7 +17,7 @@
 <% card_href = widget_href %>
 <% widget_card = capture do %>
   <%= render FlatPack::Card::Component.new(
-    border: :default,
+    style: :outlined,
     hover: (compact_card || card_href.present? ? :subtle : nil),
     clickable: card_href.present? && widget.info.blank?,
     href: (widget.info.blank? ? card_href : nil),

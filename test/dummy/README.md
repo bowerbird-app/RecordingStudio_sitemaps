@@ -39,7 +39,7 @@ The dummy home stays on a workspace. Admin lives on the Admin root. Switch to **
 
 ## Layouts and assets
 
-Authenticated pages call `recording_studio_layout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy `PageNavHelper` still accepts `recording_studio_page_nav` from Admin `v2.5.1` and writes the same `content_for` slots. Dummy HTML sets Flatpack's `data-theme="rounded"`.
+Authenticated pages include `RecordingStudio::UsesDefaultLayout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy HTML sets Flatpack's `data-theme="rounded"`.
 
 Devise sign-in keeps `layouts/application` so the login card can stay centered. That layout still loads:
 
@@ -59,7 +59,6 @@ Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/
 - `/admin/sections/sitemaps` - Admin Sitemaps section (switch to the Admin root first)
 - `/admin/screens/build_history` - Admin build history chart and table
 - `/recording_studio_root_switchable/v1/root_switch` - workspace / Admin root switcher page
-- `/root_switch_dropdown` - Root Switchable dropdown markup (keeps the switcher off the PageNav right slot)
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes
 - `/users/sign_in` - Devise sign-in page
 - `/up` - Rails health check

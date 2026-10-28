@@ -9,22 +9,18 @@ grant_seed_admin_access = lambda do |recording:, actor:|
   result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: actor)
   next if result.success?
 
-  grantor = RecordingStudioAccessible.access_recordings_for(recording).filter_map do |access_recording|
-    access = access_recording.recordable
-    next unless access.respond_to?(:role) && access.respond_to?(:actor)
-    next unless access.role.to_s == "admin"
-
-    access.actor
-  end.first
-  raise "Failed to grant seed admin access: #{result.error}" if grantor.blank?
-
-  grant_result = RecordingStudioAccessible.grant_access(
-    recording: recording,
-    actor: actor,
-    role: "admin",
-    manager_actor: grantor
-  )
-  raise "Failed to grant seed admin access: #{grant_result.error}" if grant_result.failure?
+  previous_authorizer = RecordingStudioAccessible.configuration.access_management_authorizer
+  begin
+    RecordingStudioAccessible.configuration.access_management_authorizer = ->(recording:, **) { recording.present? }
+    RecordingStudioAccessible.grant_access(
+      recording: recording,
+      actor: actor,
+      role: "admin",
+      manager_actor: actor
+    )
+  ensure
+    RecordingStudioAccessible.configuration.access_management_authorizer = previous_authorizer
+  end
 end
 
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|

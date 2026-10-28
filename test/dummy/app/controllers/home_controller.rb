@@ -1,12 +1,7 @@
 class HomeController < ApplicationController
-  helper RecordingStudioRootSwitchable::RootSwitchHelper
-
   def index
     @workspace = current_root_recordable
     @workspace_items = workspace_items
-  end
-
-  def root_switch_dropdown
   end
 
   private
