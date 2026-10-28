@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim is gone.
 - Dummy kit FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`). Gemspec stays `flat_pack ~> 0.1.129`; this gem ships no PageNav views.
-- Dummy moves to Recording Studio `v6.1.0` (gemspec stays `recording_studio ~> 4.2`; `test/support/widen_recording_studio_requirement.rb` widens sibling git gemspecs at Bundler load). Dummy controllers use `recording_studio_layout` (`UsesDefaultLayout` is gone in core 5+). Dummy Admin `screens/show` and `sections/show` set PageNav with `content_for` because Admin `v2.5.1` still calls the helper core 6 removed.
+- Dummy moves to Recording Studio `v6.1.0` (gemspec stays `recording_studio ~> 4.2`; `test/support/widen_recording_studio_requirement.rb` widens sibling git gemspecs at Bundler load). Dummy `ApplicationController` uses `recording_studio_layout` (core 6.1 dropped `UsesDefaultLayout`). Dummy `PageNavHelper` maps `recording_studio_page_nav` to `content_for` so Admin `v2.5.1` screens still render.
 - Dummy Root Switchable pin is GitHub tag `v0.11.0` (drops the removed FlatPack `button_attributes` call). Aligned dummy pins: Accessible `v0.21.0`, Cache `v0.5.1`, Metrics `v0.6.1`, Trashable `v0.11.3` (`require: false`), Admin `v2.5.1`. No gemspec change.
 - Dummy/dev sibling pins aligned so dummy tests run against native PageNav. No gemspec change.
 - Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8` (advisory-patched). No Gemfile or gemspec change.

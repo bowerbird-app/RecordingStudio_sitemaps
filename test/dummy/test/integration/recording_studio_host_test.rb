@@ -7,6 +7,7 @@ class RecordingStudioHostTest < ActiveSupport::TestCase
     assert_equal [ "all_workspaces" ], RecordingStudioRootSwitchable.configuration.scopes.keys
     assert_nil RecordingStudioRootSwitchable.configuration.layout
     assert_includes ApplicationController.ancestors, RecordingStudio::RootSwitchable::ControllerSupport
+    assert_respond_to ApplicationController, :recording_studio_layout
     assert_includes ApplicationController.instance_methods, :recording_studio_resolved_layout
   end
 
@@ -74,6 +75,7 @@ class RecordingStudioHostTest < ActiveSupport::TestCase
     refute RecordingStudio.capability_enabled?(:accessible, for: Folder)
     refute RecordingStudio.capability_enabled?(:accessible, for: Page)
     refute RecordingStudio.registered_capabilities.key?(:example)
+    assert_respond_to ApplicationController, :recording_studio_layout
     assert_includes ApplicationController.instance_methods, :recording_studio_resolved_layout
   end
 end

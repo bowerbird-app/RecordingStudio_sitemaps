@@ -39,7 +39,7 @@ The dummy home stays on a workspace. Admin lives on the Admin root. Switch to **
 
 ## Layouts and assets
 
-Authenticated pages call `recording_studio_layout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy HTML sets Flatpack's `data-theme="rounded"`.
+Authenticated pages call `recording_studio_layout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy `PageNavHelper` still accepts `recording_studio_page_nav` from Admin `v2.5.1` and writes the same `content_for` slots. Dummy HTML sets Flatpack's `data-theme="rounded"`.
 
 Devise sign-in keeps `layouts/application` so the login card can stay centered. That layout still loads:
 
