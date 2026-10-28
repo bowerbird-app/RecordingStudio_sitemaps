@@ -133,7 +133,7 @@ All three read the newest `GenerationLog` (any result) and are empty before the 
 
 Dummy credentials (`test/dummy/config/credentials.yml.enc`) are encrypted with the shared RecordingStudio_* development master key. Set `RAILS_MASTER_KEY` or put that key in `test/dummy/config/master.key` (gitignored). Keep the encrypted file; do not generate a per-repo dummy key.
 
-Authenticated dummy pages use Recording Studio's shared default layout (`UsesDefaultLayout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot. Dummy sets `avatar_resolver` and overrides Admin’s section grid to Flatpack `cols: 4` so the four Sitemaps cards share one equal-width row.
+Authenticated dummy pages use Recording Studio's shared default layout (`recording_studio_layout` / `recording_studio/default_layout`) so back/close chrome and Flatpack alerts come from core. Dummy HTML uses Flatpack's `data-theme="rounded"`. The host default-layout head loads Flatpack CSS only — Sign out and Root Switchable stay off the PageNav right slot. Dummy sets `avatar_resolver` and overrides Admin’s section grid to Flatpack `cols: 4` so the four Sitemaps cards share one equal-width row.
 
 Dummy kit pins:
 

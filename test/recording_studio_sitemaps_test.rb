@@ -73,9 +73,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
     application_controller_path = File.expand_path("dummy/app/controllers/application_controller.rb", __dir__)
     controller_source = File.read(application_controller_path)
 
-    assert_includes controller_source, "include RecordingStudio::UsesDefaultLayout"
-    assert_includes controller_source, '"recording_studio/default_layout"'
-    assert_includes controller_source, "return \"application\" if devise_controller?"
+    assert_includes controller_source, "recording_studio_layout"
+    assert_includes controller_source, '"application" if devise_controller?'
+    refute_includes controller_source, "UsesDefaultLayout"
     root_switchable = File.read(
       File.expand_path("dummy/config/initializers/recording_studio_root_switchable.rb", __dir__)
     )
@@ -141,6 +141,12 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes section_view, "recording_studio_accessible_avatars"
     assert_includes section_view, "button_style: :primary"
     assert_includes section_view, "cols: 4"
+    screen_view = File.read(
+      File.expand_path("dummy/app/views/recording_studio_admin/screens/show.html.erb", __dir__)
+    )
+    assert_includes screen_view, "content_for :title"
+    assert_includes screen_view, "content_for :page_nav_anchor_url"
+    refute_includes screen_view, "recording_studio_page_nav("
     widget_view = File.read(
       File.expand_path("dummy/app/views/recording_studio_admin/shared/_widget.html.erb", __dir__)
     )
@@ -222,9 +228,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
       File.expand_path("dummy/config/initializers/recording_studio_page_nav_kwargs.rb", __dir__)
     )
     assert_includes controller_source, "current_root_recordable"
-    assert_includes view_source, "recording_studio_page_nav"
-    assert_includes view_source, "page_nav_back_url:"
-    assert_includes view_source, "page_nav_anchor_url:"
+    assert_includes view_source, "content_for :page_nav_back_url"
+    assert_includes view_source, "content_for :page_nav_anchor_url"
+    refute_includes view_source, "recording_studio_page_nav("
     assert_includes view_source, "FlatPack::PageTitle::Component"
     refute_includes view_source, "Dummy host"
     refute_includes view_source, "proves the"

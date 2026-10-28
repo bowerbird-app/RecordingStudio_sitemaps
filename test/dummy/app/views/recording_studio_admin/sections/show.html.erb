@@ -1,10 +1,8 @@
 <%= render layout: "recording_studio_admin/shared/page_shell" do %>
   <% access_recording = recording_studio_admin_context.root_recording || recording_studio_admin_context.access_recording %>
 
-  <% recording_studio_page_nav(
-       title: @section.title,
-       page_nav_anchor_url: page_nav_anchor_url(default: RecordingStudioAdmin.configuration.default_mount_path)
-     ) %>
+  <% content_for :title, @section.title %>
+  <% content_for :page_nav_anchor_url, page_nav_anchor_url(default: RecordingStudioAdmin.configuration.default_mount_path) %>
   <% if access_recording.present? %>
     <% recording_studio_page_nav_right do %>
       <%= recording_studio_accessible_avatars(access_recording, button_style: :primary) %>
