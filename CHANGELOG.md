@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim is gone.
 - Dummy kit FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`). Gemspec stays `flat_pack ~> 0.1.129`; this gem ships no PageNav views.
-- Dummy/dev sibling pins aligned so dummy tests run against native PageNav (Root Switchable `v0.10.0`, Admin `v2.5.1`; other kit tags only as Bundler requires). No gemspec change.
+- Dummy moves to Recording Studio `v6.1.0` (gemspec stays `recording_studio ~> 4.2`; `test/support/widen_recording_studio_requirement.rb` widens sibling git gemspecs at Bundler load).
+- Dummy Root Switchable pin is GitHub tag `v0.11.0` (drops the removed FlatPack `button_attributes` call). Aligned dummy pins: Accessible `v0.21.0`, Cache `v0.5.1`, Metrics `v0.6.1`, Trashable `v0.11.3` (`require: false`), Admin `v2.5.1`. No gemspec change.
+- Dummy/dev sibling pins aligned so dummy tests run against native PageNav. No gemspec change.
 - Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8` (advisory-patched). No Gemfile or gemspec change.
 
 ### Upgrade notes
-- Bump to `0.5.4`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move that tag. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords.
+- Bump to `0.5.4`. No migration. No gemspec change. Dummy pins Recording Studio `v6.1.0` and Root Switchable `v0.11.0` (needs core `>= 6.1.0`). Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move those tags. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords. Root Switchable `config.layout` must be `nil`, a String layout name, or a callable — a Symbol raises.
 
 ## [0.5.2] - 2026-10-22
 

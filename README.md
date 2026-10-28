@@ -30,7 +30,7 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 # Gemfile
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v4.7.0"
 gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"
-gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"
+gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.5.1"
 gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"
 gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"
 gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0", require: false
@@ -139,14 +139,14 @@ Dummy kit pins:
 
 | Gem | Pin |
 |-----|-----|
-| Recording Studio | `v4.7.0` |
-| Accessible | `v0.18.0` |
+| Recording Studio | `v6.1.0` |
+| Accessible | `v0.21.0` |
 | Admin | `v2.5.1` |
 | Publishable | `v0.8.0` |
-| Root Switchable | `v0.10.0` |
-| Metrics | `v0.5.0` |
-| Trashable | `v0.11.0` |
-| Cache | `v0.5.0` |
+| Root Switchable | `v0.11.0` |
+| Metrics | `v0.6.1` |
+| Trashable | `v0.11.3` |
+| Cache | `v0.5.1` |
 | FlatPack | `v0.1.329` |
 
 ```bash

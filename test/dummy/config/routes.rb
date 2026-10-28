@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   mount RecordingStudioSitemaps::Engine, at: "/recording_studio_sitemaps"
 
   get "up" => "rails/health#show", as: :rails_health_check
+  get "root_switch_dropdown", to: "home#root_switch_dropdown"
 
   root "home#index"
 end

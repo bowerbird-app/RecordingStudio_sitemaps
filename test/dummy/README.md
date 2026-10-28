@@ -59,6 +59,7 @@ Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/
 - `/admin/sections/sitemaps` - Admin Sitemaps section (switch to the Admin root first)
 - `/admin/screens/build_history` - Admin build history chart and table
 - `/recording_studio_root_switchable/v1/root_switch` - workspace / Admin root switcher page
+- `/root_switch_dropdown` - Root Switchable dropdown markup (keeps the switcher off the PageNav right slot)
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes
 - `/users/sign_in` - Devise sign-in page
 - `/up` - Rails health check
