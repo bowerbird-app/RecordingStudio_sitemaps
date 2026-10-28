@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.3] - 2026-10-28
+## [0.5.4] - 2026-10-28
 
 ### Changed
 - Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim is gone.
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dummy/dev sibling pins aligned so dummy tests run against native PageNav (Root Switchable `v0.10.0`, Admin `v2.5.1`; other kit tags only as Bundler requires). No gemspec change.
 
 ### Upgrade notes
-- Bump to `0.5.3`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move that tag. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords.
+- Bump to `0.5.4`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move that tag. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords.
 
 ## [0.5.2] - 2026-10-22
 
@@ -175,7 +175,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.0...v0.5.1
