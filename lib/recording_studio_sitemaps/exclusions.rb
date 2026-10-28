@@ -29,7 +29,7 @@ module RecordingStudioSitemaps
     end
 
     def title_for(recordable)
-      RecordableTitle.for(recordable, fallback: recordable.class.model_name.human)
+      RecordableTitle.for(recordable) { recordable.class.model_name.human }
     end
 
     def reason_for(recordable)

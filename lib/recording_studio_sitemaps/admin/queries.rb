@@ -116,7 +116,7 @@ module RecordingStudioSitemaps
       end
 
       def title_for(recordable)
-        RecordableTitle.for(recordable, fallback: type_for(recordable))
+        RecordableTitle.for(recordable) { type_for(recordable) }
       end
 
       def type_for(recordable)

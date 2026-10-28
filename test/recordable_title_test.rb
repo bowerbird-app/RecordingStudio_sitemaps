@@ -10,8 +10,21 @@ class RecordableTitleTest < Minitest::Test
     named = FakeRecordable.new(title: nil, name: "Draft URL")
     blank = FakeRecordable.new(title: "  ", name: nil)
 
-    assert_equal "Getting started", RecordingStudioSitemaps::RecordableTitle.for(titled, fallback: "Page")
-    assert_equal "Draft URL", RecordingStudioSitemaps::RecordableTitle.for(named, fallback: "Page")
-    assert_equal "Page", RecordingStudioSitemaps::RecordableTitle.for(blank, fallback: "Page")
+    assert_equal "Getting started", RecordingStudioSitemaps::RecordableTitle.for(titled) { "Page" }
+    assert_equal "Draft URL", RecordingStudioSitemaps::RecordableTitle.for(named) { "Page" }
+    assert_equal "Page", RecordingStudioSitemaps::RecordableTitle.for(blank) { "Page" }
+  end
+
+  def test_does_not_evaluate_fallback_when_title_is_present
+    evaluated = false
+    titled = FakeRecordable.new(title: "Getting started")
+
+    result = RecordingStudioSitemaps::RecordableTitle.for(titled) do
+      evaluated = true
+      "Page"
+    end
+
+    assert_equal "Getting started", result
+    refute evaluated
   end
 end

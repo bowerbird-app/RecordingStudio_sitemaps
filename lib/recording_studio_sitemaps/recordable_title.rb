@@ -4,10 +4,10 @@ module RecordingStudioSitemaps
   module RecordableTitle
     module_function
 
-    def for(recordable, fallback:)
+    def for(recordable)
       recordable.try(:title).presence ||
         recordable.try(:name).presence ||
-        fallback
+        yield
     end
   end
 end
