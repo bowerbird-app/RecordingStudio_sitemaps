@@ -51,6 +51,38 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
   end
 
+  test "workspace switcher dropdown renders without error" do
+    user = User.find_or_create_by!(email: "root-switch-dropdown-render@example.com") do |record|
+      record.password = "Password123!"
+      record.password_confirmation = "Password123!"
+    end
+
+    sign_in user
+
+    workspace = Workspace.create!(name: "Dropdown Workspace")
+    other_workspace = Workspace.create!(name: "Other Workspace")
+    root_recording = RecordingStudio.root_recording_for(workspace)
+    RecordingStudio.root_recording_for(other_workspace)
+
+    patch "/recording_studio_root_switchable/v1/root_switch", params: {
+      scope: "all_workspaces",
+      root_switch: {
+        root_recording_id: root_recording.id,
+        return_to: "/root_switch_dropdown"
+      }
+    }
+    follow_redirect!
+
+    get "/root_switch_dropdown"
+
+    assert_response :success
+    assert_select "[data-controller='flat-pack--button-dropdown']" do
+      assert_select "[data-flat-pack--button-dropdown-target='trigger']", text: /Dropdown Workspace/
+    end
+    assert_select "form[action*='root_switch']", minimum: 1
+    assert_select "form[action*='root_switch'] input[name='root_switch[root_recording_id]']", minimum: 1
+  end
+
   test "root switch page renders with the host default layout" do
     user = User.find_or_create_by!(email: "root-switch-page-test@example.com") do |record|
       record.password = "Password123!"
