@@ -46,7 +46,7 @@ module RecordingStudioSitemaps
         missing_lines = missing_tailwind_source_lines(tailwind_content)
 
         if missing_lines.empty?
-          say "Tailwind already configured to include RecordingStudioSitemaps and FlatPack sources.", :green
+          say "Tailwind already configured to include FlatPack sources.", :green
           return
         end
 
@@ -80,16 +80,14 @@ module RecordingStudioSitemaps
         inject_into_file tailwind_css_path, after: "@import \"tailwindcss\";\n" do
           "#{formatted_tailwind_source_block(missing_lines)}\n"
         end
-        say "Added RecordingStudioSitemaps and FlatPack sources to Tailwind CSS configuration.", :green
+        say "Added FlatPack sources to Tailwind CSS configuration.", :green
         say "Run 'bin/rails tailwindcss:build' to rebuild your CSS.", :green
       end
 
       def formatted_tailwind_source_block(missing_lines)
         [
-          "\n/* Include RecordingStudioSitemaps engine views for Tailwind CSS */",
-          missing_lines.first(2),
           "\n/* Include FlatPack component sources for Tailwind CSS */",
-          missing_lines.drop(2)
+          missing_lines
         ].flatten.reject(&:empty?).join("\n")
       end
 
@@ -103,9 +101,6 @@ module RecordingStudioSitemaps
 
       def tailwind_source_lines
         [
-          '@source "../../vendor/bundle/**/recording_studio_sitemaps/app/views/**/*.erb";',
-          '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/' \
-          'recording_studio_sitemaps-*/app/views/**/*.erb";',
           '@source "../../vendor/bundle/**/flatpack/app/components/**/*.{rb,erb}";',
           '@source "../../../../../../usr/local/bundle/ruby/**/bundler/gems/flatpack-*/app/components/**/*.{rb,erb}";'
         ]
