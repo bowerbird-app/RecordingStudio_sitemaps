@@ -3,14 +3,11 @@
 require "test_helper"
 
 class RenameGemIdentityTest < Minitest::Test
-  def test_rename_script_rewrites_leftover_template_homepages
-    script = File.read(File.expand_path("../bin/rename_gem", __dir__))
+  def test_rename_script_and_template_docs_are_gone
+    root = File.expand_path("..", __dir__)
 
-    assert_includes script, "https://github.com/bowerbird-app/RecordingStudio_gem_template"
-    assert_includes script, "https://github.com/bowerbird-app/gem_template"
-    assert_includes script, "rewrite_leftover_homepages!"
-    assert_includes script, "leftover_template_identity?"
-    assert_includes script, "README.md"
-    assert_includes script, "CHANGELOG.md"
+    refute File.exist?(File.join(root, "bin", "rename_gem"))
+    refute File.exist?(File.join(root, "test", "rename_verification_test.rb"))
+    refute File.exist?(File.join(root, "docs", "gem_template"))
   end
 end
