@@ -141,9 +141,9 @@ Dummy kit pins:
 |-----|-----|
 | Recording Studio | `v4.7.0` |
 | Accessible | `v0.18.0` |
-| Admin | `v2.3.0` |
+| Admin | `v2.5.1` |
 | Publishable | `v0.8.0` |
-| Root Switchable | `v0.9.0` |
+| Root Switchable | `v0.10.0` |
 | Metrics | `v0.5.0` |
 | Trashable | `v0.11.0` |
 | Cache | `v0.5.0` |

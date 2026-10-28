@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim is gone.
 - Dummy kit FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`). Gemspec stays `flat_pack ~> 0.1.129`; this gem ships no PageNav views.
+- Dummy/dev sibling pins aligned so dummy tests run against native PageNav (Root Switchable `v0.10.0`, Admin `v2.5.1`; other kit tags only as Bundler requires). No gemspec change.
 
 ### Upgrade notes
 - Bump to `0.5.3`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move that tag. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords.
