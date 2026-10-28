@@ -73,9 +73,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
     application_controller_path = File.expand_path("dummy/app/controllers/application_controller.rb", __dir__)
     controller_source = File.read(application_controller_path)
 
-    assert_includes controller_source, "include RecordingStudio::UsesDefaultLayout"
-    assert_includes controller_source, '"recording_studio/default_layout"'
-    assert_includes controller_source, "return \"application\" if devise_controller?"
+    assert_includes controller_source, "recording_studio_layout"
+    assert_includes controller_source, '"application" if devise_controller?'
+    refute_includes controller_source, "UsesDefaultLayout"
+    page_nav_helper = File.read(File.expand_path("dummy/app/helpers/page_nav_helper.rb", __dir__))
+    assert_includes page_nav_helper, "def recording_studio_page_nav"
     root_switchable = File.read(
       File.expand_path("dummy/config/initializers/recording_studio_root_switchable.rb", __dir__)
     )
