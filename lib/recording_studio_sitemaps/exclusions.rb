@@ -29,9 +29,7 @@ module RecordingStudioSitemaps
     end
 
     def title_for(recordable)
-      recordable.try(:title).presence ||
-        recordable.try(:name).presence ||
-        recordable.class.model_name.human
+      RecordableTitle.for(recordable, fallback: recordable.class.model_name.human)
     end
 
     def reason_for(recordable)
