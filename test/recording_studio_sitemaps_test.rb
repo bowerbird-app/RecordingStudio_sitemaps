@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.2", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.5.3", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -37,6 +37,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v4.7.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.18.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.3.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_attachable", tag: "v0.10.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.9.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"'
@@ -66,6 +67,10 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute File.exist?(File.expand_path("../lib/recording_studio_sitemaps/services/example_service.rb", __dir__))
     refute File.exist?(File.expand_path("../lib/recording_studio_sitemaps/capabilities/example.rb", __dir__))
     refute File.exist?(File.expand_path("../app/controllers/recording_studio_sitemaps/home_controller.rb", __dir__))
+    refute File.exist?(File.expand_path("../docs/gem_template", __dir__))
+    refute File.exist?(File.expand_path("../bin/rename_gem", __dir__))
+    refute File.exist?(File.expand_path("../UPDATE_SUMMARY.md", __dir__))
+    refute File.exist?(File.expand_path("../MIGRATION_NOTES.md", __dir__))
   end
 
   def test_dummy_app_uses_recording_studio_default_layout
@@ -167,6 +172,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes initializer_source, "config.require_recordable_declarations = true"
     assert_includes initializer_source, '"AdminRoot"'
     assert_includes initializer_source, '"RecordingStudioPublishable::Publishable"'
+    assert_includes initializer_source, '"RecordingStudioAttachable::Attachment"'
+    refute File.exist?(File.expand_path("dummy/config/initializers/00_attachable_capability_stub.rb", __dir__))
     assert_includes initializer_source, 'config.app_name = "Dummy host"'
     refute_includes initializer_source, "Addon Template"
     refute_includes initializer_source, "config.include_children"
@@ -194,6 +201,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.8.0"
+    assert_includes readme, "v0.10.0"
     assert_includes readme, "v0.9.0"
     assert_includes readme, "v0.5.0"
     assert_includes readme, "v2.3.0"

@@ -43,7 +43,7 @@ gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_accessible", "~> 0.13"
 gem "recording_studio_admin", "~> 2.0"
-gem "recording_studio_metrics", ">= 0.3", "< 0.6"
+gem "recording_studio_metrics", ">= 0.3", "< 1.0"
 gem "recording_studio_publishable", "~> 0.6"
 ```
 
@@ -143,6 +143,7 @@ Dummy kit pins:
 | Accessible | `v0.18.0` |
 | Admin | `v2.3.0` |
 | Publishable | `v0.8.0` |
+| Attachable | `v0.10.0` |
 | Root Switchable | `v0.9.0` |
 | Metrics | `v0.5.0` |
 | Trashable | `v0.11.0` |
@@ -178,6 +179,3 @@ Admin DSL values (titles, link text, chart titles, column titles, subtitles, wid
 
 Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, JSON API, Embeddable, and Support or Press kit special cases.
 
-## Engine internals
-
-`docs/gem_template/` stays as engine-internal reference from the original addon template. This README is the product.
