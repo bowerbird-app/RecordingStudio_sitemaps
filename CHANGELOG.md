@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused engine model/controller `class_eval` extension loops and `rescue StandardError` around YAML/`config.x` loading
 
 ### Changed
+- Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `>= 4.14` (Bundler Audit)
 - YAML config loads with `config_for` when `config/recording_studio_sitemaps.yml` exists
 - Shared `RecordableTitle.for` for Admin findable titles and exclusion titles
 - Install generator no longer adds Tailwind `@source` paths for empty engine views
