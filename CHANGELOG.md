@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.4] - 2026-10-28
+## [0.5.3] - 2026-10-29
 
 ### Changed
 - Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim (`recording_studio_page_nav_kwargs.rb`) is gone.
@@ -16,10 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dummy Root Switchable pin is GitHub tag `v0.10.0` (was `v0.9.0`; needs Recording Studio `~> 4.1` and FlatPack `>= 0.1.304`). Recording Studio stays `v4.7.0`. Accessible stays `v0.18.0`. Metrics, Cache, Trashable, and Publishable stay main's pins.
 - Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8` (advisory-patched). No Gemfile or gemspec change.
 - SimpleCov HTML/JSON under `coverage/` and `test/dummy/coverage/` is no longer tracked.
-- Docs: README Metrics constraint matches gemspec `< 1.0`. UPGRADING covers `0.5.4`. Dummy pin text in UPDATE_SUMMARY and MIGRATION_NOTES matches the dummy Gemfile.
+- Docs: README Metrics constraint matches gemspec `< 1.0`. UPGRADING covers `0.5.3`. Dummy pin text in UPDATE_SUMMARY and MIGRATION_NOTES matches the dummy Gemfile.
 
 ### Upgrade notes
-- Bump to `0.5.4`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Dummy tests this kit: Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.4.0`, Root Switchable `v0.10.0`. Hosts that copy the dummy kit should move those tags. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords (`anchor_url` / `back_url` / `anchor_href` / `secondary_anchor_href`) or Card `style: :outlined`.
+- Bump to `0.5.3`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Dummy tests this kit: Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.4.0`, Root Switchable `v0.10.0`. Hosts that copy the dummy kit should move those tags. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords (`anchor_url` / `back_url` / `anchor_href` / `secondary_anchor_href`) or Card `style: :outlined`.
 
 ## [0.5.2] - 2026-10-22
 
@@ -179,8 +179,7 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.4...HEAD
-[0.5.4]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.5.4
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.0...v0.5.1
