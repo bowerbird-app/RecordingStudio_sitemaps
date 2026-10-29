@@ -1,5 +1,13 @@
 # Upgrading
 
+## 0.5.4
+
+Install Sitemaps `0.5.4`. No migration. Dummy default layout uses native FlatPack PageNav (`with_back`, `with_close`, `with_item`). Dummy and the root Gemfile pin FlatPack at GitHub tag `v0.1.329`. Dummy kit also pins Admin `v2.4.0` and Root Switchable `v0.10.0`. Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8`. SimpleCov output under `coverage/` and `test/dummy/coverage/` is untracked. Gemspec is unchanged. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords or Card `style: :outlined`.
+
+## 0.5.2
+
+Install Sitemaps `0.5.2`. No migration. `recording_studio_metrics` is `>= 0.3, < 1.0`. Hosts on Metrics `0.3.x` through `0.5.x` stay valid.
+
 ## 0.5.1
 
 Install Sitemaps `0.5.1`. No migration. `recording_studio_metrics` is `>= 0.3, < 0.6`. Dummy and the example Gemfile pin Metrics at tag `v0.5.0`. Hosts on Metrics `0.3.x` do not need to move.

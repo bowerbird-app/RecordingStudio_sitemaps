@@ -43,7 +43,7 @@ gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps
 gem "recording_studio", "~> 4.2"
 gem "recording_studio_accessible", "~> 0.13"
 gem "recording_studio_admin", "~> 2.0"
-gem "recording_studio_metrics", ">= 0.3", "< 0.6"
+gem "recording_studio_metrics", ">= 0.3", "< 1.0"
 gem "recording_studio_publishable", "~> 0.6"
 ```
 
