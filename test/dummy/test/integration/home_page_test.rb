@@ -29,8 +29,8 @@ class HomePageTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "body[data-recording-studio-default-layout='true']", count: 1
     assert_select "nav.flat-pack-page-nav", count: 1
-    assert_select "[aria-label='Go back']", count: 1
-    assert_select "a[aria-label='Close'][href='/']", count: 1
+    assert_select "nav.flat-pack-page-nav a[aria-label='Go back'][href='/']", count: 1
+    assert_select "nav.flat-pack-page-nav a[aria-label='Close'][href='/']", count: 1
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"

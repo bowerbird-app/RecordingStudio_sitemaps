@@ -9,4 +9,4 @@ Unreleased pins Recording Studio `v4.7.0`, Accessible `v0.18.0` (`~> 0.13`), Pub
 - Dummy PageNav slot is Accessible avatars, not Sign out or a root switcher
 - Build history is a child Admin screen of generation logs
 - Dummy default-layout head loads Flatpack CSS only
-- Dummy pins Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.3.0`, Publishable `v0.8.0`, Root Switchable `v0.9.0`, Metrics `v0.2.0`, and Trashable `v0.11.0`
+- Dummy pins Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.4.0`, Publishable `v0.8.0`, Root Switchable `v0.10.0`, Metrics `v0.5.0`, and Trashable `v0.11.0`
