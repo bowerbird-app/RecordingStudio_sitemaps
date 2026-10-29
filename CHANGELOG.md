@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-29
+
+### Removed
+- Tracked SimpleCov output under `coverage/` and `test/dummy/coverage/` (kept on disk; gitignored)
+
+### Changed
+- Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `4.20.0` (Bundler Audit)
+- Lockfile bumps `crass` to `1.0.8` and `net-ssh` to `7.3.8` (Bundler Audit)
+
+### Upgrade notes
+- Bump to `0.5.3`. No migration. No behavior change. Hosts that lock `flat_pack` from this gem's development Gemfile should use tag `v0.1.329`.
+
 ## [0.5.2] - 2026-10-22
 
 ### Changed
@@ -165,7 +177,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2
