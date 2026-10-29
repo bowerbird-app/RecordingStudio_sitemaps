@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracked SimpleCov output under `coverage/` and `test/dummy/coverage/` (kept on disk; gitignored)
 
 ### Changed
-- Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `4.20.0` (Bundler Audit)
+- Dev and dummy FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `4.20.0` (Bundler Audit)
 - Lockfile bumps `crass` to `1.0.8` and `net-ssh` to `7.3.8` (Bundler Audit)
 
 ### Upgrade notes
