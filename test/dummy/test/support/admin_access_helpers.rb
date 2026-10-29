@@ -11,8 +11,7 @@ module AdminAccessHelpers
     current_role = RecordingStudioAccessible.role_for(actor: actor, recording: recording)
     return recording if role_covers?(current_role, role)
 
-    required_role = role.to_s
-    if required_role == "admin"
+    if role.to_s == "admin"
       bootstrap_result = RecordingStudioAccessible.bootstrap_owner_access!(
         recording: recording,
         actor: actor
@@ -20,32 +19,26 @@ module AdminAccessHelpers
       return recording if bootstrap_result.success?
     end
 
-    grantor = grantor_who_holds_role(recording: recording, role: required_role)
-    raise "Failed to grant access in test: no grantor holds #{required_role}" if grantor.blank?
+    previous_authorizer = RecordingStudioAccessible.configuration.access_management_authorizer
+    begin
+      RecordingStudioAccessible.configuration.access_management_authorizer = ->(recording:, **) { recording.present? }
 
-    result = RecordingStudioAccessible.grant_access(
-      recording: recording,
-      actor: actor,
-      role: required_role,
-      manager_actor: grantor
-    )
+      result = RecordingStudioAccessible.grant_access(
+        recording: recording,
+        actor: actor,
+        role: role,
+        manager_actor: actor
+      )
 
-    raise "Failed to grant access in test: #{result.error}" if result.failure?
+      raise "Failed to grant access in test: #{result.error}" if result.failure?
+    ensure
+      RecordingStudioAccessible.configuration.access_management_authorizer = previous_authorizer
+    end
 
     recording
   end
 
   private
-
-  def grantor_who_holds_role(recording:, role:)
-    RecordingStudioAccessible.access_recordings_for(recording).filter_map do |access_recording|
-      access = access_recording.recordable
-      next unless access.respond_to?(:role) && access.respond_to?(:actor)
-      next unless role_covers?(access.role, role)
-
-      access.actor
-    end.first
-  end
 
   def role_covers?(current_role, required_role)
     return false if current_role.nil?

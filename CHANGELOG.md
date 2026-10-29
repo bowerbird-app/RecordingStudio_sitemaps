@@ -10,16 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.4] - 2026-10-28
 
 ### Changed
-- Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim is gone.
-- Dummy kit FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`). Gemspec stays `flat_pack ~> 0.1.129`; this gem ships no PageNav views.
-- Root (dev) Gemfile FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`) so Bundler resolves `view_component >= 4.14`. No separate `view_component` pin.
-- Dummy moves to Recording Studio `v6.1.0` (gemspec stays `recording_studio ~> 4.2`; `test/support/widen_recording_studio_requirement.rb` widens sibling git gemspecs at Bundler load). Dummy `ApplicationController` uses `recording_studio_layout` (core 6.1 dropped `UsesDefaultLayout`).
-- Dummy Root Switchable pin is GitHub tag `v0.11.0` (drops the removed FlatPack `button_attributes` call). Aligned dummy pins: Accessible `v0.21.0`, Cache `v0.5.1`, Metrics `v0.6.1`, Trashable `v0.11.3` (`require: false`), Admin `v2.5.1`. No gemspec change.
-- Dummy/dev sibling pins aligned so dummy tests run against native PageNav. No gemspec change.
+- Dummy default layout uses FlatPack PageNav's native API (`with_back`, `with_close`, `with_item`). The dummy kwargs shim (`recording_studio_page_nav_kwargs.rb`) is gone.
+- Dummy and root (dev) Gemfile FlatPack pin is GitHub tag `v0.1.329` (was `v0.1.207`) so Bundler resolves `view_component >= 4.14` (GHSA-8qw7-6phv-7q6p). No separate `view_component` pin. Gemspec stays `flat_pack ~> 0.1.129`; this gem ships no PageNav views.
+- Dummy Admin pin is GitHub tag `v2.4.0` (was `v2.3.0`) so Admin cards render on FlatPack `v0.1.329`. Dummy widget override uses Card `border: :strong` instead of `style: :outlined`.
+- Dummy Root Switchable pin is GitHub tag `v0.10.0` (was `v0.9.0`; needs Recording Studio `~> 4.1` and FlatPack `>= 0.1.304`). Recording Studio stays `v4.7.0`. Accessible stays `v0.18.0`. Metrics, Cache, Trashable, and Publishable stay main's pins.
 - Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8` (advisory-patched). No Gemfile or gemspec change.
 
 ### Upgrade notes
-- Bump to `0.5.4`. No migration. No gemspec change. Dummy pins Recording Studio `v6.1.0` and Root Switchable `v0.11.0` (needs core `>= 6.1.0`). Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Hosts that copy the dummy kit should move those tags. Hosts already on `~> 0.1.129` need nothing unless they still call the old PageNav keywords. Root Switchable `config.layout` must be `nil`, a String layout name, or a callable — a Symbol raises.
+- Bump to `0.5.4`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Dummy tests this kit: Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.4.0`, Root Switchable `v0.10.0`. Hosts that copy the dummy kit should move those tags. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords (`anchor_url` / `back_url` / `anchor_href` / `secondary_anchor_href`) or Card `style: :outlined`.
 
 ## [0.5.2] - 2026-10-22
 
