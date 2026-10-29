@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `>= 4.14` (Bundler Audit)
+- Dummy lockfile bumps `crass` to `1.0.8` and `net-ssh` to `7.3.8` (Bundler Audit)
 - YAML config loads with `config_for` when `config/recording_studio_sitemaps.yml` exists
 - Shared `RecordableTitle.for` for Admin findable titles and exclusion titles
 - Install generator no longer adds Tailwind `@source` paths for empty engine views
