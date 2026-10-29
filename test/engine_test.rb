@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "fileutils"
-require "tmpdir"
 
 class EngineTest < Minitest::Test
   def setup
@@ -39,12 +37,13 @@ class EngineTest < Minitest::Test
 
     xcfg = Struct.new(:recording_studio_sitemaps).new({ url_count_warning_threshold: 40_000 })
     app_config = Struct.new(:x).new(xcfg)
+    app = Struct.new(:config) do
+      def config_for(_name)
+        { public_base_url: "https://from-yaml.test" }
+      end
+    end.new(app_config)
 
-    with_host_yaml("public_base_url: https://from-yaml.test\n") do |root|
-      app = yaml_app(root, app_config, { public_base_url: "https://from-yaml.test" })
-
-      find_initializer("recording_studio_sitemaps.load_config").block.call(app)
-    end
+    find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
     assert hook_called
     assert_equal RecordingStudioSitemaps.configuration, hook_payload
@@ -52,7 +51,7 @@ class EngineTest < Minitest::Test
     assert_equal 40_000, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
-  def test_load_config_skips_missing_yaml_and_config_without_to_h
+  def test_load_config_handles_errors_and_each_pair_fallback
     pair_config = Class.new do
       def each_pair
         yield(:url_count_warning_threshold, 15)
@@ -61,22 +60,37 @@ class EngineTest < Minitest::Test
 
     xcfg = Struct.new(:recording_studio_sitemaps).new(pair_config)
     app_config = Struct.new(:x).new(xcfg)
-    app = Struct.new(:config, :root).new(app_config, "/tmp/missing-sitemaps-host")
+
+    app = Struct.new(:config) do
+      def config_for(_name)
+        raise "missing file"
+      end
+    end.new(app_config)
 
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_equal RecordingStudioSitemaps::Configuration::URL_COUNT_WARNING_THRESHOLD,
-                 RecordingStudioSitemaps.configuration.url_count_warning_threshold
+    assert_equal 15, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
-  def test_load_config_merges_x_config_when_to_h_is_present
-    xcfg = Struct.new(:recording_studio_sitemaps).new({ url_count_warning_threshold: 22 })
-    app_config = Struct.new(:x).new(xcfg)
-    app = Struct.new(:config).new(app_config)
+  def test_load_config_swallow_each_pair_errors
+    bad_pair_config = Class.new do
+      def each_pair
+        raise "bad pair"
+      end
+    end.new
 
+    xcfg = Struct.new(:recording_studio_sitemaps).new(bad_pair_config)
+    app_config = Struct.new(:x).new(xcfg)
+    app = Struct.new(:config) do
+      def config_for(_name)
+        { public_base_url: "https://ok.test" }
+      end
+    end.new(app_config)
+
+    # Should not raise even if xcfg.each_pair fails.
     find_initializer("recording_studio_sitemaps.load_config").block.call(app)
 
-    assert_equal 22, RecordingStudioSitemaps.configuration.url_count_warning_threshold
+    assert_equal "https://ok.test", RecordingStudioSitemaps.configuration.public_base_url
   end
 
   def test_load_config_is_noop_without_config_sources
@@ -89,41 +103,198 @@ class EngineTest < Minitest::Test
                  RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
-  def test_does_not_register_template_extension_initializers
-    assert_nil find_initializer("recording_studio_sitemaps.apply_model_extensions")
-    assert_nil find_initializer("recording_studio_sitemaps.apply_controller_extensions")
-    refute RecordingStudioSitemaps::Engine.respond_to?(:apply_model_extensions)
-    refute RecordingStudioSitemaps::Engine.respond_to?(:apply_controller_extensions)
-  end
+  def test_load_config_ignores_non_enumerable_yaml_and_merge_errors
+    yaml = Class.new do
+      def each
+        raise "bad yaml"
+      end
+    end.new
 
-  def test_apply_model_extensions_is_not_defined
-    refute RecordingStudioSitemaps::Engine.respond_to?(:apply_model_extensions)
-  end
-
-  def test_apply_controller_extensions_is_not_defined
-    refute RecordingStudioSitemaps::Engine.respond_to?(:apply_controller_extensions)
-  end
-
-  private
-
-  def yaml_app(root, app_config, yaml)
-    app = Struct.new(:config, :root) do
+    xcfg = Struct.new(:recording_studio_sitemaps).new({ url_count_warning_threshold: 22 })
+    app_config = Struct.new(:x).new(xcfg)
+    app = Struct.new(:config) do
       attr_accessor :yaml
 
       def config_for(_name)
         @yaml
       end
-    end.new(app_config, root)
+    end.new(app_config)
     app.yaml = yaml
-    app
+
+    find_initializer("recording_studio_sitemaps.load_config").block.call(app)
+
+    assert_equal 22, RecordingStudioSitemaps.configuration.url_count_warning_threshold
   end
 
-  def with_host_yaml(contents)
-    Dir.mktmpdir do |dir|
-      FileUtils.mkdir_p(File.join(dir, "config"))
-      File.write(File.join(dir, "config", "recording_studio_sitemaps.yml"), contents)
-      yield dir
+  def test_apply_extension_initializers_register_active_support_on_load_callbacks
+    to_prepare_blocks = []
+    config_stub = Object.new
+    config_stub.define_singleton_method(:to_prepare) do |&block|
+      to_prepare_blocks << block
     end
+
+    RecordingStudioSitemaps::Engine.stub(:config, config_stub) do
+      find_initializer("recording_studio_sitemaps.apply_model_extensions").block.call
+      find_initializer("recording_studio_sitemaps.apply_controller_extensions").block.call
+    end
+
+    assert_equal 2, to_prepare_blocks.size
+  end
+
+  def test_model_extension_initializer_skips_abstract_models
+    to_prepare_blocks = []
+    config_stub = Object.new
+    config_stub.define_singleton_method(:to_prepare) do |&block|
+      to_prepare_blocks << block
+    end
+
+    abstract_model = Class.new do
+      def self.abstract_class?
+        true
+      end
+    end
+    concrete_model = Class.new do
+      def self.abstract_class?
+        false
+      end
+    end
+    applied = []
+    active_record_base = Class.new
+    active_record_base.define_singleton_method(:descendants) { [abstract_model, concrete_model] }
+
+    RecordingStudioSitemaps::Engine.stub(:config, config_stub) do
+      find_initializer("recording_studio_sitemaps.apply_model_extensions").block.call
+    end
+
+    with_temporary_nested_constant(:ActiveRecord, :Base, active_record_base) do
+      RecordingStudioSitemaps::Engine.stub(:apply_model_extensions, ->(model) { applied << model }) do
+        to_prepare_blocks.first.call
+      end
+    end
+
+    assert_equal [concrete_model], applied
+  end
+
+  def test_controller_extension_initializer_applies_all_controllers
+    to_prepare_blocks = []
+    config_stub = Object.new
+    config_stub.define_singleton_method(:to_prepare) do |&block|
+      to_prepare_blocks << block
+    end
+
+    first_controller = Class.new
+    second_controller = Class.new
+    applied = []
+    action_controller_base = Class.new
+    action_controller_base.define_singleton_method(:descendants) { [first_controller, second_controller] }
+
+    RecordingStudioSitemaps::Engine.stub(:config, config_stub) do
+      find_initializer("recording_studio_sitemaps.apply_controller_extensions").block.call
+    end
+
+    with_temporary_nested_constant(:ActionController, :Base, action_controller_base) do
+      RecordingStudioSitemaps::Engine.stub(:apply_controller_extensions, ->(controller) { applied << controller }) do
+        to_prepare_blocks.first.call
+      end
+    end
+
+    assert_equal [first_controller, second_controller], applied
+  end
+
+  def test_apply_model_extensions_adds_registered_methods_once
+    model_class = Class.new do
+      def self.name
+        "ExampleRecord"
+      end
+    end
+
+    RecordingStudioSitemaps.configuration.hooks.extend_model(:ExampleRecord) do
+      def template_extension_method
+        :applied
+      end
+    end
+
+    RecordingStudioSitemaps::Engine.apply_model_extensions(model_class)
+    RecordingStudioSitemaps::Engine.apply_model_extensions(model_class)
+
+    instance = model_class.new
+    assert_equal :applied, instance.template_extension_method
+  end
+
+  def test_apply_controller_extensions_matches_demodulized_name
+    controller_class = Class.new do
+      def self.name
+        "Admin::DashboardController"
+      end
+    end
+
+    RecordingStudioSitemaps.configuration.hooks.extend_controller(:DashboardController) do
+      def template_controller_extension
+        :applied
+      end
+    end
+
+    RecordingStudioSitemaps::Engine.apply_controller_extensions(controller_class)
+
+    instance = controller_class.new
+    assert_equal :applied, instance.template_controller_extension
+  end
+
+  def test_apply_extensions_flattens_compacts_and_tracks_identity
+    target = Class.new
+    extension = proc do
+      def generated_method
+        :generated
+      end
+    end
+
+    RecordingStudioSitemaps::Engine.send(:apply_extensions, target, [nil, [extension, extension]])
+
+    assert_equal :generated, target.new.generated_method
+    assert_equal true, target.instance_variable_get(:@recording_studio_sitemaps_applied_extensions).compare_by_identity?
+  end
+
+  def test_apply_extensions_returns_without_target
+    assert_nil RecordingStudioSitemaps::Engine.send(:apply_extensions, nil, [])
+  end
+
+  def test_extension_keys_for_includes_demodulized_name
+    namespaced = Class.new do
+      def self.name
+        "Admin::ReportsController"
+      end
+    end
+
+    expected_keys = [:"Admin::ReportsController"]
+    expected_keys << :ReportsController
+
+    assert_equal expected_keys, RecordingStudioSitemaps::Engine.send(:extension_keys_for, namespaced)
+  end
+
+  def test_extension_keys_for_removes_duplicate_names
+    plain = Class.new do
+      def self.name
+        "ReportsController"
+      end
+    end
+
+    assert_equal [:ReportsController], RecordingStudioSitemaps::Engine.send(:extension_keys_for, plain)
+  end
+
+  private
+
+  def with_temporary_nested_constant(parent_name, child_name, value)
+    parent_defined = Object.const_defined?(parent_name, false)
+    parent = parent_defined ? Object.const_get(parent_name) : Object.const_set(parent_name, Module.new)
+    child_defined = parent.const_defined?(child_name, false)
+    previous_child = parent.const_get(child_name) if child_defined
+
+    parent.const_set(child_name, value)
+    yield
+  ensure
+    parent.send(:remove_const, child_name) if parent.const_defined?(child_name, false)
+    parent.const_set(child_name, previous_child) if child_defined
+    Object.send(:remove_const, parent_name) unless parent_defined
   end
 
   def find_initializer(name)

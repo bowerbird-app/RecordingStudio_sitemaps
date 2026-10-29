@@ -116,7 +116,9 @@ module RecordingStudioSitemaps
       end
 
       def title_for(recordable)
-        RecordableTitle.for(recordable) { type_for(recordable) }
+        recordable.try(:title).presence ||
+          recordable.try(:name).presence ||
+          type_for(recordable)
       end
 
       def type_for(recordable)

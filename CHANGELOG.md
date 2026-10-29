@@ -7,23 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.3] - 2026-10-28
+## [0.5.3] - 2026-10-29
 
 ### Removed
 - Tracked SimpleCov output under `coverage/` and `test/dummy/coverage/` (kept on disk; gitignored)
-- Leftover gem template docs (`docs/gem_template/`), `bin/rename_gem`, and `test/rename_verification_test.rb`
-- Unused engine model/controller `class_eval` extension loops and `rescue StandardError` around YAML/`config.x` loading
 
 ### Changed
-- Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `>= 4.14` (Bundler Audit)
-- Dummy lockfile bumps `crass` to `1.0.8` and `net-ssh` to `7.3.8` (Bundler Audit)
-- YAML config loads with `config_for` when `config/recording_studio_sitemaps.yml` exists
-- Shared `RecordableTitle.for` for Admin findable titles and exclusion titles
-- Install generator no longer adds Tailwind `@source` paths for empty engine views
-- Dummy kit pins Attachable at GitHub tag `v0.10.0` (newest tag that resolves with current dummy pins; newer tags need FlatPack `>= 0.1.213` or Recording Studio `>= 6.1`) and lists `RecordingStudioAttachable::Attachment` so Publishable can boot without a stub
+- Dev FlatPack pin bumped to GitHub tag `v0.1.329` so `view_component` resolves at `4.20.0` (Bundler Audit)
+- Lockfile bumps `crass` to `1.0.8` and `net-ssh` to `7.3.8` (Bundler Audit)
 
 ### Upgrade notes
-- Bump to `0.5.3`. No migration. Hosts that relied on template `extend_model` / `extend_controller` hooks applied by this engine need to apply those extensions themselves. Hosts with a missing YAML file are unchanged. Invalid YAML now raises instead of being swallowed.
+- Bump to `0.5.3`. No migration. No behavior change. Hosts that lock `flat_pack` from this gem's development Gemfile should use tag `v0.1.329`.
 
 ## [0.5.2] - 2026-10-22
 
@@ -185,10 +179,6 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 
 [Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
-[0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
-[0.5.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.0...v0.5.1
-[0.5.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.3
 [0.2.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/releases/tag/v0.2.2

@@ -1,13 +1,5 @@
 # Upgrading
 
-## 0.5.3
-
-Install Sitemaps `0.5.3`. No migration. Coverage reports stay untracked. Template rename leftovers (`docs/gem_template/`, `bin/rename_gem`) are gone. The engine no longer applies template model/controller extension hooks or swallows YAML/`config.x` load errors. Hosts with `config/recording_studio_sitemaps.yml` still load it through `config_for` when the file exists. Dummy kit hosts that boot Publishable should pin Attachable `v0.10.0` (newer tags need FlatPack or Recording Studio bumps this wave does not make) and list `RecordingStudioAttachable::Attachment`.
-
-## 0.5.2
-
-Install Sitemaps `0.5.2`. No migration. `recording_studio_metrics` is `>= 0.3, < 1.0`. Dummy and the example Gemfile pin Metrics at tag `v0.5.0`. Hosts on Metrics `0.3.x` through `0.5.x` stay valid.
-
 ## 0.5.1
 
 Install Sitemaps `0.5.1`. No migration. `recording_studio_metrics` is `>= 0.3, < 0.6`. Dummy and the example Gemfile pin Metrics at tag `v0.5.0`. Hosts on Metrics `0.3.x` do not need to move.
