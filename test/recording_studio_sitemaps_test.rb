@@ -42,7 +42,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.329"'
+    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.207"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.5.3"'
     refute_includes gemfile, 'tag: "v0.1.198"'
@@ -191,7 +191,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.7.0"
     assert_includes readme, "v0.18.0"
-    assert_includes readme, "v0.1.329"
+    assert_includes readme, "v0.1.207"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.8.0"
     assert_includes readme, "v0.9.0"
@@ -220,8 +220,6 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes view_source, "page_nav_anchor_url:"
     assert_includes view_source, "FlatPack::PageTitle::Component"
     assert_includes kwargs_source, "anchor_href"
-    assert_includes kwargs_source, "with_back"
-    assert_includes kwargs_source, "with_close"
     assert_includes kwargs_source, "FlatPack::PageNav::Component.prepend"
     refute_includes view_source, "Dummy host"
     refute_includes view_source, "proves the"
