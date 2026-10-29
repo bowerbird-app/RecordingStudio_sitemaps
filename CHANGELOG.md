@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dummy Admin pin is GitHub tag `v2.4.0` (was `v2.3.0`) so Admin cards render on FlatPack `v0.1.329`. Dummy widget override uses Card `border: :strong` instead of `style: :outlined`.
 - Dummy Root Switchable pin is GitHub tag `v0.10.0` (was `v0.9.0`; needs Recording Studio `~> 4.1` and FlatPack `>= 0.1.304`). Recording Studio stays `v4.7.0`. Accessible stays `v0.18.0`. Metrics, Cache, Trashable, and Publishable stay main's pins.
 - Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8` (advisory-patched). No Gemfile or gemspec change.
+- SimpleCov HTML/JSON under `coverage/` and `test/dummy/coverage/` is no longer tracked.
 
 ### Upgrade notes
 - Bump to `0.5.4`. No migration. No gemspec change. Dummy and the root Gemfile pin FlatPack at `v0.1.329`. Dummy tests this kit: Recording Studio `v4.7.0`, Accessible `v0.18.0`, Admin `v2.4.0`, Root Switchable `v0.10.0`. Hosts that copy the dummy kit should move those tags. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords (`anchor_url` / `back_url` / `anchor_href` / `secondary_anchor_href`) or Card `style: :outlined`.
