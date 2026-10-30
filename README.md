@@ -34,7 +34,7 @@ gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag
 gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"
 gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.8.0"
 gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0", require: false
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.329"
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.331"
 gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps"
 ```
 
@@ -105,7 +105,7 @@ The Sitemaps section is five cards in a four-column row (the fifth wraps), then 
 
 Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. The DateRangeInput trigger shows that preset name (`Last 30 days`), not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. DateRangeInput `presets:` puts FlatPack’s built-in last-30-days name first. The trigger shows `Last 30 days`, not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers. Flatpack's ApexCharts pin still paints `0.0` when `decimalsInFloat` is `0`, so the dummy host wraps that pin to label ticks `0`, `1`, `2`. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
 
@@ -147,7 +147,7 @@ Dummy kit pins:
 | Metrics | `v0.5.0` |
 | Trashable | `v0.11.0` |
 | Cache | `v0.5.0` |
-| FlatPack | `v0.1.329` |
+| FlatPack | `v0.1.331` |
 
 ```bash
 cd test/dummy

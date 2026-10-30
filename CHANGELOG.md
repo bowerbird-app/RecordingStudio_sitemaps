@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-30
+
+### Changed
+- Build history DateRangeInput uses FlatPack `presets:` with the built-in `:last_30_days` name first, then FlatPack’s default names. The DateRangeInput prepend that faked that preset is gone.
+- Runtime `flat_pack` is `>= 0.1.331`. Dummy and root Gemfiles pin GitHub tag `v0.1.331`.
+
+### Upgrade notes
+- Bump to `0.6.0`. No migration. Pin FlatPack at GitHub tag `v0.1.331` (`>= 0.1.331`). Reload host JavaScript so the date picker controller has `last_30_days`. Do not rebuild Tailwind. Hosts that prepended `DateRangeInput` for last 30 days can drop that prepend.
+
 ## [0.5.3] - 2026-10-29
 
 ### Changed
@@ -179,7 +188,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.0...v0.5.1

@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.5.3", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.6.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -20,7 +20,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.6"'
     assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.3", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", "~> 0.3"'
-    assert_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
+    assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
+    refute_includes gemspec, 'spec.add_dependency "flat_pack", "~> 0.1.129"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio", "~> 4.1"'
     refute_includes gemspec, "= 0.2.0"
     refute_includes gemspec, 'spec.add_dependency "recording_studio_publishable", "~> 0.4"'
@@ -44,7 +45,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.5.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.11.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.5.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.329"'
+    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.331"'
+    refute_includes gemfile, 'tag: "v0.1.329"'
+    root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
+    assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.331"'
+    refute_includes root_gemfile, 'tag: "v0.1.329"'
     refute_includes gemfile, "recording_studio/v3.0.0"
     refute_includes gemfile, 'tag: "v0.5.3"'
     refute_includes gemfile, 'tag: "v0.1.198"'
@@ -195,7 +200,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes readme, "Recording Studio Sitemaps"
     assert_includes readme, "v4.7.0"
     assert_includes readme, "v0.18.0"
-    assert_includes readme, "v0.1.329"
+    assert_includes readme, "v0.1.331"
+    refute_includes readme, "v0.1.329"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.8.0"
     assert_includes readme, "v0.10.0"

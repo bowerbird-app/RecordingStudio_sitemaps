@@ -104,6 +104,7 @@ module RecordingStudioSitemaps
     end
 
     initializer "recording_studio_sitemaps.admin" do |app|
+      app.paths["app/views"].unshift(root.join("app/views"))
       app.config.assets.paths << root.join("app/javascript") if app.config.respond_to?(:assets)
 
       config.to_prepare do

@@ -24,28 +24,6 @@ class AdminTest < Minitest::Test
 
   FakePage = Struct.new(:title, :name, keyword_init: true)
 
-  class DateRangeInputStandIn
-    prepend RecordingStudioSitemaps::Admin::DateRangeLast30Days
-
-    def presets
-      quick_range_presets
-    end
-
-    def range_for(key)
-      preset_range_for(key)
-    end
-
-    private
-
-    def quick_range_presets
-      [{ key: "this_week", label: "This week" }]
-    end
-
-    def preset_range_for(_key)
-      { start: nil, end: nil }
-    end
-  end
-
   def page_snapshot(included: 1, published: 2)
     RecordingStudioSitemaps::Coverage::Snapshot.new(
       included: included,
@@ -275,11 +253,57 @@ class AdminTest < Minitest::Test
     period = RecordingStudioAdmin::Period.from_preset_key(:last_30_days)
     assert_equal "Last 30 days", period.label
     refute_equal "#{period.start_date.iso8601} to #{period.end_date.iso8601}", period.label
-    picker = DateRangeInputStandIn.new
-    assert_equal "last_30_days", picker.presets.first[:key]
-    assert_equal "Last 30 days", picker.presets.first[:label]
-    assert_equal period.start_date.iso8601, picker.range_for("last_30_days")[:start]
-    assert_equal period.end_date.iso8601, picker.range_for("last_30_days")[:end]
+    engine_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
+    assert_includes engine_source, 'app.paths["app/views"].unshift(root.join("app/views"))'
+    admin_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/admin.rb", __dir__))
+    assert_includes admin_source, "def self.date_range_presets"
+    assert_includes admin_source, ":last_30_days, *FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS"
+    refute_includes admin_source, "prepend"
+    refute File.exist?(File.expand_path("../lib/recording_studio_sitemaps/admin/date_range_last_30_days.rb", __dir__))
+    filter_fields = File.read(
+      File.expand_path("../app/views/recording_studio_admin/screens/_filter_fields.html.erb", __dir__)
+    )
+    assert_includes filter_fields, "presets: RecordingStudioSitemaps::Admin.date_range_presets"
+    assert_includes filter_fields, "FlatPack::DateRangeInput::Component.new("
+
+    require "action_view"
+    require "view_component"
+    I18n.backend.load_translations(FlatPack::Engine.root.join("config/locales/flatpack.en.yml"))
+    require FlatPack::Engine.root.join("app/components/flat_pack/base_component")
+    require FlatPack::Engine.root.join("app/components/flat_pack/date_picker/field")
+    require FlatPack::Engine.root.join("app/components/flat_pack/date_range_input/component")
+    assert_equal :last_30_days, RecordingStudioSitemaps::Admin.date_range_presets.first
+    assert_equal(
+      FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS,
+      RecordingStudioSitemaps::Admin.date_range_presets.drop(1)
+    )
+    picker = FlatPack::DateRangeInput::Component.new(
+      start_name: "start_date",
+      end_name: "end_date",
+      start_value: period.start_date,
+      end_value: period.end_date,
+      presets: RecordingStudioSitemaps::Admin.date_range_presets
+    )
+    presets = picker.send(:quick_range_presets)
+    assert_equal "last_30_days", presets.first[:key]
+    assert_equal "Last 30 days", presets.first[:label]
+    refute_includes presets.drop(1).map { |preset| preset[:key] }, "last_30_days"
+    range = picker.send(:preset_range_for, "last_30_days")
+    today = Date.current
+    assert_equal (today - 29).iso8601, range[:start]
+    assert_equal today.iso8601, range[:end]
+    fake_value = Struct.new(:preset_key, :start_date, :end_date)
+    fake_filter = Struct.new(:value)
+    start_date, end_date = RecordingStudioSitemaps::Admin.date_range_input_values(
+      fake_filter.new(fake_value.new(:last_30_days, today - 30, today))
+    )
+    assert_equal today - 29, start_date
+    assert_equal today, end_date
+    custom_start, custom_end = RecordingStudioSitemaps::Admin.date_range_input_values(
+      fake_filter.new(fake_value.new(nil, today - 3, today))
+    )
+    assert_equal today - 3, custom_start
+    assert_equal today, custom_end
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)

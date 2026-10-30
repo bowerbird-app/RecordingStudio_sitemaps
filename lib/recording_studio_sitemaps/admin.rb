@@ -8,6 +8,20 @@ module RecordingStudioSitemaps
     WIDGET_INDEX_SIZE = "widgets.sitemaps.index_size"
     WIDGET_LAST_BUILD = "widgets.sitemaps.last_build"
     SCREEN_BUILD_HISTORY = "build_history"
+
+    def self.date_range_presets
+      [:last_30_days, *FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS]
+    end
+
+    def self.date_range_input_values(filter)
+      value = filter.value
+      if value&.preset_key.to_s == "last_30_days"
+        today = Date.current
+        return [today - 29, today]
+      end
+
+      [value&.start_date, value&.end_date]
+    end
   end
 end
 
@@ -17,7 +31,6 @@ require_relative "admin/chart_options"
 require_relative "admin/widgets"
 require_relative "admin/section"
 require_relative "admin/build_history"
-require_relative "admin/date_range_last_30_days"
 
 module RecordingStudioSitemaps
   module Admin
@@ -25,7 +38,6 @@ module RecordingStudioSitemaps
       def register!
         return unless defined?(::RecordingStudioAdmin)
 
-        install_date_range_last_30_days!
         RecordingStudioAdmin.register_section(Section)
         RecordingStudioAdmin.register_screen(BuildHistory)
         RecordingStudioAdmin.register_widget(coverage_widget)
@@ -33,20 +45,6 @@ module RecordingStudioSitemaps
         RecordingStudioAdmin.register_widget(missing_widget)
         RecordingStudioAdmin.register_widget(index_size_widget)
         RecordingStudioAdmin.register_widget(last_build_widget)
-      end
-
-      def install_date_range_last_30_days!
-        component = date_range_input_component
-        return unless component
-        return if component.ancestors.include?(DateRangeLast30Days)
-
-        component.prepend(DateRangeLast30Days)
-      end
-
-      def date_range_input_component
-        FlatPack::DateRangeInput::Component
-      rescue NameError
-        nil
       end
     end
   end
