@@ -8,20 +8,6 @@ module RecordingStudioSitemaps
     WIDGET_INDEX_SIZE = "widgets.sitemaps.index_size"
     WIDGET_LAST_BUILD = "widgets.sitemaps.last_build"
     SCREEN_BUILD_HISTORY = "build_history"
-
-    def self.date_range_presets
-      [:last_30_days, *FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS]
-    end
-
-    def self.date_range_input_values(filter)
-      value = filter.value
-      if value&.preset_key.to_s == "last_30_days"
-        today = Date.current
-        return [today - 29, today]
-      end
-
-      [value&.start_date, value&.end_date]
-    end
   end
 end
 
