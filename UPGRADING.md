@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.6.0
+
+Install Sitemaps `0.6.0`. No Sitemaps migration. Pin Recording Studio at GitHub tag `v6.3.0` (`>= 6.3.0`), Admin `v2.8.0` (`>= 2.8.0`), and FlatPack `v0.1.331` (`>= 0.1.331`). Pin Accessible `v0.23.1`, Metrics `v0.7.0`, Trashable `v0.12.0`, Logs `v0.7.1`, and Publishable `v0.13.0`. Build history uses Admin’s hash date-range preset (`days: 31`). The DateRangeInput prepend module is gone (`install_date_range_last_30_days!`, its require, and `admin/date_range_last_30_days.rb`). Reload host JavaScript so the date picker has `last_30_days`. Do not rebuild Tailwind. Hosts still on core 4.x cannot install this version.
+
 ## 0.5.3
 
 Install Sitemaps `0.5.3`. No migration. Dummy default layout uses native FlatPack PageNav (`with_back`, `with_close`, `with_item`). Dummy and the root Gemfile pin FlatPack at GitHub tag `v0.1.329`. Dummy kit also pins Admin `v2.4.0` and Root Switchable `v0.10.0`. Lockfile-only: `crass` `1.0.8` and dummy `net-ssh` `7.3.8`. SimpleCov output under `coverage/` and `test/dummy/coverage/` is untracked. Gemspec is unchanged. Hosts already on `flat_pack ~> 0.1.129` need nothing unless they still call the old PageNav keywords or Card `style: :outlined`.

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-30
+
+### Changed
+- Runtime `recording_studio` is `>= 6.3.0`. Dummy and root Gemfiles pin GitHub tag `v6.3.0`.
+- Runtime `recording_studio_admin` is `>= 2.8.0` (dummy and root pin GitHub tag `v2.8.0`). Build history uses Admin’s DateRangeInput hash preset (`key: :last_30_days`, `days: 31`). The DateRangeInput prepend module is gone (`install_date_range_last_30_days!`, its require, and `admin/date_range_last_30_days.rb`).
+- Runtime `flat_pack` is `>= 0.1.331`. Dummy and root Gemfiles pin GitHub tag `v0.1.331`.
+- Co-pins Bundler needs next to that kit: Accessible `v0.23.1` (`>= 0.23.1`), Metrics `v0.7.0` (`>= 0.7.0, < 1.0`), Trashable `v0.12.0`, Logs `v0.7.1` (Admin 2.8 runtime). Publishable dummy/root pin is `v0.13.0` (`>= 0.13.0`) because 0.8.0 still requires core 4.x. Dummy Root Switchable pin is `v0.11.0` because 0.10.0 still requires core 4.x. Dummy Cache pin is `v0.6.0` because `v0.5.0` still requires core 4.x.
+
+### Upgrade notes
+- Bump to `0.6.0`. No Sitemaps migration. Pin Recording Studio `v6.3.0` (`>= 6.3.0`), Admin `v2.8.0` (`>= 2.8.0`), and FlatPack `v0.1.331` (`>= 0.1.331`). Also pin Accessible `v0.23.1`, Metrics `v0.7.0`, Trashable `v0.12.0`, Logs `v0.7.1`, and Publishable `v0.13.0`. Reload host JavaScript so the date picker has `last_30_days`. Do not rebuild Tailwind. Hosts that prepended DateRangeInput via `install_date_range_last_30_days!` can drop that module, its require, and `admin/date_range_last_30_days.rb`. Dummy chrome follows core 6 (`recording_studio_layout`, `content_for :title`, `flat_pack_page_nav`).
+
 ## [0.5.3] - 2026-10-29
 
 ### Changed
@@ -179,7 +190,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.0...v0.5.1

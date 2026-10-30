@@ -17,7 +17,6 @@ require_relative "admin/chart_options"
 require_relative "admin/widgets"
 require_relative "admin/section"
 require_relative "admin/build_history"
-require_relative "admin/date_range_last_30_days"
 
 module RecordingStudioSitemaps
   module Admin
@@ -25,7 +24,6 @@ module RecordingStudioSitemaps
       def register!
         return unless defined?(::RecordingStudioAdmin)
 
-        install_date_range_last_30_days!
         RecordingStudioAdmin.register_section(Section)
         RecordingStudioAdmin.register_screen(BuildHistory)
         RecordingStudioAdmin.register_widget(coverage_widget)
@@ -33,20 +31,6 @@ module RecordingStudioSitemaps
         RecordingStudioAdmin.register_widget(missing_widget)
         RecordingStudioAdmin.register_widget(index_size_widget)
         RecordingStudioAdmin.register_widget(last_build_widget)
-      end
-
-      def install_date_range_last_30_days!
-        component = date_range_input_component
-        return unless component
-        return if component.ancestors.include?(DateRangeLast30Days)
-
-        component.prepend(DateRangeLast30Days)
-      end
-
-      def date_range_input_component
-        FlatPack::DateRangeInput::Component
-      rescue NameError
-        nil
       end
     end
   end
