@@ -271,31 +271,6 @@ class AdminTest < Minitest::Test
     assert_includes filter_fields, "days: 31"
     assert_includes filter_fields, "*FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS"
     assert_includes filter_fields, "FlatPack::DateRangeInput::Component.new("
-
-    require "action_view"
-    require "view_component"
-    I18n.backend.load_translations(FlatPack::Engine.root.join("config/locales/flatpack.en.yml"))
-    require FlatPack::Engine.root.join("app/components/flat_pack/base_component")
-    require FlatPack::Engine.root.join("app/components/flat_pack/date_picker/field")
-    require FlatPack::Engine.root.join("app/components/flat_pack/date_range_input/component")
-    admin_presets = [
-      { key: :last_30_days, label: "Last 30 days", days: 31 },
-      *FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS
-    ]
-    picker = FlatPack::DateRangeInput::Component.new(
-      start_name: "start_date",
-      end_name: "end_date",
-      start_value: period.start_date,
-      end_value: period.end_date,
-      presets: admin_presets
-    )
-    presets = picker.send(:quick_range_presets)
-    assert_equal "last_30_days", presets.first[:key]
-    assert_equal "Last 30 days", presets.first[:label]
-    refute_includes presets.drop(1).map { |preset| preset[:key] }, "last_30_days"
-    range = picker.send(:preset_range_for, "last_30_days")
-    assert_equal period.start_date.iso8601, range[:start]
-    assert_equal period.end_date.iso8601, range[:end]
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)

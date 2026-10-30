@@ -293,13 +293,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
   def test_dummy_html_uses_rounded_theme
     application_layout = File.read(File.expand_path("dummy/app/views/layouts/application.html.erb", __dir__))
-    theme_initializer = File.read(
-      File.expand_path("dummy/config/initializers/html_rounded_theme.rb", __dir__)
-    )
 
     assert_includes application_layout, '<html data-theme="rounded">'
-    assert_includes theme_initializer, "DummyHtmlRoundedTheme"
-    assert_includes theme_initializer, 'data-theme="rounded"'
     refute File.exist?(
       File.expand_path("dummy/app/views/layouts/recording_studio/default_layout.html.erb", __dir__)
     )

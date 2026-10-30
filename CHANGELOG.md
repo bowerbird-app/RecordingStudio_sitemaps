@@ -11,12 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Runtime `recording_studio` is `>= 6.3.0`. Dummy and root Gemfiles pin GitHub tag `v6.3.0`.
-- Runtime `recording_studio_admin` is `>= 2.8.0` (dummy and root pin GitHub tag `v2.8.0`). Build history uses Admin’s DateRangeInput hash preset (`key: :last_30_days`, `days: 31`). The DateRangeInput prepend, copied filter partial, and view-path unshift are gone.
+- Runtime `recording_studio_admin` is `>= 2.8.0` (dummy and root pin GitHub tag `v2.8.0`). Build history uses Admin’s DateRangeInput hash preset (`key: :last_30_days`, `days: 31`). The DateRangeInput prepend module is gone (`install_date_range_last_30_days!`, its require, and `admin/date_range_last_30_days.rb`).
 - Runtime `flat_pack` is `>= 0.1.331`. Dummy and root Gemfiles pin GitHub tag `v0.1.331`.
 - Co-pins Bundler needs next to that kit: Accessible `v0.23.1` (`>= 0.23.1`), Metrics `v0.7.0` (`>= 0.7.0, < 1.0`), Trashable `v0.12.0`, Logs `v0.7.1` (Admin 2.8 runtime). Publishable dummy/root pin is `v0.13.0` (`>= 0.13.0`) because 0.8.0 still requires core 4.x. Dummy Root Switchable pin is `v0.11.0` because 0.10.0 still requires core 4.x. Dummy Cache pin is `v0.6.0` because `v0.5.0` still requires core 4.x.
 
 ### Upgrade notes
-- Bump to `0.6.0`. No Sitemaps migration. Pin Recording Studio `v6.3.0` (`>= 6.3.0`), Admin `v2.8.0` (`>= 2.8.0`), and FlatPack `v0.1.331` (`>= 0.1.331`). Also pin Accessible `v0.23.1`, Metrics `v0.7.0`, Trashable `v0.12.0`, Logs `v0.7.1`, and Publishable `v0.13.0`. Reload host JavaScript so the date picker has `last_30_days`. Do not rebuild Tailwind. Hosts that prepended `DateRangeInput` or copied Admin `_filter_fields` for last 30 days can drop that. Dummy chrome follows core 6 (`recording_studio_layout`, `content_for :title`, `flat_pack_page_nav`).
+- Bump to `0.6.0`. No Sitemaps migration. Pin Recording Studio `v6.3.0` (`>= 6.3.0`), Admin `v2.8.0` (`>= 2.8.0`), and FlatPack `v0.1.331` (`>= 0.1.331`). Also pin Accessible `v0.23.1`, Metrics `v0.7.0`, Trashable `v0.12.0`, Logs `v0.7.1`, and Publishable `v0.13.0`. Reload host JavaScript so the date picker has `last_30_days`. Do not rebuild Tailwind. Hosts that prepended DateRangeInput via `install_date_range_last_30_days!` can drop that module, its require, and `admin/date_range_last_30_days.rb`. Dummy chrome follows core 6 (`recording_studio_layout`, `content_for :title`, `flat_pack_page_nav`).
 
 ## [0.5.3] - 2026-10-29
 
