@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.6.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.6.1", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -116,11 +116,23 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes application_js, 'import "@hotwired/turbo-rails"'
     refute_includes application_js, 'import { application } from "controllers/application"'
     assert_includes importmap, 'pin "@hotwired/turbo-rails", to: "turbo.min.js"'
-    assert_includes importmap, 'pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"'
+    refute_includes importmap, 'pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"'
+    refute_includes importmap, "recording_studio_sitemaps/apexcharts.js"
 
     wrapper = File.read(File.expand_path("../app/javascript/recording_studio_sitemaps/apexcharts.js", __dir__))
+    assert_includes wrapper, "Deprecated since 0.6.1"
+    assert_includes wrapper, "integer_ticks"
     assert_includes wrapper, "decimalsInFloat"
     assert_includes wrapper, "Math.round"
+
+    admin_widget = File.read(
+      RecordingStudioAdmin::Engine.root.join("app/views/recording_studio_admin/shared/_widget.html.erb")
+    )
+    admin_chart = File.read(
+      RecordingStudioAdmin::Engine.root.join("app/views/recording_studio_admin/screens/_chart.html.erb")
+    )
+    assert_includes admin_widget, "integer_ticks: presenter.mini_chart_integer_ticks?"
+    assert_includes admin_chart, "integer_ticks: RecordingStudioAdmin::Widgets::Presenter.integer_ticks?"
   end
 
   def test_dummy_default_layout_head_loads_flatpack_css_only
@@ -153,12 +165,15 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes section_view, "button_style: :primary"
     assert_includes section_view, "cols: 4"
     refute_includes section_view, "recording_studio_page_nav("
-    widget_view = File.read(
+    refute File.exist?(
       File.expand_path("dummy/app/views/recording_studio_admin/shared/_widget.html.erb", __dir__)
     )
-    assert_includes widget_view, "border: :strong"
-    refute_includes widget_view, "style: :outlined"
-    assert_includes widget_view, 'aria: { label: "Open #{widget_link_label}" }'
+    admin_widget = File.read(
+      RecordingStudioAdmin::Engine.root.join("app/views/recording_studio_admin/shared/_widget.html.erb")
+    )
+    assert_includes admin_widget, "border: :strong"
+    refute_includes admin_widget, "style: :outlined"
+    assert_includes admin_widget, "integer_ticks: presenter.mini_chart_integer_ticks?"
     refute_includes section_view, "Sign out"
     refute_includes section_view, "recording_studio_root_switch"
     refute_includes section_view, "+ Access"

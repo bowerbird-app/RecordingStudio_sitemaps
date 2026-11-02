@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.6.1
+
+Install Sitemaps `0.6.1`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.
+
 ## 0.6.0
 
 Install Sitemaps `0.6.0`. No Sitemaps migration. Pin Recording Studio at GitHub tag `v6.3.0` (`>= 6.3.0`), Admin `v2.8.0` (`>= 2.8.0`), and FlatPack `v0.1.331` (`>= 0.1.331`). Pin Accessible `v0.23.1`, Metrics `v0.7.0`, Trashable `v0.12.0`, Logs `v0.7.1`, and Publishable `v0.13.0`. Build history uses Admin’s hash date-range preset (`days: 31`). The DateRangeInput prepend module is gone (`install_date_range_last_30_days!`, its require, and `admin/date_range_last_30_days.rb`). Reload host JavaScript so the date picker has `last_30_days`. Do not rebuild Tailwind. Hosts still on core 4.x cannot install this version.

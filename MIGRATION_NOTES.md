@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+## 0.6.1
+
+Install Sitemaps `0.6.1`. No migration. Index size and Build history y labels come from Admin 2.8 / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js`. That file is still shipped and deprecated.
+
+### Host app
+
+1. Remove `pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"` from the host importmap if you added it for whole-number ticks. Use FlatPack’s ApexCharts pin.
+2. Do not copy Admin’s `_widget.html.erb` into the host. Admin 2.8 already passes `integer_ticks:` on mini charts.
+3. English hosts need no locale change. Sitemaps adds no new engine migration.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
+## 0.6.0
+
 Raise Recording Studio to GitHub tag `v6.3.0` (`>= 6.3.0`). Raise Admin to `v2.8.0` (`>= 2.8.0`). Raise Accessible to `v0.23.1` (`>= 0.23.1`). Raise Metrics to `v0.7.0` (`>= 0.7.0, < 1.0`). Raise Trashable to `v0.12.0`. Pin Logs `v0.7.1` (Admin 2.8 runtime). Raise Publishable to `v0.13.0` (`>= 0.13.0`). Raise dummy Root Switchable to `v0.11.0`. Dummy and root FlatPack stay `v0.1.331`.
 
 - Recording Studio `>= 6.3.0` (GitHub tag `v6.3.0`) — core 6 layout (`recording_studio_layout`, `flat_pack_page_nav`); Admin 2.8.0 requires this floor
@@ -17,7 +37,7 @@ Raise Recording Studio to GitHub tag `v6.3.0` (`>= 6.3.0`). Raise Admin to `v2.8
 1. Pin Recording Studio at GitHub tag `v6.3.0` (`>= 6.3.0`). Follow core’s 6.x upgrade notes for layout (`recording_studio_layout`, `content_for :title`, `flat_pack_page_nav`). English hosts need no locale change.
 2. Pin Accessible at GitHub tag `v0.23.1` (`>= 0.23.1`). From `0.13.x`, run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` so `0.14.0` action-audience tables land (`recording_studio_access_constraints`, `recording_studio_access_rules`). Also pin Metrics `v0.7.0` and Trashable `v0.12.0` with `require: false` so Bundler can resolve Accessible’s query-only Trashable dependency. English hosts need no locale change.
 3. Pin Publishable at GitHub tag `v0.13.0` (`>= 0.13.0`). English hosts need no locale change. Optional: subscribe to `RecordingStudioPublishable.subscribe` for published/unpublished/revised notifications added in `0.7.0`. Hosts missing `social_image_attachment_recording_id` on `recording_studio_publishable_publishables` should run `bin/rails generate recording_studio_publishable:migrations` then `bin/rails db:migrate` (revising a publishable requires that column).
-4. Pin Admin at GitHub tag `v2.8.0` and FlatPack at `v0.1.331` (`recording_studio_admin >= 2.8.0`, `flat_pack >= 0.1.331`). Also pin Logs `v0.7.1`, Metrics `v0.7.0`, and Trashable `v0.12.0` with `require: false` next to Admin. Build history uses Admin’s hash date-range preset. Do not copy `_filter_fields` or prepend DateRangeInput. English hosts need no locale change. Dummy default layout comes from core 6. Dummy Admin cards use `border: :strong` instead of `style: :outlined`.
+4. Pin Admin at GitHub tag `v2.8.0` and FlatPack at `v0.1.331` (`recording_studio_admin >= 2.8.0`, `flat_pack >= 0.1.331`). Also pin Logs `v0.7.1`, Metrics `v0.7.0`, and Trashable `v0.12.0` with `require: false` next to Admin. Build history uses Admin’s hash date-range preset. Do not copy `_filter_fields` or prepend DateRangeInput. English hosts need no locale change. Dummy default layout comes from core 6. Dummy Admin cards use Admin’s `_widget.html.erb` (`border: :strong`). Do not copy that partial into the host.
 5. If the host uses Root Switchable, pin it at GitHub tag `v0.11.0` (dummy-tested) and Metrics at `v0.7.0`. Root Switchable `0.10.0` cannot install beside core 6.3.0. English hosts that leave `page_copy` unset or use plain Strings need no locale change. Do not set required `page_copy` keys to `nil`.
 6. Run `bin/rails generate recording_studio_accessible:migrations` and `bin/rails db:migrate` if you are on Accessible `0.9.x` or older. That adds `depends_on_recording_id`, the access invitations table, and string roles on `recording_studio_accesses`.
 7. Grant access through Accessible services (`bootstrap_owner_access!`, `grant_access`). `RecordingStudio::Access` is readonly. Roles are strings (`view`, `edit`, `admin`).
@@ -93,7 +113,7 @@ This slice ships the public sitemap, generation logs, and Admin.
 6. Drop `recording_studio_sitemaps_pages` if a host copied the old engine migration. Sitemap URLs are derived; only generation logs are stored.
 7. Do not put Sign out or a root switcher in `_default_layout_head.html.erb`. That partial loads Flatpack CSS. Core owns back/close. Set Accessible `avatar_resolver` so the Admin slot can show who has access.
 8. Last build reads `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since stored `GenerationLog.built_at`) and shows time ago in words. Index size and Build history read generation logs. Build history uses Admin `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`. Result is Ok / Failed (or the error). Chart dates match the When column; page-count ticks stay whole numbers. Do not mark Sitemaps widgets `view_variant: :compact`.
-9. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`.
+9. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`. **Deprecated in 0.6.1:** remove that pin and use Admin / FlatPack `integer_ticks` instead. The wrapper file remains shipped for hosts that still pin it.
 10. Admin’s section grid is three columns. The dummy host overrides that view to Flatpack `cols: 4`. Last build, Index size, Coverage, In the sitemap, and Missing share that row. The fifth card wraps.
 
 `RecordingStudioSitemaps.rebuild!` is the one write path. Publish/unpublish and Admin Rebuild both call it.

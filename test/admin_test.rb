@@ -191,13 +191,9 @@ class AdminTest < Minitest::Test
         series.first[:data]
       )
       refute(series.first[:data].any? { |point| point[:x].to_s.include?("T") })
-      assert_equal 0, options.dig(:yaxis, :decimalsInFloat)
-      assert_equal 0, options.dig(:yaxis, :min)
-      assert_equal 2, options.dig(:yaxis, :max)
-      assert_equal 2, options.dig(:yaxis, :tickAmount)
-      assert_equal 1, options.dig(:yaxis, :stepSize)
-      assert_equal false, options.dig(:yaxis, :forceNiceScale)
+      assert_nil options[:yaxis]
       assert_equal "category", options.dig(:xaxis, :type)
+      assert RecordingStudioAdmin::Widgets::Presenter.integer_ticks?(:area, series: series)
     end
   end
 
@@ -229,9 +225,13 @@ class AdminTest < Minitest::Test
     assert_equal RecordingStudioSitemaps::Admin::WIDGET_INDEX_SIZE, widget.key
     assert_equal "Build history", widget.link_label
     assert_equal "/admin/screens/build_history", widget.link_to
-    assert_equal 0, widget.chart_options.dig(:yaxis, :decimalsInFloat)
-    assert_equal 1, widget.chart_options.dig(:yaxis, :stepSize)
+    assert_nil widget.chart_options[:yaxis]
     assert_equal false, widget.chart_options.dig(:xaxis, :labels, :show)
+    assert RecordingStudioAdmin::Widgets::Presenter.integer_ticks?(
+      widget.chart_type,
+      series: widget.series,
+      chart_options: widget.chart_options
+    )
     assert_equal "Pages", widget.series.first[:name]
     assert_equal [{ x: 0, y: 1 }], widget.series.first[:data]
     refute widget.show_change

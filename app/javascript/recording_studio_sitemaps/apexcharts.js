@@ -1,3 +1,6 @@
+// Deprecated since 0.6.1. Hosts should use FlatPack's ApexCharts pin plus Admin
+// `integer_ticks`. This wrapper stays shipped so existing host importmap pins
+// keep resolving. Do not pin it in new hosts.
 import ApexCharts from "https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.esm.js"
 
 function integerLabel(value) {

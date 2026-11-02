@@ -44,12 +44,14 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Hidden from search"
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
+    assert_includes response.body, "flat-pack--chart-integer-ticks-value"
     assert_includes response.body, "Index size"
     assert_includes response.body, "Last build"
     assert_includes response.body, "ago"
     refute_includes response.body, "Result"
     refute_includes response.body, ">Age<"
-    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
+    assert_select "a[href='/admin/screens/build_history']", text: "More", count: 2
+    assert_includes response.body, "Open Build history"
     assert_includes response.body, "Sitemaps Admin"
     refute_includes response.body, "+ Access"
     refute_includes response.body, "Sign out"
@@ -97,7 +99,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes css_select("input[data-flat-pack--flatpack-date-picker-target=trigger]").map { |input|
       input["value"]
     }.join, raw_range
-    assert_includes response.body, "recording_studio_sitemaps/apexcharts"
+    refute_includes response.body, "recording_studio_sitemaps/apexcharts"
+    assert_includes response.body, "https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.esm.js"
     assert_includes response.body, "/admin/screens/build_history/chart"
     assert_includes response.body, "/admin/screens/build_history/table"
     refute_includes response.body, "Sign out"
@@ -110,8 +113,9 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     stamp = RecordingStudioSitemaps::Admin.format_when(RecordingStudioSitemaps::GenerationLog.latest)
     assert_includes response.body, "Pages in the sitemap"
     assert_includes response.body, stamp
-    assert_includes response.body, "decimalsInFloat"
-    assert_includes response.body, "stepSize"
+    assert_includes response.body, "flat-pack--chart-integer-ticks-value"
+    refute_includes response.body, "decimalsInFloat"
+    refute_includes response.body, "stepSize"
     refute_match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, response.body)
 
     get "/admin/screens/build_history/table"
@@ -153,7 +157,8 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Last build"
     assert_includes response.body, "ago"
     refute_includes response.body, "Failed"
-    assert_select "a[href='/admin/screens/build_history'][aria-label='Open Build history']", count: 2
+    assert_select "a[href='/admin/screens/build_history']", text: "More", count: 2
+    assert_includes response.body, "Open Build history"
     refute_includes response.body, "Disk was full"
   end
 
