@@ -9,6 +9,15 @@ grant_seed_admin_access = lambda do |recording:, actor:|
   result = RecordingStudioAccessible.bootstrap_owner_access!(recording: recording, actor: actor)
   next if result.success?
 
+  manager = RecordingStudioAccessible.access_recordings_for(recording).lazy.filter_map do |access_recording|
+    access = access_recording.recordable
+    next unless access.respond_to?(:actor) && access.actor
+    next unless access.role.to_s == "admin"
+
+    access.actor
+  end.first
+  next unless manager
+
   previous_authorizer = RecordingStudioAccessible.configuration.access_management_authorizer
   begin
     RecordingStudioAccessible.configuration.access_management_authorizer = ->(recording:, **) { recording.present? }
@@ -16,7 +25,7 @@ grant_seed_admin_access = lambda do |recording:, actor:|
       recording: recording,
       actor: actor,
       role: "admin",
-      manager_actor: actor
+      manager_actor: manager
     )
   ensure
     RecordingStudioAccessible.configuration.access_management_authorizer = previous_authorizer

@@ -1,17 +1,14 @@
 <% workspace_title = @workspace&.name.presence || "Workspace" %>
-<% recording_studio_page_nav(
-  title: workspace_title,
-  page_nav_back_url: root_path,
-  page_nav_anchor_url: root_path
+<% content_for :title, workspace_title %>
+<% content_for :subtitle, (@workspace.present? ? "Folders and pages in this workspace." : "Pick a workspace from the switcher.") %>
+<% flat_pack_page_nav(
+  round: true,
+  style: :default,
+  back_href: root_path,
+  anchor_href: root_path
 ) %>
 
 <div class="flex w-full flex-col gap-6">
-  <%= render FlatPack::PageTitle::Component.new(
-    title: workspace_title,
-    subtitle: (@workspace.present? ? "Folders and pages in this workspace." : "Pick a workspace from the switcher."),
-    variant: :h1
-  ) %>
-
   <% if @workspace_items.any? %>
     <%= render FlatPack::List::Component.new(divider: true) do %>
       <% @workspace_items.each do |item| %>

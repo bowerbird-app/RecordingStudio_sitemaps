@@ -89,6 +89,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'name="end_date"'
     assert_includes response.body, 'name="date_range_preset"'
     assert_includes response.body, "last_30_days"
+    assert_select "button[data-flat-pack-date-picker-preset=?]", "last_30_days", text: "Last 30 days"
     period = RecordingStudioAdmin::Period.from_preset_key(:last_30_days)
     raw_range = "#{period.start_date.iso8601} to #{period.end_date.iso8601}"
     assert_select "input[data-flat-pack--flatpack-date-picker-target=trigger][value=?]", "Last 30 days"

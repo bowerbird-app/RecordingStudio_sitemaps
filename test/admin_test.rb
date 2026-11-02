@@ -24,28 +24,6 @@ class AdminTest < Minitest::Test
 
   FakePage = Struct.new(:title, :name, keyword_init: true)
 
-  class DateRangeInputStandIn
-    prepend RecordingStudioSitemaps::Admin::DateRangeLast30Days
-
-    def presets
-      quick_range_presets
-    end
-
-    def range_for(key)
-      preset_range_for(key)
-    end
-
-    private
-
-    def quick_range_presets
-      [{ key: "this_week", label: "This week" }]
-    end
-
-    def preset_range_for(_key)
-      { start: nil, end: nil }
-    end
-  end
-
   def page_snapshot(included: 1, published: 2)
     RecordingStudioSitemaps::Coverage::Snapshot.new(
       included: included,
@@ -275,11 +253,24 @@ class AdminTest < Minitest::Test
     period = RecordingStudioAdmin::Period.from_preset_key(:last_30_days)
     assert_equal "Last 30 days", period.label
     refute_equal "#{period.start_date.iso8601} to #{period.end_date.iso8601}", period.label
-    picker = DateRangeInputStandIn.new
-    assert_equal "last_30_days", picker.presets.first[:key]
-    assert_equal "Last 30 days", picker.presets.first[:label]
-    assert_equal period.start_date.iso8601, picker.range_for("last_30_days")[:start]
-    assert_equal period.end_date.iso8601, picker.range_for("last_30_days")[:end]
+    engine_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
+    refute_includes engine_source, "app.paths[\"app/views\"].unshift"
+    admin_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/admin.rb", __dir__))
+    refute_includes admin_source, "date_range_presets"
+    refute_includes admin_source, "date_range_input_values"
+    refute_includes admin_source, "prepend"
+    refute File.exist?(File.expand_path("../lib/recording_studio_sitemaps/admin/date_range_last_30_days.rb", __dir__))
+    refute File.exist?(
+      File.expand_path("../app/views/recording_studio_admin/screens/_filter_fields.html.erb", __dir__)
+    )
+    filter_fields = File.read(
+      RecordingStudioAdmin::Engine.root.join("app/views/recording_studio_admin/screens/_filter_fields.html.erb")
+    )
+    assert_includes filter_fields, "key: :last_30_days"
+    assert_includes filter_fields, 'label: "Last 30 days"'
+    assert_includes filter_fields, "days: 31"
+    assert_includes filter_fields, "*FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS"
+    assert_includes filter_fields, "FlatPack::DateRangeInput::Component.new("
     assert_equal :area, screen.chart_value.type
     assert_equal "Pages in the sitemap", screen.chart_value.title
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)

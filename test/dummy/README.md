@@ -39,7 +39,7 @@ The dummy home stays on a workspace. Admin lives on the Admin root. Switch to **
 
 ## Layouts and assets
 
-Authenticated pages include `RecordingStudio::UsesDefaultLayout` and render `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy HTML sets Flatpack's `data-theme="rounded"`.
+Authenticated pages call `recording_studio_layout` and use core's `recording_studio/default_layout`. That layout owns the back/close chrome and Flatpack flash alerts. Dummy HTML sets Flatpack's `data-theme="rounded"`.
 
 Devise sign-in keeps `layouts/application` so the login card can stay centered. That layout still loads:
 
@@ -48,7 +48,7 @@ Devise sign-in keeps `layouts/application` so the login card can stay centered. 
 - `tailwind`
 - Importmap JS, including `@hotwired/turbo-rails`
 
-The host injects `flat_pack/application` through `app/views/recording_studio/_default_layout_head.html.erb`. That partial loads Flatpack CSS only. Core owns back/close. Admin’s section view uses Accessible avatars in the PageNav right slot and Flatpack Grid `cols: 4` for the Sitemaps cards. Do not put Sign out, a login link, or the workspace switcher in that slot. Signed-in pages set `page_nav_back_url` and `page_nav_anchor_url` so default-layout PageNav actually gets back and close.
+The host injects `flat_pack/application` through `app/views/recording_studio/_default_layout_head.html.erb`. That partial loads Flatpack CSS only. Core owns back/close. Admin’s section view uses Accessible avatars in the PageNav right slot and Flatpack Grid `cols: 4` for the Sitemaps cards. Do not put Sign out, a login link, or the workspace switcher in that slot. Signed-in pages call `flat_pack_page_nav` with `back_href` and `anchor_href` so default-layout PageNav actually gets back and close.
 
 Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/bundle`, `/usr/local/bundle` (CI), and mise installs. Rebuild with `bin/rails tailwindcss:build` if back/close icon buttons look like tiny dots.
 
