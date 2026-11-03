@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-03
+
+### Changed
+- Index size and Build history charts rely on Admin 2.8 / FlatPack `integer_ticks` for whole-number y labels. Chart options no longer send a hand-built integer `yaxis`. The dummy host no longer re-pins `apexcharts` to `recording_studio_sitemaps/apexcharts.js`, and it no longer copies Admin’s `_widget.html.erb`.
+- `recording_studio_sitemaps/apexcharts.js` is still shipped and **deprecated**. New hosts should not pin it.
+
+### Removed
+- `RecordingStudioSitemaps::Admin::ChartOptions.integer_page_yaxis`. Hosts should leave y-axis ticks to Admin / FlatPack `integer_ticks` on the chart.
+- `logs:` and `range:` on `RecordingStudioSitemaps::Admin.index_size_chart_options`. Those options only sized the old integer y-axis from generation logs. Hosts that still filter the series should pass `logs:` and `range:` to `RecordingStudioSitemaps::Admin.index_size_series` (or `index_size_points`) instead.
+
+### Upgrade notes
+- Bump to `0.7.0`. No Sitemaps migration. Stop calling `ChartOptions.integer_page_yaxis` and stop passing `logs:` / `range:` into `Admin.index_size_chart_options`. Use Admin / FlatPack `integer_ticks` for whole-number page-count labels, and `Admin.index_size_series(logs:, range:)` (or `index_size_points`) for the filtered series. Remove any host importmap pin of `apexcharts` to `recording_studio_sitemaps/apexcharts.js`. Use FlatPack’s ApexCharts pin. Admin already passes `integer_ticks: true` for integer page-count series. Keep the wrapper file only if an existing pin still points at it.
+
 ## [0.6.0] - 2026-10-30
 
 ### Changed
@@ -190,7 +203,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.1...v0.5.2
