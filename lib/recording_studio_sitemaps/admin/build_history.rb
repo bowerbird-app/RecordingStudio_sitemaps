@@ -41,7 +41,6 @@ module RecordingStudioSitemaps
         column :url_count, title: "Pages"
         column :status,
                title: "Result",
-               tooltip: ->(row, _context) { row.error_message },
                value: ->(row, _context) { RecordingStudioSitemaps::Admin.build_result(row) }
         default_sort :built_at, direction: :desc
         paginate per_page: 25, mode: :infinite

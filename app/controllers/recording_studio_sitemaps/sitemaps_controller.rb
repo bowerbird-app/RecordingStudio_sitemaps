@@ -5,19 +5,14 @@ module RecordingStudioSitemaps
     skip_forgery_protection
 
     def show
-      xml = latest_xml || rebuild_xml
-      render xml: xml, content_type: "application/xml"
+      expires_in 5.minutes, public: true
+      render xml: latest_xml || XmlBuilder.build([]), content_type: "application/xml"
     end
 
     private
 
     def latest_xml
       GenerationLog.latest_successful&.xml.presence
-    end
-
-    def rebuild_xml
-      log = RecordingStudioSitemaps.rebuild!(source: :request)
-      log&.xml.presence || XmlBuilder.build([])
     end
   end
 end

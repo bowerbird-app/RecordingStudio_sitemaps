@@ -27,7 +27,7 @@ module RecordingStudioSitemaps
       def build_result(log)
         return "Ok" if log.success?
 
-        log.try(:error_message).presence || "Failed"
+        "Failed"
       end
 
       def last_build_value(context = nil)

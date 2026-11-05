@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.8.0
+
+Install Sitemaps `0.8.0`. No migration. Rebuild is POST-only with CSRF. Public `/sitemap.xml` no longer rebuilds on miss. Failed Admin rows say `Failed`. Dummy kit pins FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`. Rails `8.1.4.1` in both lockfiles. Gemspec floors stay as 0.7.0.
+
+### Host app
+
+1. Change any GET Rebuild bookmark or link to `POST /recording_studio_sitemaps/rebuild` with a CSRF token. Dummy Admin registers Rebuild as a POST PageNav action because Admin 2.8 `link` has no `method:`.
+2. Do not expect `/sitemap.xml` to write a generation log. Rebuild from Admin or a publish hook first.
+3. English hosts need no locale change. Sitemaps adds no new engine migration.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
 ## 0.6.1
 
 Install Sitemaps `0.6.1`. No migration. Index size and Build history y labels come from Admin 2.8 / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js`. That file is still shipped and deprecated.

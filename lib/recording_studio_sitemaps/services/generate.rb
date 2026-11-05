@@ -28,10 +28,14 @@ module RecordingStudioSitemaps
       end
 
       def write_error_log!(error)
+        Rails.logger.error(
+          "[recording_studio_sitemaps] sitemap rebuild failed: #{error.class}: #{error.message}\n" \
+          "#{Array(error.backtrace).first(20).join("\n")}"
+        )
         write_log!(
           status: GenerationLog::ERROR,
           url_count: 0,
-          error_message: error.message
+          error_message: "Failed"
         )
       end
 
