@@ -56,7 +56,6 @@ module RecordingStudioSitemaps
     end
 
     initializer "recording_studio_sitemaps.load_config" do |app|
-      # Load config/recording_studio_sitemaps.yml via Rails config_for if present
       if app.respond_to?(:config_for)
         begin
           yaml = begin
@@ -107,6 +106,7 @@ module RecordingStudioSitemaps
       config.to_prepare do
         RecordingStudioSitemaps::Admin.register!
         RecordingStudioSitemaps::Metrics.register!
+        ActionController::Base.helper(RecordingStudioSitemaps::AdminRebuildHelper)
       end
     end
 

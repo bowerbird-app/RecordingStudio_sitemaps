@@ -258,6 +258,7 @@ class EngineTest < Minitest::Test
     source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
 
     assert_includes source, "Admin.register!"
+    assert_includes source, "AdminRebuildHelper"
   end
 
   def test_apply_extensions_returns_without_target
