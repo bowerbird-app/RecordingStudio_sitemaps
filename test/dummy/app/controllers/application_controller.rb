@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include RecordingStudio::RootSwitchable::ControllerSupport
-  helper RecordingStudioSitemaps::AdminRebuildHelper
 
   recording_studio_layout { devise_controller? ? "application" : nil }
 

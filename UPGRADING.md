@@ -1,12 +1,16 @@
 # Upgrading
 
+## 0.8.1
+
+Install Sitemaps `0.8.1`. No Sitemaps migration. Failed rebuilds keep error status and show `Failed` in Admin. They no longer write `Failed` onto `GenerationLog#error_message`. Exception text stays in the server log. Rebuild stays POST-only. `/sitemap.xml` still does not rebuild on miss.
+
 ## 0.8.0
 
-Install Sitemaps `0.8.0`. No Sitemaps migration. Admin Rebuild is POST `/recording_studio_sitemaps/rebuild` with CSRF. Admin 2.8 section links are GET-only. Dummy registers Rebuild with `data-turbo-method="post"` in `test/dummy/app/views/recording_studio_admin/sections/show.html.erb` (copy that if the host overrides the same view). The engine also registers `RecordingStudioSitemaps::AdminRebuildHelper` on `ActionController::Base`. Failed builds show `Failed` only; exception text is logged, not stored or shown. Core stays `>= 6.3.0`. Refresh GitHub tags: FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4`. Admin stays `v2.8.0`. Rails lock `8.1.4.1`.
+Install Sitemaps `0.8.0`. No Sitemaps migration. Rebuild is POST-only with CSRF. `/sitemap.xml` serves the last successful log, or empty XML with `Cache-Control` when there is none — it does not rebuild on miss. Failed builds show `Failed` in Admin; exceptions stay in the server log. Dummy kit pins FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`. Rails lockfiles are `8.1.4.1`. Gemspec floors are unchanged.
 
-## 0.7.0
+## 0.6.1
 
-Install Sitemaps `0.7.0`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.
+Install Sitemaps `0.6.1`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.
 
 ## 0.6.0
 

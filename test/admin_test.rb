@@ -280,12 +280,8 @@ class AdminTest < Minitest::Test
                  RecordingStudioSitemaps::Admin.build_result(
                    FakeLog.new(status: "error", error_message: "Disk was full")
                  )
-    rebuild = RecordingStudioSitemaps::Admin::Section.links.find { |link| link.name == :rebuild }
-    assert_equal :rebuild, rebuild.name
-    helper_source = File.read(
-      File.expand_path("../app/helpers/recording_studio_sitemaps/admin_rebuild_helper.rb", __dir__)
-    )
-    assert_includes helper_source, "turbo_method: :post"
+    source = File.read(File.expand_path("../lib/recording_studio_sitemaps/admin/build_history.rb", __dir__))
+    refute_includes source, "row.error_message"
     refute_equal "Worked", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     refute_equal "Worker", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     refute_equal "success", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))

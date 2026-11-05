@@ -72,13 +72,13 @@ GIT
 
 GIT
   remote: https://github.com/bowerbird-app/RecordingStudio_root_switchable.git
-  revision: bad5a3f00f95f928e5713836f3585743d1fdc427
-  tag: v0.11.4
+  revision: 41ea6e970bc61c841fc9c86f6020d1ab370a0141
+  tag: v0.11.5
   specs:
-    recording_studio_root_switchable (0.11.4)
-      flat_pack (>= 0.1.315)
+    recording_studio_root_switchable (0.11.5)
+      flat_pack (>= 0.1.341)
       rails (~> 8.1.0)
-      recording_studio (>= 6.1.0)
+      recording_studio (>= 6.3.0, < 7)
       recording_studio_accessible (~> 0.18)
       recording_studio_cache (~> 0.5)
       recording_studio_metrics (>= 0.3.0, < 1.0)
@@ -109,7 +109,7 @@ GIT
 PATH
   remote: ../..
   specs:
-    recording_studio_sitemaps (0.8.0)
+    recording_studio_sitemaps (0.8.1)
       flat_pack (>= 0.1.331)
       rails (~> 8.1.0)
       recording_studio (>= 6.3.0)
@@ -227,7 +227,7 @@ GEM
     dotenv (3.2.0)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (6.0.7)
+    erb (6.0.6)
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
@@ -262,7 +262,7 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (3.1.0)
+    json (2.21.2)
     kamal (2.9.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -407,20 +407,20 @@ GEM
     responders (3.2.0)
       actionpack (>= 7.0)
       railties (>= 7.0)
-    rubocop (1.92.2)
-      json (>= 2.3)
+    rubocop (1.81.7)
+      json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
-      parallel (>= 1.10)
+      parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.11.3, < 3.0)
-      rubocop-ast (>= 1.49.0, < 2.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.47.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.50.0)
+    rubocop-ast (1.48.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.7)
+      prism (~> 1.4)
     rubocop-performance (1.26.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
@@ -594,7 +594,7 @@ CHECKSUMS
   dotenv (3.2.0) sha256=e375b83121ea7ca4ce20f214740076129ab8514cd81378161f11c03853fe619d
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
-  erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92
+  erb (6.0.6) sha256=a9b24986700f5bf127c4f297c5403c3ca41b83b0a316c0cd09a096b56e644ae5
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
   ffi (1.17.2-aarch64-linux-gnu) sha256=c910bd3cae70b76690418cce4572b7f6c208d271f323d692a067d59116211a1a
@@ -614,7 +614,7 @@ CHECKSUMS
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jbuilder (2.14.1) sha256=4eb26376ff60ef100cb4fd6fd7533cd271f9998327e86adf20fd8c0e69fabb42
-  json (3.1.0) sha256=3ce7ccf8fde58960177a3a756c31f292a4c1e1dedee884547096a5b0604e3bd8
+  json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
   kamal (2.9.0) sha256=c94057c1834a2e365ccb4f3439da8153d6de9aa0e7a6e11bb4a2e3a557a36f99
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
@@ -680,14 +680,14 @@ CHECKSUMS
   recording_studio_logs (0.7.3)
   recording_studio_metrics (0.7.2)
   recording_studio_publishable (0.13.0)
-  recording_studio_root_switchable (0.11.4)
-  recording_studio_sitemaps (0.8.0)
+  recording_studio_root_switchable (0.11.5)
+  recording_studio_sitemaps (0.8.1)
   recording_studio_trashable (0.12.2)
   regexp_parser (2.11.3) sha256=ca13f381a173b7a93450e53459075c9b76a10433caadcb2f1180f2c741fc55a4
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   responders (3.2.0) sha256=89c2d6ac0ae16f6458a11524cae4a8efdceba1a3baea164d28ee9046bd3df55a
-  rubocop (1.92.2) sha256=14fb31eed143a0dc6f78186c550c1715e81cd38f59d05d1165050e445c1f5382
-  rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
+  rubocop (1.81.7) sha256=6fb5cc298c731691e2a414fe0041a13eb1beed7bab23aec131da1bcc527af094
+  rubocop-ast (1.48.0) sha256=22df9bbf3f7a6eccde0fad54e68547ae1e2a704bf8719e7c83813a99c05d2e76
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
   rubocop-rails (2.34.2) sha256=10ff246ee48b25ffeabddc5fee86d159d690bb3c7b9105755a9c7508a11d6e22
   rubocop-rails-omakase (1.1.0) sha256=2af73ac8ee5852de2919abbd2618af9c15c19b512c4cfc1f9a5d3b6ef009109d

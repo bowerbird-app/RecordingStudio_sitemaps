@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.8.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.8.1", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -43,7 +43,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.8.0"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.13.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.4"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.11.5"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.3"'
@@ -56,6 +56,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.8.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.341"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.3"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2"'
+    refute_includes root_gemfile, 'tag: "v2.9.0"'
     refute_includes root_gemfile, 'tag: "v4.7.0"'
     refute_includes root_gemfile, 'tag: "v0.1.329"'
     refute_includes gemfile, "recording_studio/v3.0.0"
@@ -90,10 +95,12 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     assert_includes controller_source, "recording_studio_layout"
     assert_includes controller_source, 'devise_controller? ? "application" : nil'
-    refute_includes controller_source, "UsesDefaultLayout"
     refute_includes controller_source, "def application_layout"
-    dummy_helper = File.read(File.expand_path("dummy/app/helpers/application_helper.rb", __dir__))
-    assert_includes dummy_helper, "RecordingStudioSitemaps::AdminRebuildHelper"
+    refute_includes controller_source, "UsesDefaultLayout"
+    engine_controller = File.read(
+      File.expand_path("../app/controllers/recording_studio_sitemaps/application_controller.rb", __dir__)
+    )
+    refute_includes engine_controller, 'layout "application"'
     refute_includes controller_source, "flat_pack_sidebar"
     refute File.exist?(File.expand_path("dummy/app/views/layouts/recording_studio/default_layout.html.erb", __dir__))
     refute File.exist?(File.expand_path("dummy/app/views/layouts/flat_pack_sidebar.html.erb", __dir__))
@@ -124,7 +131,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes importmap, "recording_studio_sitemaps/apexcharts.js"
 
     wrapper = File.read(File.expand_path("../app/javascript/recording_studio_sitemaps/apexcharts.js", __dir__))
-    assert_includes wrapper, "Deprecated since 0.7.0"
+    assert_includes wrapper, "Deprecated since 0.6.1"
     assert_includes wrapper, "integer_ticks"
     assert_includes wrapper, "decimalsInFloat"
     assert_includes wrapper, "Math.round"
@@ -184,6 +191,9 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes accessible, "avatar_resolver"
     refute_includes section_definition, "view_variant: :compact"
     refute_includes section_definition, "link :last_build"
+    assert_includes section_view, "method: :post"
+    assert_includes section_view, "FlatPack::Button::Component.new"
+    assert_includes section_view, "link.name == :rebuild"
   end
 
   def test_dummy_tailwind_keeps_flatpack_theme_selection_in_flatpack
@@ -234,11 +244,8 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes readme, "v0.1.329"
     assert_includes readme, "/sitemap.xml"
     assert_includes readme, "v0.13.0"
-    assert_includes readme, "v0.11.4"
+    assert_includes readme, "v0.11.5"
     assert_includes readme, "v0.7.2"
-    assert_includes readme, "v0.7.3"
-    assert_includes readme, "v0.6.2"
-    assert_includes readme, "v0.12.2"
     assert_includes readme, "v2.8.0"
     refute_includes readme, "v4.7.0"
     refute_includes readme, "v2.4.0"
@@ -295,10 +302,6 @@ class RecordingStudioSitemapsTest < Minitest::Test
     engine_routes = File.read(File.expand_path("../config/routes.rb", __dir__))
     assert_includes engine_routes, 'post "rebuild"'
     refute_includes engine_routes, 'get "rebuild"'
-    application_controller = File.read(
-      File.expand_path("../app/controllers/recording_studio_sitemaps/application_controller.rb", __dir__)
-    )
-    refute_includes application_controller, 'layout "application"'
   end
 
   def test_dummy_page_enables_publishable

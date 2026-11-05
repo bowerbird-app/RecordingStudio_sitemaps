@@ -12,13 +12,13 @@ A page appears when Publishable says it is indexable: currently published, not m
 - `lastmod` is the publish time
 - No `changefreq` or `priority`
 
-There is one sitemap for the public host, not one per workspace. `/sitemap.xml` is logged-out and has no actor. If the findable URL count heads toward 50,000, Admin warns. This slice does not split into a sitemap index.
+There is one sitemap for the public host, not one per workspace. `/sitemap.xml` is logged-out and has no actor. It serves the last successful generation log. When there is no successful log, it returns an empty urlset and does not rebuild. If the findable URL count heads toward 50,000, Admin warns. This slice does not split into a sitemap index.
 
 Sitemap rows are not recordings. They are derived and can be rebuilt. Each rebuild writes a **log** (when, count, errors). Admin reads those logs.
 
 ## Domain action
 
-`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild POST both call it.
+`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild POST both call it. Rebuild is POST-only with CSRF.
 
 ```ruby
 RecordingStudioSitemaps.rebuild!(source: :admin)
@@ -96,7 +96,7 @@ end
 
 ## Admin
 
-The Sitemaps section is five cards in a four-column row (the fifth wraps), then Open sitemap / Rebuild. Rebuild is a POST (CSRF). The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
+The Sitemaps section is five cards in a four-column row (the fifth wraps), then Open sitemap / Rebuild. Rebuild is a POST. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
 
 - **Last build** — how long ago the newest write was, from `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since `GenerationLog.built_at`, shown as time ago in words). The card is a link to **Build history**
 - **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
@@ -106,7 +106,7 @@ The Sitemaps section is five cards in a four-column row (the fifth wraps), then 
 
 Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`, not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers through Admin / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` — that wrapper is deprecated. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`, not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` when it did not. Exception text stays in the server log and is not stored on the generation log. Chart dates use the same language as the When column; the page-count axis stays on whole numbers through Admin / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` — that wrapper is deprecated. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
 
@@ -144,7 +144,7 @@ Dummy kit pins:
 | Accessible | `v0.24.1` |
 | Admin | `v2.8.0` |
 | Publishable | `v0.13.0` |
-| Root Switchable | `v0.11.4` |
+| Root Switchable | `v0.11.5` |
 | Metrics | `v0.7.2` |
 | Trashable | `v0.12.2` |
 | Logs | `v0.7.3` |
@@ -174,12 +174,10 @@ with Draft off to load a new pack. See
 
 Rebuild flashes use Rails I18n under `recording_studio.sitemaps.flashes.*`. English ships only in `config/locales/en.yml` — call sites do not pass English `default:`. Rails engines load `config/locales` automatically (no extra `i18n.load_path` initializer). Hosts override by adding the same keys under `recording_studio.sitemaps` in their own `config/locales`; a host’s translations take precedence over the engine’s. This gem does not depend on `recording_studio_internationalization`, and it never shipped a top-level `recording_studio_sitemaps.*` locale namespace.
 
-Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main’s English string literals. Public Admin helpers (`last_build_line`, `last_build_value`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, Admin table cell values (`Ok` / `Failed`), and persisted generation-log errors stay English literals. Generator CLI text and developer-facing messages stay English. See `UPGRADING.md`.
+Admin DSL values (titles, link text, chart titles, column titles, subtitles, widget title/info/link_label) stay main’s English string literals. Public Admin helpers (`last_build_line`, `last_build_value`, `coverage_info`, `findable_items`, `missing_items`, `index_size_series`), `Exclusions` reason strings, and Admin table cell values (`Ok` / `Failed`) stay English literals. Failed writes show `Failed` and log the exception server-side. Generator CLI text and developer-facing messages stay English. See `UPGRADING.md`.
 
 ## Out of scope
 
 Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, JSON API, Embeddable, and Support or Press kit special cases.
 
-## Engine internals
-
-`docs/gem_template/` stays as engine-internal reference from the original addon template. This README is the product.
+This README is the product. The dummy app is a host that proves the gem.

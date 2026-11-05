@@ -30,7 +30,6 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
-    assert_includes response.body, "data-turbo-method=\"post\""
     assert_select "a", text: /Last built/, count: 0
     assert_select "a", text: "Build history", count: 0
     assert_includes response.body, "Coverage"
@@ -58,6 +57,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
+    assert_select "a[href='/recording_studio_sitemaps/rebuild'][data-method=post]"
     refute_includes response.body, "Findable pages"
     refute_includes response.body, "Live but left out"
     refute_includes response.body, "total URLs ever"
@@ -129,6 +129,14 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, RecordingStudioSitemaps::Admin.format_when(@old_history_log)
     refute_includes response.body, "Worked"
     refute_includes response.body, "Worker"
+  end
+
+  test "rebuild is post-only" do
+    assert_no_difference -> { RecordingStudioSitemaps::GenerationLog.count } do
+      get "/recording_studio_sitemaps/rebuild"
+    end
+
+    assert_response :not_found
   end
 
   test "rebuild is forbidden without admin root access" do

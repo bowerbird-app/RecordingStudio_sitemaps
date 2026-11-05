@@ -8,18 +8,6 @@ module RecordingStudioSitemaps
       new.items
     end
 
-    def self.title_for(recordable)
-      recordable.try(:title).presence ||
-        recordable.try(:name).presence ||
-        type_label(recordable)
-    end
-
-    def self.type_label(recordable)
-      return RecordingStudio.recordable_type_label(recordable) if defined?(RecordingStudio) && recordable
-
-      recordable.class.model_name.human
-    end
-
     def items
       UrlSet.indexable_types.flat_map { |type| items_for(type) }
     end
@@ -36,8 +24,14 @@ module RecordingStudioSitemaps
         reason = reason_for(recordable)
         next if reason.blank?
 
-        Reason.new(title: self.class.title_for(recordable), reason: reason)
+        Reason.new(title: title_for(recordable), reason: reason)
       end
+    end
+
+    def title_for(recordable)
+      recordable.try(:title).presence ||
+        recordable.try(:name).presence ||
+        recordable.class.model_name.human
     end
 
     def reason_for(recordable)

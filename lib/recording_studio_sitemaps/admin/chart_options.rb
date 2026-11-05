@@ -25,7 +25,7 @@ module RecordingStudioSitemaps
     end
 
     class << self
-      def index_size_chart_options(height:, xaxis: nil)
+      def index_size_chart_options(height:, xaxis: nil, **)
         ChartOptions.for_index_size(height: height, xaxis: xaxis)
       end
     end

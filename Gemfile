@@ -20,12 +20,11 @@ gem "puma"
 gem "sprockets-rails"
 
 group :development, :test do
-  gem "bundler-audit", require: false
   gem "debug"
   gem "simplecov", require: false
 end
 
 group :development do
-  gem "rubocop", "~> 1.81.7", require: false
+  gem "rubocop", require: false
   gem "rubocop-rails", require: false
 end

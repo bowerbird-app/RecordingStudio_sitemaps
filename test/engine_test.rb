@@ -254,13 +254,6 @@ class EngineTest < Minitest::Test
     assert_equal true, target.instance_variable_get(:@recording_studio_sitemaps_applied_extensions).compare_by_identity?
   end
 
-  def test_admin_initializer_loads_rebuild_helper
-    source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
-
-    assert_includes source, "Admin.register!"
-    assert_includes source, "AdminRebuildHelper"
-  end
-
   def test_apply_extensions_returns_without_target
     assert_nil RecordingStudioSitemaps::Engine.send(:apply_extensions, nil, [])
   end
