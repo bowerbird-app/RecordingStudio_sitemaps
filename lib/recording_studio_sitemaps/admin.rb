@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/OneClassPerFile -- constants, requires, then register!
 module RecordingStudioSitemaps
   module Admin
     WIDGET_COVERAGE = "widgets.sitemaps.coverage"
@@ -36,4 +35,3 @@ module RecordingStudioSitemaps
     end
   end
 end
-# rubocop:enable Style/OneClassPerFile
