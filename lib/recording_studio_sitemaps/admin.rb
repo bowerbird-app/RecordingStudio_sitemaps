@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/OneClassPerFile -- constants, requires, then register!
 module RecordingStudioSitemaps
   module Admin
     WIDGET_COVERAGE = "widgets.sitemaps.coverage"
@@ -8,14 +9,18 @@ module RecordingStudioSitemaps
     WIDGET_INDEX_SIZE = "widgets.sitemaps.index_size"
     WIDGET_LAST_BUILD = "widgets.sitemaps.last_build"
     SCREEN_BUILD_HISTORY = "build_history"
+  end
+end
 
-    require_relative "admin/queries"
-    require_relative "admin/last_build"
-    require_relative "admin/chart_options"
-    require_relative "admin/widgets"
-    require_relative "admin/section"
-    require_relative "admin/build_history"
+require_relative "admin/queries"
+require_relative "admin/last_build"
+require_relative "admin/chart_options"
+require_relative "admin/widgets"
+require_relative "admin/section"
+require_relative "admin/build_history"
 
+module RecordingStudioSitemaps
+  module Admin
     class << self
       def register!
         return unless defined?(::RecordingStudioAdmin)
@@ -31,3 +36,4 @@ module RecordingStudioSitemaps
     end
   end
 end
+# rubocop:enable Style/OneClassPerFile
