@@ -14,4 +14,4 @@ end
 ```
 
 5. Grant Accessible access on that admin root. Do not use `user.admin?`.
-6. `/sitemap.xml` is public. Rebuild from Admin or after publish/unpublish uses the same `RecordingStudioSitemaps.rebuild!` action.
+6. `/sitemap.xml` is public and serves the last successful log (empty XML when there is none). Rebuild from Admin is POST `/recording_studio_sitemaps/rebuild`. Publish/unpublish uses the same `RecordingStudioSitemaps.rebuild!` action.

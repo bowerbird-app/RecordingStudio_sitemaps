@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.8.0
+
+Install Sitemaps `0.8.0`. No Sitemaps migration. Rebuild is POST-only with CSRF. `/sitemap.xml` serves the last successful log, or empty XML with `Cache-Control` when there is none — it does not rebuild on miss. Failed builds show `Failed` in Admin; exceptions stay in the server log. Dummy kit pins FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`. Rails lockfiles are `8.1.4.1`. Gemspec floors are unchanged.
+
 ## 0.6.1
 
 Install Sitemaps `0.6.1`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-05
+
+### Changed
+- Admin Rebuild is POST-only (`POST /recording_studio_sitemaps/rebuild`) with CSRF. GET rebuild is gone. Dummy Admin registers Rebuild as a POST PageNav action.
+- Public `/sitemap.xml` serves the last successful generation log. With no successful log it returns an empty urlset and sets `Cache-Control`. It does not rebuild on miss.
+- Failed rebuilds store `Failed` on the generation log and show `Failed` in Build history. Exception text stays in the server log.
+- Dummy leftover `application_layout` and the unused engine `layout "application"` are gone. Core floor stays `recording_studio >= 6.3.0`.
+- Dev kit pins: FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`.
+- Lockfile security refresh: Rails `8.1.4.1`, rack `>= 3.2.8`, nokogiri `>= 1.19.5`, loofah, rails-html-sanitizer `>= 1.7.2`.
+
+### Removed
+- `docs/gem_template/` leftover template docs.
+
+### Upgrade notes
+- Bump to `0.8.0`. No Sitemaps migration. Point Rebuild at `POST /recording_studio_sitemaps/rebuild` (CSRF token required). Do not GET that path. Hosts that copy Admin’s default section heading should register Rebuild as a POST PageNav action the way the dummy does — Admin 2.8 section `link` has no `method:`. `/sitemap.xml` no longer rebuilds on a cache miss; run Rebuild (or a publish hook) first. Failed Admin rows stay `Failed`; check logs for the exception. Pin the dummy kit tags above. Gemspec floors are unchanged. Do not pin `view_component`. Do not pin Admin `v2.9.0`.
+
 ## [0.7.0] - 2026-11-03
 
 ### Changed
@@ -203,7 +219,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3

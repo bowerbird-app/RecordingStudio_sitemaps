@@ -29,15 +29,23 @@ class GenerateTest < Minitest::Test
   def test_rebuild_writes_error_log_when_url_set_raises
     created = nil
 
-    RecordingStudioSitemaps::UrlSet.stub(:entries, -> { raise "boom" }) do
-      RecordingStudioSitemaps::GenerationLog.stub(:create!, ->(**attrs) { FakeLog.new(**attrs) }) do
-        created = RecordingStudioSitemaps.rebuild!(source: :publish)
+    logs = []
+    logger = Object.new
+    logger.define_singleton_method(:error) { |message| logs << message }
+
+    Rails.stub(:logger, logger) do
+      RecordingStudioSitemaps::UrlSet.stub(:entries, -> { raise "boom" }) do
+        RecordingStudioSitemaps::GenerationLog.stub(:create!, ->(**attrs) { FakeLog.new(**attrs) }) do
+          created = RecordingStudioSitemaps.rebuild!(source: :publish)
+        end
       end
     end
 
     assert_equal "error", created.status
     assert_equal 0, created.url_count
-    assert_equal "boom", created.error_message
+    assert_equal "Failed", created.error_message
+    refute_equal "boom", created.error_message
     assert_equal "publish", created.source
+    assert(logs.any? { |message| message.include?("boom") })
   end
 end

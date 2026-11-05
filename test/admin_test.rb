@@ -276,10 +276,12 @@ class AdminTest < Minitest::Test
     assert_equal %i[built_at url_count status], screen.table_value.columns.map(&:key)
     assert_equal "Ok", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     assert_equal "Failed", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "error"))
-    assert_equal "Disk was full",
+    assert_equal "Failed",
                  RecordingStudioSitemaps::Admin.build_result(
                    FakeLog.new(status: "error", error_message: "Disk was full")
                  )
+    source = File.read(File.expand_path("../lib/recording_studio_sitemaps/admin/build_history.rb", __dir__))
+    refute_includes source, "row.error_message"
     refute_equal "Worked", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     refute_equal "Worker", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))
     refute_equal "success", RecordingStudioSitemaps::Admin.build_result(FakeLog.new(status: "success"))

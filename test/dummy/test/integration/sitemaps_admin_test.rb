@@ -57,6 +57,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
+    assert_select "a[href='/recording_studio_sitemaps/rebuild'][data-method=post]"
     refute_includes response.body, "Findable pages"
     refute_includes response.body, "Live but left out"
     refute_includes response.body, "total URLs ever"
@@ -67,7 +68,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
 
   test "rebuild action writes a log and returns to the sitemaps section" do
     assert_difference -> { RecordingStudioSitemaps::GenerationLog.count }, +1 do
-      get "/recording_studio_sitemaps/rebuild"
+      post "/recording_studio_sitemaps/rebuild"
     end
 
     follow_redirect! if response.redirect?
@@ -130,6 +131,14 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "Worker"
   end
 
+  test "rebuild is post-only" do
+    assert_no_difference -> { RecordingStudioSitemaps::GenerationLog.count } do
+      get "/recording_studio_sitemaps/rebuild"
+    end
+
+    assert_response :not_found
+  end
+
   test "rebuild is forbidden without admin root access" do
     stranger = User.find_or_create_by!(email: "sitemaps-stranger@example.com") do |record|
       record.password = "Password123!"
@@ -137,7 +146,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     end
     sign_in stranger
 
-    get "/recording_studio_sitemaps/rebuild"
+    post "/recording_studio_sitemaps/rebuild"
 
     assert_response :forbidden
   end

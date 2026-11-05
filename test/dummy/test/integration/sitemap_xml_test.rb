@@ -39,14 +39,45 @@ class SitemapXmlTest < ActionDispatch::IntegrationTest
     assert_includes response.body, log.xml[/<loc>.*<\/loc>/]
   end
 
-  test "public sitemap rebuilds when no successful log exists" do
+  test "public sitemap serves empty xml when no successful log exists" do
     RecordingStudioSitemaps::GenerationLog.delete_all
+
+    assert_no_difference -> { RecordingStudioSitemaps::GenerationLog.count } do
+      get "/sitemap.xml"
+    end
+
+    assert_response :success
+    assert_equal "application/xml", response.media_type
+    assert_includes response.body, "<urlset"
+    refute_includes response.body, "<loc>"
+    refute_includes response.body, "getting-started"
+    assert_match(/public/i, response.headers["Cache-Control"].to_s)
+    assert_nil RecordingStudioSitemaps::GenerationLog.latest
+  end
+
+  test "unpublished drafts stay out of the sitemap" do
+    user = User.find_or_create_by!(email: "sitemap-xml@example.com") do |record|
+      record.password = "Password123!"
+      record.password_confirmation = "Password123!"
+    end
+    workspace = Workspace.create!(name: "Draft Workspace #{SecureRandom.hex(4)}")
+    page = Page.create!(title: "Draft notes")
+    Current.actor = user
+    root = RecordingStudio.root_recording_for(workspace)
+    page_recording = record_child(page, root, root)
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: page_recording,
+      actor: user,
+      attributes: { slug: "draft-notes", status: "draft", meta_robots: "index,follow" }
+    )
+    RecordingStudioSitemaps.rebuild!(source: :test)
 
     get "/sitemap.xml"
 
     assert_response :success
-    assert_includes response.body, "getting-started"
-    assert_predicate RecordingStudioSitemaps::GenerationLog.latest, :success?
+    refute_includes response.body, "draft-notes"
+  ensure
+    Current.actor = nil
   end
 
   private
