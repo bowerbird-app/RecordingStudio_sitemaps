@@ -21,10 +21,9 @@ module RecordingStudioSitemaps
       chart do
         title "Pages in the sitemap"
         type :area
-        options do |context|
+        options do |_context|
           RecordingStudioSitemaps::Admin.index_size_chart_options(
-            height: 320,
-            logs: context.query_result.relation
+            height: 320
           )
         end
         series do |context|
@@ -41,7 +40,6 @@ module RecordingStudioSitemaps
         column :url_count, title: "Pages"
         column :status,
                title: "Result",
-               tooltip: ->(row, _context) { row.error_message },
                value: ->(row, _context) { RecordingStudioSitemaps::Admin.build_result(row) }
         default_sort :built_at, direction: :desc
         paginate per_page: 25, mode: :infinite

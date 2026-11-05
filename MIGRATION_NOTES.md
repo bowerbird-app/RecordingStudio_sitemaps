@@ -2,9 +2,27 @@
 
 ## Unreleased
 
-## 0.6.1
+## 0.8.0
 
-Install Sitemaps `0.6.1`. No migration. Index size and Build history y labels come from Admin 2.8 / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js`. That file is still shipped and deprecated.
+Install Sitemaps `0.8.0`. No migration. Rebuild is POST only with CSRF. Failed Result is always `Failed`. Dummy/root kit tags: FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4`. Recording Studio `v6.3.0`. Admin `v2.8.0`. Rails lock `8.1.4.1`.
+
+### Host app
+
+1. Change any host GET to `/recording_studio_sitemaps/rebuild` to POST, and keep CSRF.
+2. Stop reading `GenerationLog#error_message` for staff copy. Result is `Failed`.
+3. Refresh the GitHub tags above. Do not raise Sitemaps gemspec floors in this release. English hosts need no locale change.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
+## 0.7.0
+
+Install Sitemaps `0.7.0`. No migration. Index size and Build history y labels come from Admin 2.8 / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js`. That file is still shipped and deprecated.
 
 ### Host app
 
@@ -113,7 +131,7 @@ This slice ships the public sitemap, generation logs, and Admin.
 6. Drop `recording_studio_sitemaps_pages` if a host copied the old engine migration. Sitemap URLs are derived; only generation logs are stored.
 7. Do not put Sign out or a root switcher in `_default_layout_head.html.erb`. That partial loads Flatpack CSS. Core owns back/close. Set Accessible `avatar_resolver` so the Admin slot can show who has access.
 8. Last build reads `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since stored `GenerationLog.built_at`) and shows time ago in words. Index size and Build history read generation logs. Build history uses Admin `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`. Result is Ok / Failed (or the error). Chart dates match the When column; page-count ticks stay whole numbers. Do not mark Sitemaps widgets `view_variant: :compact`.
-9. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`. **Deprecated in 0.6.1:** remove that pin and use Admin / FlatPack `integer_ticks` instead. The wrapper file remains shipped for hosts that still pin it.
+9. Pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` if Build history y labels still show `0.0`. Flatpack Chart cannot pass a JS formatter through JSON; ApexCharts 3.45 still paints `.0` when `decimalsInFloat` is `0`. **Deprecated in 0.7.0:** remove that pin and use Admin / FlatPack `integer_ticks` instead. The wrapper file remains shipped for hosts that still pin it.
 10. Admin’s section grid is three columns. The dummy host overrides that view to Flatpack `cols: 4`. Last build, Index size, Coverage, In the sitemap, and Missing share that row. The fifth card wraps.
 
 `RecordingStudioSitemaps.rebuild!` is the one write path. Publish/unpublish and Admin Rebuild both call it.

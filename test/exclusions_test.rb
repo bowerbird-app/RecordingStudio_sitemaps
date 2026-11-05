@@ -35,6 +35,16 @@ class ExclusionsTest < Minitest::Test
     end
   end
 
+  def test_title_for_is_the_shared_label
+    titled = FakeRecordable.new(id: 1, title: "Getting Started")
+    named = FakeRecordable.new(id: 2, name: "Draft URL")
+
+    assert_equal "Getting Started", RecordingStudioSitemaps::Exclusions.title_for(titled)
+    assert_equal "Draft URL", RecordingStudioSitemaps::Exclusions.title_for(named)
+    assert_equal RecordingStudioSitemaps::Admin.send(:title_for, titled),
+                 RecordingStudioSitemaps::Exclusions.title_for(titled)
+  end
+
   def test_skips_indexable_rows
     recordable = FakeRecordable.new(id: 1, title: "Findable", publishable: FakePublishable.new(noindex: false))
 

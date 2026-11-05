@@ -54,7 +54,7 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     )
 
     stub_singleton_method(RecordingStudioSitemaps, :rebuild!, ->(*) { failed }) do
-      get "/recording_studio_sitemaps/rebuild"
+      post "/recording_studio_sitemaps/rebuild"
     end
 
     assert_response :redirect
@@ -86,7 +86,7 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
     refute_equal GEM_REBUILT, I18n.t(REBUILT_KEY)
     assert_equal HOST_REBUILD_FAILED, I18n.t(REBUILD_FAILED_KEY)
 
-    get "/recording_studio_sitemaps/rebuild"
+    post "/recording_studio_sitemaps/rebuild"
 
     assert_response :redirect
     follow_redirect!
@@ -99,7 +99,7 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   end
 
   test "default dummy UI still shows gem English rebuild success flash" do
-    get "/recording_studio_sitemaps/rebuild"
+    post "/recording_studio_sitemaps/rebuild"
 
     assert_response :redirect
     follow_redirect!

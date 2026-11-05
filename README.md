@@ -18,7 +18,7 @@ Sitemap rows are not recordings. They are derived and can be rebuilt. Each rebui
 
 ## Domain action
 
-`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild button both call it.
+`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild POST both call it.
 
 ```ruby
 RecordingStudioSitemaps.rebuild!(source: :admin)
@@ -29,13 +29,13 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 ```ruby
 # Gemfile
 gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v6.3.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.23.1"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.24.1"
 gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.8.0"
-gem "recording_studio_logs", github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.1"
-gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.0"
+gem "recording_studio_logs", github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.3"
+gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.7.2"
 gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.13.0"
-gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.0", require: false
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.331"
+gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2", require: false
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.341"
 gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps"
 ```
 
@@ -96,7 +96,7 @@ end
 
 ## Admin
 
-The Sitemaps section is five cards in a four-column row (the fifth wraps), then Open sitemap / Rebuild. The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
+The Sitemaps section is five cards in a four-column row (the fifth wraps), then Open sitemap / Rebuild. Rebuild is a POST (CSRF). The subtitle is the last rebuild (`Last built 22 Aug 2026, 02:19` — same date language as the history table).
 
 - **Last build** — how long ago the newest write was, from `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since `GenerationLog.built_at`, shown as time ago in words). The card is a link to **Build history**
 - **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
@@ -106,7 +106,7 @@ The Sitemaps section is five cards in a four-column row (the fifth wraps), then 
 
 Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
 
-**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`, not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` / the real error when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers through Admin / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` — that wrapper is deprecated. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
+**Build history** is a child Admin screen: the same log as a line/area chart plus a table of when / pages / result. It uses Admin’s standard `filter :date_range, field: :built_at, default: :last_30_days`. Admin’s DateRangeInput hash preset (`days: 31`) makes the trigger show `Last 30 days`, not a raw from–to string. Chart and table follow that window. Result is `Ok` on a good write, or `Failed` when it did not. Chart dates use the same language as the When column; the page-count axis stays on whole numbers through Admin / FlatPack `integer_ticks`. Do not pin `apexcharts` to `recording_studio_sitemaps/apexcharts.js` — that wrapper is deprecated. Coverage extra-info breaks the count down by type and warns when the list heads toward 50,000 URLs. Empty space is fine. There is no vanity “total URLs ever” card.
 
 Admin chrome puts Accessible avatars in the PageNav right slot (`recording_studio_accessible_avatars` on the admin root). Configure `avatar_resolver` so people resolve to a Flatpack avatar group; the helper falls back to + Access only when nobody resolves. Do not put Sign out or Root Switchable in that slot.
 
@@ -141,15 +141,15 @@ Dummy kit pins:
 | Gem | Pin |
 |-----|-----|
 | Recording Studio | `v6.3.0` |
-| Accessible | `v0.23.1` |
+| Accessible | `v0.24.1` |
 | Admin | `v2.8.0` |
 | Publishable | `v0.13.0` |
-| Root Switchable | `v0.11.0` |
-| Metrics | `v0.7.0` |
-| Trashable | `v0.12.0` |
-| Logs | `v0.7.1` |
-| Cache | `v0.6.0` |
-| FlatPack | `v0.1.331` |
+| Root Switchable | `v0.11.4` |
+| Metrics | `v0.7.2` |
+| Trashable | `v0.12.2` |
+| Logs | `v0.7.3` |
+| Cache | `v0.6.2` |
+| FlatPack | `v0.1.341` |
 
 ```bash
 cd test/dummy

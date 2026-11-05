@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-05
+
+### Changed
+- Admin Rebuild is POST only (`post "rebuild"`) with host CSRF. The Sitemaps section control is a POST button, not a GET link.
+- Failed builds log the exception internally and show the generic Result `Failed`. Generation logs no longer store or display raw exception messages.
+- Dummy and root GitHub tags: FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4`. Recording Studio stays `v6.3.0`. Admin stays `v2.8.0`. Gemspec floors are unchanged (`recording_studio >= 6.3.0` and the existing companion floors).
+- Lockfiles: Rails `8.1.4.1`, rack `>= 3.2.8`, nokogiri `>= 1.19.5`, loofah, rails-html-sanitizer `>= 1.7.2`.
+- Removed leftover `docs/gem_template/` files and the unused dummy `application_layout` helper. Engine `ApplicationController` no longer hardcodes `layout "application"` (this gem ships XML plus Admin sections, not HTML views).
+
+### Upgrade notes
+- Bump to `0.8.0`. No Sitemaps migration. Point Rebuild at POST `/recording_studio_sitemaps/rebuild` (CSRF). Do not GET that path. Failed Result stays `Failed`; do not read `error_message` for staff UI. Refresh dummy/host kit tags listed above. Core floor stays `>= 6.3.0`.
+
 ## [0.7.0] - 2026-11-03
 
 ### Changed
@@ -203,7 +215,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.2...v0.5.3

@@ -28,11 +28,21 @@ module RecordingStudioSitemaps
       end
 
       def write_error_log!(error)
+        log_rebuild_failure(error)
         write_log!(
           status: GenerationLog::ERROR,
-          url_count: 0,
-          error_message: error.message
+          url_count: 0
         )
+      end
+
+      def log_rebuild_failure(error)
+        message = "[RecordingStudioSitemaps] sitemap rebuild failed: #{error.class}: #{error.message}"
+        if defined?(Rails) && Rails.logger
+          Rails.logger.error(message)
+          Rails.logger.error(error.full_message) if error.respond_to?(:full_message)
+        else
+          warn message
+        end
       end
 
       def write_log!(status:, url_count:, xml: nil, error_message: nil)

@@ -30,6 +30,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
+    assert_includes response.body, "data-turbo-method=\"post\""
     assert_select "a", text: /Last built/, count: 0
     assert_select "a", text: "Build history", count: 0
     assert_includes response.body, "Coverage"
@@ -67,7 +68,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
 
   test "rebuild action writes a log and returns to the sitemaps section" do
     assert_difference -> { RecordingStudioSitemaps::GenerationLog.count }, +1 do
-      get "/recording_studio_sitemaps/rebuild"
+      post "/recording_studio_sitemaps/rebuild"
     end
 
     follow_redirect! if response.redirect?
@@ -137,9 +138,15 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     end
     sign_in stranger
 
-    get "/recording_studio_sitemaps/rebuild"
+    post "/recording_studio_sitemaps/rebuild"
 
     assert_response :forbidden
+  end
+
+  test "rebuild is POST only" do
+    get "/recording_studio_sitemaps/rebuild"
+
+    assert_response :not_found
   end
 
   test "admin last build widget shows a failed newest write" do
@@ -159,6 +166,12 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "Failed"
     assert_select "a[href='/admin/screens/build_history']", text: "More", count: 2
     assert_includes response.body, "Open Build history"
+    refute_includes response.body, "Disk was full"
+
+    get "/admin/screens/build_history/table"
+
+    assert_response :success
+    assert_includes response.body, "Failed"
     refute_includes response.body, "Disk was full"
   end
 

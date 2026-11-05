@@ -25,9 +25,7 @@ module RecordingStudioSitemaps
       end
 
       def build_result(log)
-        return "Ok" if log.success?
-
-        log.try(:error_message).presence || "Failed"
+        log.success? ? "Ok" : "Failed"
       end
 
       def last_build_value(context = nil)
@@ -116,15 +114,11 @@ module RecordingStudioSitemaps
       end
 
       def title_for(recordable)
-        recordable.try(:title).presence ||
-          recordable.try(:name).presence ||
-          type_for(recordable)
+        Exclusions.title_for(recordable)
       end
 
       def type_for(recordable)
-        return RecordingStudio.recordable_type_label(recordable) if defined?(RecordingStudio) && recordable
-
-        recordable.class.model_name.human
+        Exclusions.type_label(recordable)
       end
     end
   end

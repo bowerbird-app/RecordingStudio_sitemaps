@@ -35,7 +35,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   end
 
   test "rebuild flash renders gem english notice" do
-    get "/recording_studio_sitemaps/rebuild"
+    post "/recording_studio_sitemaps/rebuild"
 
     assert_response :redirect
     follow_redirect!
@@ -67,7 +67,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     I18n.with_locale(:fr) do
       assert_equal FRENCH_REBUILT, I18n.t("recording_studio.sitemaps.flashes.rebuilt")
 
-      get "/recording_studio_sitemaps/rebuild"
+      post "/recording_studio_sitemaps/rebuild"
 
       assert_response :redirect
       follow_redirect!

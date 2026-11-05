@@ -1,8 +1,12 @@
 # Upgrading
 
-## 0.6.1
+## 0.8.0
 
-Install Sitemaps `0.6.1`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.
+Install Sitemaps `0.8.0`. No Sitemaps migration. Admin Rebuild is POST `/recording_studio_sitemaps/rebuild` with CSRF. Admin 2.8 section links are GET-only, so include `RecordingStudioSitemaps::AdminRebuildHelper` in the host `ApplicationHelper` (dummy already does) so Rebuild posts with `data-turbo-method="post"`. Failed builds show `Failed` only; exception text is logged, not stored or shown. Core stays `>= 6.3.0`. Refresh GitHub tags: FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.4`. Admin stays `v2.8.0`. Rails lock `8.1.4.1`.
+
+## 0.7.0
+
+Install Sitemaps `0.7.0`. No Sitemaps migration. Drop any host `apexcharts` pin to `recording_studio_sitemaps/apexcharts.js`. Admin 2.8 / FlatPack `integer_ticks` own whole-number page-count ticks. The wrapper file is still shipped and deprecated. Do not copy Admin’s `_widget.html.erb`. Reload host JavaScript. Do not rebuild Tailwind.
 
 ## 0.6.0
 

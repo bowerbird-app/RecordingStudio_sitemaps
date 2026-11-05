@@ -51,7 +51,6 @@ module RecordingStudioSitemaps
       end
     end
 
-    # Run before_initialize hooks
     initializer "recording_studio_sitemaps.before_initialize", before: "recording_studio_sitemaps.load_config" do |_app|
       RecordingStudioSitemaps.configuration.hooks.run(:before_initialize, self)
     end
@@ -92,7 +91,6 @@ module RecordingStudioSitemaps
       RecordingStudioSitemaps.configuration.hooks.run(:on_configuration, RecordingStudioSitemaps.configuration)
     end
 
-    # Run after_initialize hooks
     initializer "recording_studio_sitemaps.after_initialize", after: "recording_studio_sitemaps.load_config" do |_app|
       RecordingStudioSitemaps.configuration.hooks.run(:after_initialize, self)
     end
@@ -112,7 +110,6 @@ module RecordingStudioSitemaps
       end
     end
 
-    # Apply model extensions when models are loaded
     initializer "recording_studio_sitemaps.apply_model_extensions" do
       config.to_prepare do
         next unless defined?(ActiveRecord::Base)
@@ -125,7 +122,6 @@ module RecordingStudioSitemaps
       end
     end
 
-    # Apply controller extensions
     initializer "recording_studio_sitemaps.apply_controller_extensions" do
       config.to_prepare do
         next unless defined?(ActionController::Base)

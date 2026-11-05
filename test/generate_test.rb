@@ -10,6 +10,18 @@ class GenerateTest < Minitest::Test
     end
   end
 
+  class FakeLogger
+    attr_reader :messages
+
+    def initialize
+      @messages = []
+    end
+
+    def error(message)
+      @messages << message.to_s
+    end
+  end
+
   def test_rebuild_writes_success_log
     entries = [FakeEntry.new(loc: "https://example.test/a", lastmod: Time.utc(2026, 8, 21))]
     created = nil
@@ -29,15 +41,36 @@ class GenerateTest < Minitest::Test
   def test_rebuild_writes_error_log_when_url_set_raises
     created = nil
 
-    RecordingStudioSitemaps::UrlSet.stub(:entries, -> { raise "boom" }) do
-      RecordingStudioSitemaps::GenerationLog.stub(:create!, ->(**attrs) { FakeLog.new(**attrs) }) do
-        created = RecordingStudioSitemaps.rebuild!(source: :publish)
+    logger = FakeLogger.new
+    Rails.stub(:logger, logger) do
+      RecordingStudioSitemaps::UrlSet.stub(:entries, -> { raise "boom" }) do
+        RecordingStudioSitemaps::GenerationLog.stub(:create!, ->(**attrs) { FakeLog.new(**attrs) }) do
+          created = RecordingStudioSitemaps.rebuild!(source: :publish)
+        end
       end
     end
 
     assert_equal "error", created.status
     assert_equal 0, created.url_count
-    assert_equal "boom", created.error_message
+    assert_nil created.error_message
     assert_equal "publish", created.source
+    assert(logger.messages.any? { |message| message.include?("boom") })
+  end
+
+  def test_rebuild_failure_warns_when_logger_is_missing
+    created = nil
+    _stdout, stderr = capture_io do
+      RecordingStudioSitemaps::UrlSet.stub(:entries, -> { raise "boom" }) do
+        RecordingStudioSitemaps::GenerationLog.stub(:create!, ->(**attrs) { FakeLog.new(**attrs) }) do
+          Rails.stub(:logger, nil) do
+            created = RecordingStudioSitemaps.rebuild!(source: :system)
+          end
+        end
+      end
+    end
+
+    assert_equal "error", created.status
+    assert_nil created.error_message
+    assert_includes stderr, "boom"
   end
 end
