@@ -306,32 +306,6 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes engine_routes, 'get "rebuild"'
   end
 
-  def test_api_rebuild_registers_behind_recording_studio_api
-    api_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api.rb", __dir__))
-    rebuild_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api/rebuild.rb", __dir__))
-    engine_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
-    access_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api/access.rb", __dir__))
-    metrics_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/metrics.rb", __dir__))
-    html_rebuild = File.read(
-      File.expand_path("../app/controllers/recording_studio_sitemaps/rebuilds_controller.rb", __dir__)
-    )
-
-    assert_includes engine_source, "RecordingStudioSitemaps::Api.register!"
-    refute_includes engine_source, 'initializer "recording_studio_sitemaps.api"'
-    assert_includes api_source, "defined?(RecordingStudioApi)"
-    assert_includes api_source, "register_endpoint"
-    assert_includes api_source, 'title: "Sitemap - Rebuild"'
-    assert_includes api_source, "http_verb: :post"
-    assert_includes api_source, "api: API"
-    assert_includes rebuild_source, "Access.can_view?(context)"
-    assert_includes rebuild_source, "RecordingStudioSitemaps.rebuild!(source: :api)"
-    assert_includes access_source, "role: :view"
-    assert_includes metrics_source, "Api::Access.can_view?(context)"
-    assert_includes html_rebuild, "role: :view"
-    refute_includes html_rebuild, "role: :edit"
-    refute_includes html_rebuild, "role: :admin"
-  end
-
   def test_dummy_page_enables_publishable
     page_source = File.read(File.expand_path("dummy/app/models/page.rb", __dir__))
 

@@ -21,9 +21,14 @@ module RecordingStudioSitemaps
 
     class << self
       def register!
-        return unless available?
+        return unless defined?(::RecordingStudioApi)
+
+        operations = false
+        RecordingStudioApi.configuration.each_api do |api|
+          operations = true if api.name.to_s == API.to_s
+        end
+        return unless operations
         return if already_registered?
-        return unless operations_api_present?
 
         register_rebuild_endpoint!
         true
@@ -40,24 +45,8 @@ module RecordingStudioSitemaps
         )
       end
 
-      def available?
-        defined?(RecordingStudioApi) &&
-          RecordingStudioApi.respond_to?(:register_endpoint) &&
-          RecordingStudioApi.respond_to?(:registered_endpoint)
-      end
-
       def already_registered?
-        return false unless available?
-        return false unless operations_api_present?
-
         RecordingStudioApi.registered_endpoint(NAME, api: API)
-      end
-
-      def operations_api_present?
-        configuration = RecordingStudioApi.configuration if RecordingStudioApi.respond_to?(:configuration)
-        return true unless configuration.respond_to?(:api_names)
-
-        Array(configuration.api_names).include?("operations")
       end
     end
   end

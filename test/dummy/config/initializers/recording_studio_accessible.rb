@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RecordingStudioAccessible.configure do |config|
-  config.access_actor_types = [ "User", "RecordingStudioApi::ApiClient" ]
+  config.access_actor_types = [ "User" ]
+  config.access_actor_types += ["RecordingStudioApi::ApiClient"]
 
   config.avatar_resolver = lambda do |access_holder|
     next unless access_holder.is_a?(User)

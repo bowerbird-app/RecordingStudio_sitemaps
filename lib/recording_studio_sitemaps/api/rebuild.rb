@@ -31,7 +31,7 @@ module RecordingStudioSitemaps
 
       def deny_foreign_root!
         admin_root = Access.admin_root_recording
-        root = context&.root_recording
+        root = context.root_recording
         return if admin_root.present? && root.present? && admin_root.id == root.id
 
         raise RecordingStudioApi::NotFoundError, "Root was not found"
