@@ -72,6 +72,23 @@ class SitemapRebuildApiTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test "register! raises when sitemaps.rebuild already has a foreign handler" do
+    existing = RecordingStudioApi.registered_endpoint(
+      RecordingStudioSitemaps::Api::NAME,
+      api: RecordingStudioSitemaps::Api::API
+    )
+    original_handler = existing.handler
+    existing.instance_variable_set(:@handler, Object)
+
+    error = assert_raises(RecordingStudioApi::ConfigurationError) do
+      RecordingStudioSitemaps::Api.register!
+    end
+
+    assert_equal "API endpoint sitemaps.rebuild is already registered", error.message
+  ensure
+    existing&.instance_variable_set(:@handler, original_handler) if original_handler
+  end
+
   test "rebuild returns 404 for a foreign root" do
     issued = issue_token(access_point: @workspace_root, actor: @staff, role: :view, api: :operations)
 

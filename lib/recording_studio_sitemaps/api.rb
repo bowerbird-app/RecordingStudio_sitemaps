@@ -22,12 +22,7 @@ module RecordingStudioSitemaps
     class << self
       def register!
         return unless defined?(::RecordingStudioApi)
-
-        operations = false
-        RecordingStudioApi.configuration.each_api do |api|
-          operations = true if api.name.to_s == API.to_s
-        end
-        return unless operations
+        return unless RecordingStudioApi.configuration.api_names.include?(API.to_s)
         return if already_registered?
 
         register_rebuild_endpoint!
@@ -46,7 +41,11 @@ module RecordingStudioSitemaps
       end
 
       def already_registered?
-        RecordingStudioApi.registered_endpoint(NAME, api: API)
+        existing = RecordingStudioApi.registered_endpoint(NAME, api: API)
+        return false unless existing
+        return true if existing.handler == Rebuild
+
+        raise RecordingStudioApi::ConfigurationError, "API endpoint #{NAME} is already registered"
       end
     end
   end
