@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.9.0
+
+Install Sitemaps `0.9.0`. No migration. Optional operations rebuild at `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`. No gemspec dependency on `recording_studio_api`. Last-build metrics are unchanged.
+
+### Host app
+
+1. Load Recording Studio API and configure an `:operations` named API if you want the JSON rebuild.
+2. Grant Accessible `:view` on AdminRoot to the API client actor. Same check as Admin Rebuild HTML (`Api::Access.can_view?`).
+3. English hosts need no locale change. Sitemaps adds no new engine migration.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
 ## 0.8.0
 
 Install Sitemaps `0.8.0`. No migration. Rebuild is POST-only with CSRF. Public `/sitemap.xml` no longer rebuilds on miss. Failed Admin rows say `Failed`. Dummy kit pins FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`. Rails `8.1.4.1` in both lockfiles. Gemspec floors stay as 0.7.0.

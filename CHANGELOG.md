@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-12
+
+### Added
+- Operations API rebuild: `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`. Thin wrapper over `RecordingStudioSitemaps.rebuild!(source: :api)`. Registers with `RecordingStudioApi.register_endpoint` when that constant is present. No gemspec dependency on `recording_studio_api`. Last-build metrics are unchanged.
+
+### Upgrade notes
+- Bump to `0.9.0`. No Sitemaps migration. Hosts that already load Recording Studio API and an `:operations` named API get the rebuild route after upgrade. Gate is Accessible `:view` on AdminRoot (`Api::Access.can_view?`), matching Admin Rebuild HTML. Dummy pins Recording Studio API `v0.21.3` for HTTP coverage. Gemspec floors are unchanged.
+
 ## [0.8.0] - 2026-11-05
 
 ### Changed
@@ -219,7 +227,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.5.3...v0.6.0

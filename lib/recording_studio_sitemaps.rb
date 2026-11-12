@@ -18,6 +18,7 @@ require "recording_studio_sitemaps/publish_hooks"
 require "recording_studio_sitemaps/services/generate"
 require "recording_studio_sitemaps/admin"
 require "recording_studio_sitemaps/metrics"
+require "recording_studio_sitemaps/api"
 
 module RecordingStudioSitemaps
   class << self

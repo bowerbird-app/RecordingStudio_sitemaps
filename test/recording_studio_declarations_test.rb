@@ -85,6 +85,8 @@ class RecordingStudioDeclarationsTest < ActiveSupport::TestCase
   test "accessible is enabled on workspace and stays opt-in" do
     assert RecordingStudio.capability_enabled?(:accessible, for: "Workspace")
     assert RecordingStudio.capability_enabled?(:accessible, for: "AdminRoot")
+    assert RecordingStudio.capability_enabled?(:api_access_point, for: "Workspace")
+    assert RecordingStudio.capability_enabled?(:api_access_point, for: "AdminRoot")
     refute RecordingStudio.capability_enabled?(:accessible, for: "Folder")
     refute RecordingStudio.capability_enabled?(:accessible, for: "Page")
     refute RecordingStudio.registered_capabilities.key?(:example)

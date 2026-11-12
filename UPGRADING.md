@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.9.0
+
+Install Sitemaps `0.9.0`. No Sitemaps migration. Optional operations rebuild: `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`. This gem does not gemspec-depend on Recording Studio API. If that constant is missing, Sitemaps boots with no JSON rebuild route. Last-build metrics are unchanged. Dummy kit pins Recording Studio API `v0.21.3` (plus Moveable `v4.1.1` and Icons `v0.2.1` with `require: false`). Other dummy pins stay as 0.8.0. Gemspec floors are unchanged.
+
 ## 0.8.0
 
 Install Sitemaps `0.8.0`. No Sitemaps migration. Rebuild is POST-only with CSRF. `/sitemap.xml` serves the last successful log, or empty XML with `Cache-Control` when there is none — it does not rebuild on miss. Failed builds show `Failed` in Admin; exceptions stay in the server log. Dummy kit pins FlatPack `v0.1.341`, Accessible `v0.24.1`, Metrics `v0.7.2`, Logs `v0.7.3`, Trashable `v0.12.2`, Cache `v0.6.2`, Root Switchable `v0.11.5`. Admin stays `v2.8.0`. Rails lockfiles are `8.1.4.1`. Gemspec floors are unchanged.
