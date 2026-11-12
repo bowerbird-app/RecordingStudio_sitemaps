@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.8.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.9.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -32,6 +32,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemspec, "https://github.com/bowerbird-app/RecordingStudio_sitemaps"
     refute_includes gemspec, "https://github.com/bowerbird-app/recording_studio_sitemaps"
     refute_includes gemspec, "RecordingStudio_gem_template"
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_api"'
   end
 
   def test_dummy_gemfile_pins_verified_6x_github_tags
@@ -48,6 +49,7 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.12.2"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.3"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.2"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v0.21.3"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.341"'
     refute_includes gemfile, 'tag: "v4.7.0"'
     refute_includes gemfile, 'tag: "v2.4.0"'
@@ -302,6 +304,32 @@ class RecordingStudioSitemapsTest < Minitest::Test
     engine_routes = File.read(File.expand_path("../config/routes.rb", __dir__))
     assert_includes engine_routes, 'post "rebuild"'
     refute_includes engine_routes, 'get "rebuild"'
+  end
+
+  def test_api_rebuild_registers_behind_recording_studio_api
+    api_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api.rb", __dir__))
+    rebuild_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api/rebuild.rb", __dir__))
+    engine_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/engine.rb", __dir__))
+    access_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/api/access.rb", __dir__))
+    metrics_source = File.read(File.expand_path("../lib/recording_studio_sitemaps/metrics.rb", __dir__))
+    html_rebuild = File.read(
+      File.expand_path("../app/controllers/recording_studio_sitemaps/rebuilds_controller.rb", __dir__)
+    )
+
+    assert_includes engine_source, "RecordingStudioSitemaps::Api.register!"
+    refute_includes engine_source, 'initializer "recording_studio_sitemaps.api"'
+    assert_includes api_source, "defined?(RecordingStudioApi)"
+    assert_includes api_source, "register_endpoint"
+    assert_includes api_source, 'title: "Sitemap - Rebuild"'
+    assert_includes api_source, "http_verb: :post"
+    assert_includes api_source, "api: API"
+    assert_includes rebuild_source, "Access.can_view?(context)"
+    assert_includes rebuild_source, "RecordingStudioSitemaps.rebuild!(source: :api)"
+    assert_includes access_source, "role: :view"
+    assert_includes metrics_source, "Api::Access.can_view?(context)"
+    assert_includes html_rebuild, "role: :view"
+    refute_includes html_rebuild, "role: :edit"
+    refute_includes html_rebuild, "role: :admin"
   end
 
   def test_dummy_page_enables_publishable

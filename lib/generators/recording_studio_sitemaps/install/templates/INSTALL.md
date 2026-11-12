@@ -14,4 +14,4 @@ end
 ```
 
 5. Grant Accessible access on that admin root. Do not use `user.admin?`.
-6. `/sitemap.xml` is public and serves the last successful log (empty XML when there is none). Rebuild from Admin is POST `/recording_studio_sitemaps/rebuild`. Publish/unpublish uses the same `RecordingStudioSitemaps.rebuild!` action.
+6. `/sitemap.xml` is public and serves the last successful log (empty XML when there is none). Rebuild from Admin is POST `/recording_studio_sitemaps/rebuild`. If the host loads Recording Studio API with an `:operations` API, rebuild is also POST `/recording_studio_api/apis/operations/v1/sitemaps/rebuild`. Publish/unpublish uses the same `RecordingStudioSitemaps.rebuild!` action.

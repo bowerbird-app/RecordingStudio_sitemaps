@@ -4,6 +4,7 @@ RecordingStudioSitemaps has been installed.
 
 Public sitemap: /sitemap.xml
 Engine rebuild: POST /recording_studio_sitemaps/rebuild
+Operations API rebuild: POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild (when Recording Studio API is loaded)
 
 Next:
 1. Set public_base_url in config/initializers/recording_studio_sitemaps.rb

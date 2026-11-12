@@ -70,6 +70,8 @@ class RecordingStudioHostTest < ActiveSupport::TestCase
     refute File.exist?(RecordingStudioSitemaps::Engine.root.join("lib/recording_studio_sitemaps/capabilities/example.rb"))
 
     assert RecordingStudio.capability_enabled?(:accessible, for: Workspace)
+    assert RecordingStudio.capability_enabled?(:api_access_point, for: Workspace)
+    assert RecordingStudio.capability_enabled?(:api_access_point, for: AdminRoot)
     refute RecordingStudio.capability_enabled?(:accessible, for: Folder)
     refute RecordingStudio.capability_enabled?(:accessible, for: Page)
     refute RecordingStudio.registered_capabilities.key?(:example)

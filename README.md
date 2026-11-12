@@ -18,7 +18,7 @@ Sitemap rows are not recordings. They are derived and can be rebuilt. Each rebui
 
 ## Domain action
 
-`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks and the Admin Rebuild POST both call it. Rebuild is POST-only with CSRF.
+`RecordingStudioSitemaps.rebuild!(source:)` is the only write path. Publish/unpublish hooks, the Admin Rebuild POST, and the operations API rebuild all call it. Admin Rebuild is POST-only with CSRF.
 
 ```ruby
 RecordingStudioSitemaps.rebuild!(source: :admin)
@@ -128,6 +128,16 @@ Staff with AdminRoot `:view` (the Build history check, `RecordingStudioSitemaps:
 
 All three read the newest `GenerationLog` (any result) and are empty before the first build. They are point-in-time values, so they take no `from` / `to` / `interval`, no `group_by`, and no filters, and they skip the Metrics cache.
 
+## Operations rebuild
+
+When Recording Studio API is loaded and the host has an `:operations` API, Sitemaps registers one POST. It does not gemspec-depend on `recording_studio_api`.
+
+| Path | Action |
+| --- | --- |
+| `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild` | `RecordingStudioSitemaps.rebuild!(source: :api)` |
+
+Staff with AdminRoot `:view` (`RecordingStudioSitemaps::Api::Access.can_view?`) can call it. That is the same Accessible check as Admin Rebuild HTML. A token whose root is not Admin gets `404`. Last-build metrics stay read-only and are unchanged.
+
 ## Dummy host
 
 `test/dummy/` is a host that proves the gem. It is not the product.
@@ -149,6 +159,7 @@ Dummy kit pins:
 | Trashable | `v0.12.2` |
 | Logs | `v0.7.3` |
 | Cache | `v0.6.2` |
+| API | `v0.21.3` (dummy only) |
 | FlatPack | `v0.1.341` |
 
 ```bash
@@ -178,6 +189,6 @@ Admin DSL values (titles, link text, chart titles, column titles, subtitles, wid
 
 ## Out of scope
 
-Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, JSON API, Embeddable, and Support or Press kit special cases.
+Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, Embeddable, and Support or Press kit special cases.
 
 This README is the product. The dummy app is a host that proves the gem.

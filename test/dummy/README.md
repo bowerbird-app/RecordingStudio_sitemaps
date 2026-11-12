@@ -11,6 +11,7 @@ This Rails app exists to prove Recording Studio Sitemaps in a real host. It is n
 - One findable page and one published page hidden from search, with a short rebuild history for Index size
 - Public `/sitemap.xml` with no sign-in
 - Admin Sitemaps section and Build history screen gated by Accessible on an admin root (switch the current root to Admin first)
+- Optional Recording Studio API operations rebuild (`POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`)
 - Recording Studio default layout (back/close chrome), Flatpack CSS/JS, Turbo, and Tailwind source scanning
 - `html data-theme="rounded"` on both the login layout and the default layout
 - Signed-in `/` as a thin workspace slice (seeded workspace title, then folders and pages)
@@ -58,6 +59,7 @@ Tailwind scans dummy views plus FlatPack/Recording Studio gem paths for `vendor/
 - `/sitemap.xml` - public sitemap, no sign-in
 - `/admin/sections/sitemaps` - Admin Sitemaps section (switch to the Admin root first)
 - `/admin/screens/build_history` - Admin build history chart and table
+- `/recording_studio_api` - mounted Recording Studio API (operations rebuild lives here)
 - `/recording_studio_root_switchable/v1/root_switch` - workspace / Admin root switcher page
 - `/recording_studio` - redirects to `/` while the mounted Recording Studio engine stays available under that prefix for non-root routes
 - `/users/sign_in` - Devise sign-in page
