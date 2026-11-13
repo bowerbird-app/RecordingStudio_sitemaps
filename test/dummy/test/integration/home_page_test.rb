@@ -16,6 +16,7 @@ class HomePageTest < ActionDispatch::IntegrationTest
 
     workspace = Workspace.create!(name: "Slice Workspace")
     root_recording = RecordingStudio.root_recording_for(workspace)
+    grant_view_for_root_switch!(user)
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
       scope: "all_workspaces",

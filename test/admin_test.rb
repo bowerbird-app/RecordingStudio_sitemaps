@@ -267,7 +267,7 @@ class AdminTest < Minitest::Test
       RecordingStudioAdmin::Engine.root.join("app/views/recording_studio_admin/screens/_filter_fields.html.erb")
     )
     assert_includes filter_fields, "key: :last_30_days"
-    assert_includes filter_fields, 'label: "Last 30 days"'
+    assert_includes filter_fields, 'default: "Last 30 days"'
     assert_includes filter_fields, "days: 31"
     assert_includes filter_fields, "*FlatPack::DateRangeInput::Component::DEFAULT_PRESET_KEYS"
     assert_includes filter_fields, "FlatPack::DateRangeInput::Component.new("

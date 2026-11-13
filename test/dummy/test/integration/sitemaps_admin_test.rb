@@ -115,8 +115,9 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Pages in the sitemap"
     assert_includes response.body, stamp
     assert_includes response.body, "flat-pack--chart-integer-ticks-value"
-    refute_includes response.body, "decimalsInFloat"
-    refute_includes response.body, "stepSize"
+    # Admin / FlatPack integer_ticks now writes the whole-number y-axis.
+    assert_includes response.body, "decimalsInFloat"
+    assert_includes response.body, "stepSize"
     refute_match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, response.body)
 
     get "/admin/screens/build_history/table"
@@ -227,6 +228,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
   end
 
   def switch_to_admin_root!(admin_recording)
+    grant_view_for_root_switch!(@user)
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
       scope: "all_workspaces",
       root_switch: {
