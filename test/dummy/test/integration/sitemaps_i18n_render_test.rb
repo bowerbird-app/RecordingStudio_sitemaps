@@ -273,6 +273,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   end
 
   def switch_to_admin_root!(admin_recording)
+    grant_view_for_root_switch!(@user)
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
       scope: "all_workspaces",
       root_switch: {

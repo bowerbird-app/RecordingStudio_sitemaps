@@ -42,6 +42,24 @@ module AdminAccessHelpers
     recording
   end
 
+  # Root Switchable 0.12+ requires Accessible :view on the current root before
+  # the mounted switch page. Grant it on every switchable root the dummy lists.
+  def grant_view_for_root_switch!(actor)
+    Workspace.find_each do |workspace|
+      recording = RecordingStudio.root_recording_for(workspace)
+      next unless recording
+
+      grant_admin_access_for_test!(recording: recording, actor: actor, role: "view")
+    end
+
+    AdminRoot.find_each do |admin_root|
+      recording = RecordingStudio.root_recording_for(admin_root)
+      next unless recording
+
+      grant_admin_access_for_test!(recording: recording, actor: actor, role: "view")
+    end
+  end
+
   private
 
   def existing_test_access_manager(recording, role)
