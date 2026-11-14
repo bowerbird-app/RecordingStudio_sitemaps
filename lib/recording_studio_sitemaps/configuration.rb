@@ -18,7 +18,9 @@ module RecordingStudioSitemaps
       {
         public_base_url: public_base_url,
         url_count_warning_threshold: url_count_warning_threshold,
-        hooks_registered: hooks.registered_counts
+        hooks_registered: hooks.registered_counts,
+        sources: RecordingStudioSitemaps.sources.names,
+        filters: RecordingStudioSitemaps.filters.names
       }
     end
 

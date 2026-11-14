@@ -1,59 +1,36 @@
 # frozen_string_literal: true
 
 module RecordingStudioSitemaps
+  # Entries a built-in check or a registered filter withheld.
+  # The reason stays an English literal. The filter name says which check said no.
   class Exclusions
-    Reason = Struct.new(:title, :reason, keyword_init: true)
+    Item = Struct.new(:title, :reason, :filter_name, :loc, keyword_init: true) do
+      def detail
+        label = filter_name.to_s.tr("_", " ").capitalize
+        return label if reason.blank? || reason == label
+
+        "#{label} — #{reason}"
+      end
+    end
 
     def self.items
       new.items
     end
 
     def items
-      UrlSet.indexable_types.flat_map { |type| items_for(type) }
+      Collection.withheld.map { |decision| item_for(decision) }
     end
 
     private
 
-    def items_for(type)
-      published = type.respond_to?(:published) ? type.published.to_a : []
-      indexable_ids = type.indexable.where(id: published.map(&:id)).pluck(:id)
-
-      published.filter_map do |recordable|
-        next if indexable_ids.include?(recordable.id)
-
-        reason = reason_for(recordable)
-        next if reason.blank?
-
-        Reason.new(title: title_for(recordable), reason: reason)
-      end
-    end
-
-    def title_for(recordable)
-      recordable.try(:title).presence ||
-        recordable.try(:name).presence ||
-        recordable.class.model_name.human
-    end
-
-    def reason_for(recordable)
-      return "In the trash" if trashed?(recordable)
-
-      publishable = recordable.try(:current_publishable_for_index)
-      return "Hidden from search" if publishable&.try(:noindex?)
-      return "No public URL" if recordable.try(:indexable_url).blank?
-
-      "Left out of the sitemap"
-    end
-
-    def trashed?(recordable)
-      return true if recordable.try(:trashed_at).present?
-
-      recording = RecordingStudio::Recording.find_by(
-        recordable_type: recordable.class.name,
-        recordable_id: recordable.id
+    def item_for(decision)
+      entry = decision.entry
+      Item.new(
+        title: entry.title.presence || entry.loc,
+        reason: decision.reason,
+        filter_name: decision.filter_name,
+        loc: entry.loc
       )
-      recording&.trashed_at.present?
-    rescue StandardError
-      false
     end
   end
 end

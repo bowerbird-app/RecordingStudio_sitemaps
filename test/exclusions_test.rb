@@ -3,74 +3,46 @@
 require "test_helper"
 
 class ExclusionsTest < Minitest::Test
-  FakeRelation = Struct.new(:ids) do
-    def where(*)
-      self
+  def test_accepted_entries_are_not_listed
+    RecordingStudioSitemaps.unregister_source(:publishable)
+    RecordingStudioSitemaps.register_source(:pages) do |batch|
+      batch << RecordingStudioSitemaps::Entry.new(
+        loc: "https://www.example.com/findable",
+        title: "Findable",
+        type: "Page"
+      )
     end
 
-    def pluck(*)
-      ids
-    end
-  end
-
-  FakePublishable = Struct.new(:noindex, :canonical, keyword_init: true) do
-    def noindex?
-      noindex
-    end
-  end
-
-  FakeRecordable = Struct.new(:id, :title, :name, :trashed_at, :indexable_url, :publishable, keyword_init: true) do
-    def current_publishable_for_index
-      publishable
-    end
-  end
-
-  FakeType = Struct.new(:published_rows, :indexable_ids) do
-    def published
-      published_rows
-    end
-
-    def indexable
-      FakeRelation.new(indexable_ids)
-    end
-  end
-
-  def test_skips_indexable_rows
-    recordable = FakeRecordable.new(id: 1, title: "Findable", publishable: FakePublishable.new(noindex: false))
-
-    RecordingStudioSitemaps::UrlSet.stub(:indexable_types, [FakeType.new([recordable], [1])]) do
+    with_base do
       assert_empty RecordingStudioSitemaps::Exclusions.items
     end
   end
 
-  def test_reasons_for_noindex_missing_url_and_trash
-    noindex = FakeRecordable.new(
-      id: 2,
-      title: "Staff-only notes",
-      publishable: FakePublishable.new(noindex: true),
-      indexable_url: "/hidden"
-    )
-    no_url = FakeRecordable.new(
-      id: 3,
-      name: "Draft URL",
-      publishable: FakePublishable.new(noindex: false),
-      indexable_url: nil
-    )
-    trashed = FakeRecordable.new(
-      id: 4,
-      title: "Old page",
-      trashed_at: Time.utc(2026, 8, 1),
-      publishable: FakePublishable.new(noindex: false),
-      indexable_url: "/old"
-    )
-    type = FakeType.new([noindex, no_url, trashed], [])
+  def test_withheld_entries_keep_english_filter_reasons
+    RecordingStudioSitemaps.unregister_source(:publishable)
+    RecordingStudioSitemaps.register_source(:pages) do |batch|
+      batch << [
+        RecordingStudioSitemaps::Entry.new(loc: "/hidden", title: "Hidden page", type: "Page"),
+        RecordingStudioSitemaps::Entry.new(
+          loc: "https://other.test/old",
+          title: "Old page",
+          type: "Page"
+        )
+      ]
+    end
 
-    RecordingStudioSitemaps::UrlSet.stub(:indexable_types, [type]) do
+    with_base do
       reasons = RecordingStudioSitemaps::Exclusions.items
 
-      assert_equal "Hidden from search", reasons.find { |row| row.title == "Staff-only notes" }.reason
-      assert_equal "No public URL", reasons.find { |row| row.title == "Draft URL" }.reason
-      assert_equal "In the trash", reasons.find { |row| row.title == "Old page" }.reason
+      assert_equal "Not an absolute URL", reasons.find { |row| row.title == "Hidden page" }.reason
+      assert_equal :absolute_url, reasons.find { |row| row.title == "Hidden page" }.filter_name
+      assert_equal "Off the public host", reasons.find { |row| row.title == "Old page" }.reason
     end
+  end
+
+  private
+
+  def with_base(&)
+    RecordingStudioSitemaps.configuration.stub(:public_base_url, "https://www.example.com", &)
   end
 end

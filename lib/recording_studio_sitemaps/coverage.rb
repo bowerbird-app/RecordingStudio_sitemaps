@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module RecordingStudioSitemaps
+  # Included entries over entries sources offered, grouped by the entry's type.
   class Coverage
-    TypeCount = Struct.new(:label, :included, :published, keyword_init: true)
-    Snapshot = Struct.new(:included, :published, :types, keyword_init: true)
+    TypeCount = Struct.new(:label, :included, :offered, keyword_init: true)
+    Snapshot = Struct.new(:included, :offered, :types, keyword_init: true)
 
     def self.snapshot
       new.snapshot
@@ -13,7 +14,7 @@ module RecordingStudioSitemaps
       types = type_counts
       Snapshot.new(
         included: types.sum(&:included),
-        published: types.sum(&:published),
+        offered: types.sum(&:offered),
         types: types
       )
     end
@@ -21,28 +22,18 @@ module RecordingStudioSitemaps
     private
 
     def type_counts
-      included_by_type = UrlSet.entries.group_by { |entry| entry.recordable&.class }
-
-      UrlSet.indexable_types.map do |type|
+      grouped = Collection.decisions.group_by { |decision| label_for(decision.entry) }
+      grouped.map do |label, decisions|
         TypeCount.new(
-          label: label_for(type),
-          included: included_by_type.fetch(type, []).size,
-          published: published_count(type)
+          label: label,
+          included: decisions.count(&:accepted?),
+          offered: decisions.size
         )
       end
     end
 
-    def published_count(type)
-      return 0 unless type.respond_to?(:published)
-
-      relation = type.published
-      relation.respond_to?(:count) ? relation.count : Array(relation).size
-    end
-
-    def label_for(type)
-      return RecordingStudio.recordable_type_label(type) if defined?(RecordingStudio)
-
-      type.try(:model_name)&.human || type.name
+    def label_for(entry)
+      entry.type.presence || "Page"
     end
   end
 end

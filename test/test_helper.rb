@@ -15,6 +15,19 @@ require "i18n"
 # I18n.load_path (wave-2 locale-loading rule).
 I18n.backend.load_translations(File.expand_path("../config/locales/en.yml", __dir__))
 
+module SitemapRegistryIsolation
+  def run(*)
+    sources = RecordingStudioSitemaps.sources.snapshot
+    filters = RecordingStudioSitemaps.filters.snapshot
+    super
+  ensure
+    RecordingStudioSitemaps.sources.restore(sources) if sources
+    RecordingStudioSitemaps.filters.restore(filters) if filters
+  end
+end
+
+Minitest::Test.prepend(SitemapRegistryIsolation)
+
 unless RecordingStudioSitemaps.const_defined?(:GenerationLog, false)
   generation_log = Class.new do
     def self.latest

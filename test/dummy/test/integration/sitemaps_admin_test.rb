@@ -33,15 +33,15 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     assert_select "a", text: /Last built/, count: 0
     assert_select "a", text: "Build history", count: 0
     assert_includes response.body, "Coverage"
-    assert_includes response.body, "#{coverage.included} / #{coverage.published}"
+    assert_includes response.body, "#{coverage.included} / #{coverage.offered}"
     assert_operator coverage.included, :>, 0
-    assert_operator coverage.published, :>, coverage.included
+    assert_operator coverage.offered, :>, coverage.included
     assert_includes response.body, "In the sitemap"
     assert_includes response.body, "Getting Started"
     assert_includes response.body, "Page"
     assert_includes response.body, "Missing"
-    assert_includes response.body, "Staff-only notes"
-    assert_includes response.body, "Hidden from search"
+    assert_includes response.body, "Launch notes"
+    assert_includes response.body, "Held for review"
     assert_includes response.body, "Open sitemap"
     assert_includes response.body, "Rebuild"
     assert_includes response.body, "flat-pack--chart-integer-ticks-value"
@@ -57,7 +57,7 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     refute_includes response.body, "Sign out"
     refute_includes response.body, 'href="/users/sign_out"'
     refute_includes response.body, "/recording_studio_root_switchable/v1/root_switch"
-    assert_select "a[href='/recording_studio_sitemaps/rebuild'][data-method=post]"
+    assert_select "a[href='/recording_studio_sitemaps/rebuild'][data-turbo-method=post]"
     refute_includes response.body, "Findable pages"
     refute_includes response.body, "Live but left out"
     refute_includes response.body, "total URLs ever"
@@ -184,10 +184,12 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
     folder = Folder.create!(name: "Docs")
     indexable_page = Page.create!(title: "Getting Started")
     excluded_page = Page.create!(title: "Staff-only notes")
+    held_page = Page.create!(title: "Launch notes")
     root = RecordingStudio.root_recording_for(workspace)
     folder_recording = record_child(folder, root, root)
     indexable_recording = record_child(indexable_page, root, folder_recording)
     excluded_recording = record_child(excluded_page, root, folder_recording)
+    held_recording = record_child(held_page, root, folder_recording)
 
     RecordingStudioPublishable::Services::Publishables::Update.call(
       parent_recording: indexable_recording,
@@ -199,6 +201,14 @@ class SitemapsAdminTest < ActionDispatch::IntegrationTest
       actor: @user,
       attributes: { slug: "staff-only-notes", status: "published", meta_robots: "noindex,follow" }
     )
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: held_recording,
+      actor: @user,
+      attributes: { slug: "launch-notes", status: "published", meta_robots: "index,follow" }
+    )
+    RecordingStudioSitemaps.register_filter(:hold_launch) do |entry|
+      entry.loc.to_s.include?("launch-notes") ? "Held for review" : true
+    end
     RecordingStudioSitemaps.rebuild!(source: :test)
   ensure
     Current.actor = nil

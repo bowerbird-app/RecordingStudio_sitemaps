@@ -1,16 +1,68 @@
 # Recording Studio Sitemaps
 
-A public `/sitemap.xml` of the pages people can find. Built from Publishable URLs that are indexable. Generation logs remember when the list was written. Admin lists what is in the sitemap and why a live page was left out.
+A public `/sitemap.xml` of the pages people can find. Sources say what to offer. Filters say what to leave out. Generation logs remember when the list was written. Admin lists what is in the sitemap and which filter held a URL back.
 
-This gem owns the XML list, the build log, and the Admin view of that list. Publishable still owns per-page search tags (`indexable?`, robots, canonical). Do not treat this as a second SEO gem.
+This gem owns the XML list, the build log, and the Admin view of that list. It does not know about embargoes, press kits, press centers, access rules, or trash. Those gems register a source or a filter from their own code. Publishable still owns per-page search tags. Do not treat this as a second SEO gem.
 
 ## What is included
 
-A page appears when Publishable says it is indexable: currently published, not marked noindex, with a usable canonical or public URL, and not in the trash.
+The engine registers one source, `:publishable`. It asks each recordable type that responds to `.indexable` for rows, in batches, and turns each row into an entry. Hosts that only use Publishable keep the same sitemap with no setup. A host or gem can unregister `:publishable` and replace it.
 
-- `loc` is the canonical override when set, otherwise the public URL
+- `loc` is the canonical override when set, otherwise the public URL, joined onto `public_base_url` when it is only a path
 - `lastmod` is the publish time
-- No `changefreq` or `priority`
+- `changefreq` and `priority` are written only when a source sets them. The Publishable source does not.
+
+## Sources and filters
+
+A source offers entries. A filter sees every entry from every source and can veto it. Built-in checks run first, then registered filters, in registration order. The first veto wins. Later filters are not called for that entry.
+
+An entry has `loc` and `lastmod`. `changefreq` and `priority` are optional. Admin also reads `title`, `type`, and `recording` when the source has them.
+
+Register from a host initializer, or from a gem engine initializer, after this gem has loaded. Re-registering a name replaces that block and keeps its place. `unregister_source` and `unregister_filter` remove one.
+
+```ruby
+# config/initializers/recording_studio_sitemaps.rb
+# or an engine initializer in the gem that owns the rule
+
+RecordingStudioSitemaps.register_filter(:embargo) do |entry|
+  next true if entry.recording.blank?
+
+  Embargo.blocks_public?(entry.recording) ? "Under embargo" : true
+end
+
+RecordingStudioSitemaps.register_source(:marketing_pages) do |batch|
+  batch << RecordingStudioSitemaps::Entry.new(
+    loc: "https://www.example.com/pricing",
+    lastmod: Date.new(2026, 1, 1),
+    changefreq: "monthly",
+    priority: 0.4,
+    title: "Pricing",
+    type: "Page"
+  )
+end
+```
+
+Returning an array or an Enumerator from the block works too, if the block never calls the batch sink. Prefer the sink, and yield batches, so a later sitemap index can split at 50,000 URLs without loading every row.
+
+A filter returns `true` to keep the entry. `false` and `nil` withhold it, and Admin shows the filter's name. A String withholds it, and Admin shows that reason. Any other return value keeps the entry.
+
+Built-in checks are not in the filter registry, so they cannot be removed:
+
+- `:absolute_url` drops a blank loc or a loc that is not an absolute http(s) URL. Reason: "Not an absolute URL".
+- `:public_host` drops a loc whose host is not `public_base_url`'s host, ignoring scheme and letter case. Reason: "Off the public host". When `public_base_url` has no host, this check does not run.
+
+### Fail closed
+
+A filter that raises drops that entry, logs the exception, and the rebuild continues. The entry is never written. Admin shows "Filter failed" for that filter. The exception text stays in the server log.
+
+A source that raises aborts the rebuild. Entries already streamed from that source, or from earlier sources, are thrown away. The generation log is `Failed`. `/sitemap.xml` keeps serving the last successful log. A partial list must not silently replace a good sitemap.
+
+### What other gems register
+
+Register from the gem that owns the rule. This gem will not call into those gems.
+
+- A visibility filter, for embargo or for access restrictions, that returns `false` or a reason when the public should not see `entry.recording`
+- A source for URLs this gem does not know about, such as press kits or a static marketing page
 
 There is one sitemap for the public host, not one per workspace. `/sitemap.xml` is logged-out and has no actor. It serves the last successful generation log. When there is no successful log, it returns an empty urlset and does not rebuild. If the findable URL count heads toward 50,000, Admin warns. This slice does not split into a sitemap index.
 
@@ -103,9 +155,9 @@ The Sitemaps section is five cards in a four-column row (the fifth wraps), then 
 
 - **Last build** — how long ago the newest write was, from `RecordingStudioMetrics` `sitemaps.last_build_age` (seconds since `GenerationLog.built_at`, shown as time ago in words). The card is a link to **Build history**
 - **Index size** — how many pages made the sitemap each rebuild, from the last 30 days of generation logs. The card is a link to **Build history** (`context.admin_screen_path("build_history")`)
-- **Coverage** — findable pages over published Publishable pages, as a progress bar
-- **In the sitemap** — each findable page, with its type
-- **Missing** — each published page that missed the list and why, plus any Publishable type with none in the sitemap
+- **Coverage** — entries that passed filters, over entries sources offered, as a progress bar
+- **In the sitemap** — each accepted entry, with its title and type
+- **Missing** — each entry a filter or built-in check held back, with the filter and the reason, plus any type with none in the sitemap
 
 Do not mark any of those widgets `view_variant: :compact`. Compact cards render on their own Admin row and shrink the others.
 
@@ -171,7 +223,7 @@ bin/rails db:setup
 bin/dev
 ```
 
-Seed creates one findable page and one published page hidden from search. During seed it rebuilds after the first page, again after a second findable page, then after that page is hidden — so Index size has a short honest history. Coverage still ends at 1/2. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps` or `/admin/screens/build_history`.
+Seed creates one findable page and one published page hidden from search. During seed it rebuilds after the first page, again after a second findable page, then after that page is hidden — so Index size has a short honest history. The hidden page is not offered by the Publishable source, so Coverage ends at 1/1 unless a filter holds an offered URL back. Sign-in details live in the dummy README. After sign-in, switch the current root to Admin before opening `/admin/sections/sitemaps` or `/admin/screens/build_history`.
 
 ## Cloud Agent boot
 
@@ -192,6 +244,6 @@ Admin DSL values (titles, link text, chart titles, column titles, subtitles, wid
 
 ## Out of scope
 
-Image, news, and video sitemaps, search-engine ping, robots.txt, user-facing sitemap UI, Embeddable, and Support or Press kit special cases.
+Image, news, and video sitemaps, search-engine ping, a sitemap index split, robots.txt, and user-facing sitemap UI. Press kits and other products register their own source. This gem does not special-case them.
 
 This README is the product. The dummy app is a host that proves the gem.

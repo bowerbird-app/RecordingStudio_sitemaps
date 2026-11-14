@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-11-14
+
+### Added
+- `RecordingStudioSitemaps.register_source` and `register_filter`. Sources offer entries in batches. Every filter sees every entry. The first veto drops it.
+- Built-in checks drop a blank or non-absolute loc, and a loc whose host is not `public_base_url`.
+- Entries may set `changefreq` and `priority`. Admin reads `title`, `type`, and `recording`.
+- The Publishable walk is the default `:publishable` source. Hosts can unregister or replace it.
+
+### Changed
+- Rebuild streams batches into one urlset. A source that raises does not publish a partial sitemap. `/sitemap.xml` keeps the last successful log. A filter that raises drops that entry and the rebuild continues.
+- Admin Coverage is included over offered. Missing names the filter and the reason. It no longer compares published pages with Publishable's indexable scope.
+
+### Upgrade notes
+- Bump to `0.10.0`. No Sitemaps migration. Hosts that only use Publishable indexable pages keep working. Register filters and extra sources from an initializer. `UrlSet` is gone. `Coverage::Snapshot#published` is now `#offered`. `Exclusions` reports filter withholdings, not noindex or trash reasons. See `UPGRADING.md`.
+
 ## [0.9.0] - 2026-11-12
 
 ### Added
@@ -227,7 +242,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.6.0...v0.7.0

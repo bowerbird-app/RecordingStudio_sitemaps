@@ -15,3 +15,4 @@ end
 
 5. Grant Accessible access on that admin root. Do not use `user.admin?`.
 6. `/sitemap.xml` is public and serves the last successful log (empty XML when there is none). Rebuild from Admin is POST `/recording_studio_sitemaps/rebuild`. If the host loads Recording Studio API with an `:operations` API, rebuild is also POST `/recording_studio_api/apis/operations/v1/sitemaps/rebuild`. Publish/unpublish uses the same `RecordingStudioSitemaps.rebuild!` action.
+7. Optional: register a source or a filter from a host initializer or a gem engine initializer. See the README. The `:publishable` source is already registered.
