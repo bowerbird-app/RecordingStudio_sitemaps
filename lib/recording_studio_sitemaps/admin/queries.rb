@@ -52,21 +52,21 @@ module RecordingStudioSitemaps
       def coverage_metadata
         snapshot = Coverage.snapshot
         included = snapshot.included
-        published = snapshot.published
-        max = [published, 1].max
+        offered = snapshot.offered
+        max = [offered, 1].max
         value = [included, max].min
 
         {
           progress_value: value,
           progress_max: max,
-          progress_label: "#{included} / #{published}"
+          progress_label: "#{included} / #{offered}"
         }
       end
 
       def coverage_info
         snapshot = Coverage.snapshot
-        breakdown = snapshot.types.map { |type| "#{type.label} #{type.included}/#{type.published}" }
-        parts = [breakdown.join("; ").presence || "No published pages yet."]
+        breakdown = snapshot.types.map { |type| "#{type.label} #{type.included}/#{type.offered}" }
+        parts = [breakdown.join("; ").presence || "No pages offered yet."]
         if RecordingStudioSitemaps.configuration.approaching_url_limit?(snapshot.included)
           parts << "This list is getting close to the 50,000 URL cap. A split is not available yet."
         end
@@ -74,19 +74,14 @@ module RecordingStudioSitemaps
       end
 
       def findable_items
-        entries = UrlSet.entries
+        entries = Collection.accepted
         return [list_item("Nothing findable yet.")] if entries.empty?
 
-        entries.map { |entry| findable_item_for(entry.recordable) }
+        entries.map { |entry| findable_item_for(entry) }
       end
 
       def missing_items
-        rows = Exclusions.items.map { |row| list_item(row.title, trailing: row.reason) }
-        Coverage.snapshot.types.each do |type|
-          next unless type.included.zero?
-
-          rows << list_item(type.label, trailing: "None in the sitemap")
-        end
+        rows = exclusion_rows + empty_type_rows
         return [list_item("Nothing missing. Nice.")] if rows.empty?
 
         rows
@@ -105,26 +100,26 @@ module RecordingStudioSitemaps
         end
       end
 
-      def findable_item_for(recordable)
-        list_item(title_for(recordable), trailing: type_for(recordable))
+      def exclusion_rows
+        Exclusions.items.map { |row| list_item(row.title, trailing: row.detail) }
+      end
+
+      def empty_type_rows
+        Coverage.snapshot.types.filter_map do |type|
+          next unless type.included.zero? && type.offered.positive?
+
+          list_item(type.label, trailing: "None in the sitemap")
+        end
+      end
+
+      def findable_item_for(entry)
+        list_item(entry.title.presence || entry.loc, trailing: entry.type)
       end
 
       def list_item(text, trailing: nil)
         item = { text: text }
         item[:trailing] = trailing if trailing.present?
         item
-      end
-
-      def title_for(recordable)
-        recordable.try(:title).presence ||
-          recordable.try(:name).presence ||
-          type_for(recordable)
-      end
-
-      def type_for(recordable)
-        return RecordingStudio.recordable_type_label(recordable) if defined?(RecordingStudio) && recordable
-
-        recordable.class.model_name.human
       end
     end
   end

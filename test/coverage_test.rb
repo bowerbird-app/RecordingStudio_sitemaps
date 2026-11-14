@@ -3,29 +3,27 @@
 require "test_helper"
 
 class CoverageTest < Minitest::Test
-  FakeEntry = Struct.new(:recordable)
+  def test_counts_included_and_offered_by_type
+    page = RecordingStudioSitemaps::Entry.new(loc: "https://site.test/a", type: "Page")
+    support = RecordingStudioSitemaps::Entry.new(loc: "https://site.test/b", type: "Support page")
+    decisions = [
+      RecordingStudioSitemaps::Collection::Decision.new(entry: page),
+      RecordingStudioSitemaps::Collection::Decision.new(entry: page),
+      RecordingStudioSitemaps::Collection::Decision.new(
+        entry: support,
+        filter_name: :embargo,
+        reason: "Embargo"
+      )
+    ]
 
-  def test_counts_included_and_published_by_type
-    page_type = Class.new
-    support_type = Class.new
-    page_type.define_singleton_method(:published) { %i[one two] }
-    support_type.define_singleton_method(:published) { %i[kit] }
+    RecordingStudioSitemaps::Collection.stub(:decisions, decisions) do
+      snapshot = RecordingStudioSitemaps::Coverage.snapshot
 
-    entries = [FakeEntry.new(page_type.new)]
-    labels = { page_type => "Page", support_type => "Support page" }
-
-    RecordingStudioSitemaps::UrlSet.stub(:indexable_types, [page_type, support_type]) do
-      RecordingStudioSitemaps::UrlSet.stub(:entries, entries) do
-        RecordingStudio.stub(:recordable_type_label, ->(type) { labels.fetch(type) }) do
-          snapshot = RecordingStudioSitemaps::Coverage.snapshot
-
-          assert_equal 1, snapshot.included
-          assert_equal 3, snapshot.published
-          assert_equal ["Page", "Support page"], snapshot.types.map(&:label)
-          assert_equal [1, 0], snapshot.types.map(&:included)
-          assert_equal [2, 1], snapshot.types.map(&:published)
-        end
-      end
+      assert_equal 2, snapshot.included
+      assert_equal 3, snapshot.offered
+      assert_equal ["Page", "Support page"], snapshot.types.map(&:label)
+      assert_equal [2, 0], snapshot.types.map(&:included)
+      assert_equal [2, 1], snapshot.types.map(&:offered)
     end
   end
 end

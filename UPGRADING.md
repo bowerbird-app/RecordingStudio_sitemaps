@@ -1,5 +1,15 @@
 # Upgrading
 
+## 0.10.0
+
+Install Sitemaps `0.10.0`. No Sitemaps migration. Hosts that only publish indexable pages keep the same `/sitemap.xml` with no setup. The Publishable walk is the default source `:publishable`. Remove it with `RecordingStudioSitemaps.unregister_source(:publishable)` if a host wants to replace it.
+
+Other gems register their own rules. A visibility filter (embargo, access restrictions) returns `false` or a reason String. A source (press kits, marketing pages) yields entries in batches. Register from a host initializer or that gem's engine initializer. Built-in checks drop a blank or non-absolute loc, and a loc off `public_base_url`'s host. They are not registry filters.
+
+A filter that raises drops that one entry and logs the exception. A source that raises fails the rebuild and does not replace the last good sitemap. `changefreq` and `priority` are written when an entry sets them.
+
+`UrlSet` is gone. `Coverage::Snapshot#published` is now `#offered`. `Exclusions` lists withheld entries with `filter_name` and `reason`. It no longer reports noindex, trash, or a missing URL from the Publishable split. Admin Missing shows the filter and the reason.
+
 ## 0.9.0
 
 Install Sitemaps `0.9.0`. No Sitemaps migration. Optional operations rebuild: `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`. This gem does not gemspec-depend on Recording Studio API. If that constant is missing, Sitemaps boots with no JSON rebuild route. Last-build metrics are unchanged. Dummy kit pins Recording Studio API `v0.21.3` (plus Moveable `v4.1.1` and Icons `v0.2.1` with `require: false`). Other dummy pins stay as 0.8.0. Gemspec floors are unchanged.

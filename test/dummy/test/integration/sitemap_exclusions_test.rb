@@ -16,15 +16,14 @@ class SitemapExclusionsTest < ActiveSupport::TestCase
     Current.actor = nil
   end
 
-  test "published noindex pages are excluded with a human reason" do
-    page = publish_page!("Hidden notes", slug: "hidden-notes", meta_robots: "noindex,follow")
+  test "published noindex pages stay out of the sitemap" do
+    publish_page!("Hidden notes", slug: "hidden-notes", meta_robots: "noindex,follow")
 
-    reasons = RecordingStudioSitemaps::Exclusions.items
-    match = reasons.find { |row| row.title == page.title }
+    log = RecordingStudioSitemaps.rebuild!(source: :test)
 
-    assert match
-    assert_equal "Hidden from search", match.reason
-    refute_includes RecordingStudioSitemaps::UrlSet.entries.map(&:loc), /hidden-notes/
+    assert_predicate log, :success?
+    refute_includes log.xml, "hidden-notes"
+    refute_includes RecordingStudioSitemaps::Exclusions.items.map(&:title), "Hidden notes"
   end
 
   test "rebuild logs success count and xml" do

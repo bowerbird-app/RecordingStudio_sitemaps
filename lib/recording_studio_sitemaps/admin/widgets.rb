@@ -28,7 +28,7 @@ module RecordingStudioSitemaps
         @missing_widget ||= RecordingStudioAdmin::Widget.new(WIDGET_MISSING) do
           type :list
           title "Missing"
-          info "Published pages that did not make the sitemap, and why."
+          info "Left out by a filter, and why."
           list_options({ divider: true })
           items { |_| RecordingStudioSitemaps::Admin.missing_items }
         end

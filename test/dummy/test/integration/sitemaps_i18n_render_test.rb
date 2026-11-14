@@ -30,7 +30,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Missing"
     assert_includes response.body, "Index size"
     assert_includes response.body, "Last build"
-    assert_includes response.body, "Hidden from search"
+    assert_includes response.body, "Held for review"
     assert_includes response.body, RecordingStudioSitemaps::Admin.last_build_line
   end
 
@@ -82,72 +82,20 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   end
 
   test "exclusions public api stays english under fr locale" do
-    relation_class = Class.new do
-      def initialize(ids)
-        @ids = ids
-      end
-
-      def where(*)
-        self
-      end
-
-      def pluck(*)
-        @ids
-      end
+    RecordingStudioSitemaps.unregister_source(:publishable)
+    RecordingStudioSitemaps.register_source(:pages) do |batch|
+      batch << RecordingStudioSitemaps::Entry.new(
+        loc: "/hidden",
+        title: "Hidden page",
+        type: "Page"
+      )
     end
-    publishable_class = Class.new do
-      def initialize(noindex:)
-        @noindex = noindex
-      end
-
-      def noindex?
-        @noindex
-      end
-    end
-    recordable_class = Class.new do
-      attr_reader :id, :title, :name, :trashed_at, :indexable_url
-
-      def initialize(id:, title:, publishable:, indexable_url:)
-        @id = id
-        @title = title
-        @publishable = publishable
-        @indexable_url = indexable_url
-      end
-
-      def current_publishable_for_index
-        @publishable
-      end
-    end
-    type_class = Class.new do
-      def initialize(published_rows, indexable_ids, relation_class)
-        @published_rows = published_rows
-        @indexable_ids = indexable_ids
-        @relation_class = relation_class
-      end
-
-      def published
-        @published_rows
-      end
-
-      def indexable
-        @relation_class.new(@indexable_ids)
-      end
-    end
-
-    recordable = recordable_class.new(
-      id: 99,
-      title: "Hidden page",
-      publishable: publishable_class.new(noindex: true),
-      indexable_url: "/hidden"
-    )
-    type = type_class.new([recordable], [], relation_class)
 
     with_french_locale do
-      stub_singleton_method(RecordingStudioSitemaps::UrlSet, :indexable_types, [type]) do
-        reasons = RecordingStudioSitemaps::Exclusions.items
+      reasons = RecordingStudioSitemaps::Exclusions.items
 
-        assert_equal "Hidden from search", reasons.first.reason
-      end
+      assert_equal "Not an absolute URL", reasons.first.reason
+      assert_equal :absolute_url, reasons.first.filter_name
     end
   end
 
@@ -252,10 +200,12 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     folder = Folder.create!(name: "Docs")
     indexable_page = Page.create!(title: "Getting Started")
     excluded_page = Page.create!(title: "Staff-only notes")
+    held_page = Page.create!(title: "Launch notes")
     root = RecordingStudio.root_recording_for(workspace)
     folder_recording = record_child(folder, root, root)
     indexable_recording = record_child(indexable_page, root, folder_recording)
     excluded_recording = record_child(excluded_page, root, folder_recording)
+    held_recording = record_child(held_page, root, folder_recording)
 
     RecordingStudioPublishable::Services::Publishables::Update.call(
       parent_recording: indexable_recording,
@@ -267,6 +217,14 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
       actor: @user,
       attributes: { slug: "staff-only-notes-i18n", status: "published", meta_robots: "noindex,follow" }
     )
+    RecordingStudioPublishable::Services::Publishables::Update.call(
+      parent_recording: held_recording,
+      actor: @user,
+      attributes: { slug: "launch-notes-i18n", status: "published", meta_robots: "index,follow" }
+    )
+    RecordingStudioSitemaps.register_filter(:hold_launch) do |entry|
+      entry.loc.to_s.include?("launch-notes-i18n") ? "Held for review" : true
+    end
     RecordingStudioSitemaps.rebuild!(source: :test)
   ensure
     Current.actor = nil

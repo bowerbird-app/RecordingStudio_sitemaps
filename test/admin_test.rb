@@ -22,17 +22,15 @@ class AdminTest < Minitest::Test
     end
   end
 
-  FakePage = Struct.new(:title, :name, keyword_init: true)
-
-  def page_snapshot(included: 1, published: 2)
+  def page_snapshot(included: 1, offered: 2)
     RecordingStudioSitemaps::Coverage::Snapshot.new(
       included: included,
-      published: published,
+      offered: offered,
       types: [
         RecordingStudioSitemaps::Coverage::TypeCount.new(
           label: "Page",
           included: included,
-          published: published
+          offered: offered
         )
       ]
     )
@@ -109,7 +107,7 @@ class AdminTest < Minitest::Test
       assert_equal "Page 1/2", RecordingStudioSitemaps::Admin.coverage_info
     end
 
-    RecordingStudioSitemaps::Coverage.stub(:snapshot, page_snapshot(included: 45_000, published: 45_000)) do
+    RecordingStudioSitemaps::Coverage.stub(:snapshot, page_snapshot(included: 45_000, offered: 45_000)) do
       info = RecordingStudioSitemaps::Admin.coverage_info
 
       assert_includes info, "Page 45000/45000"
@@ -118,20 +116,21 @@ class AdminTest < Minitest::Test
   end
 
   def test_findable_items_use_title_and_type
-    RecordingStudioSitemaps::UrlSet.stub(:entries, []) do
+    RecordingStudioSitemaps::Collection.stub(:accepted, []) do
       assert_equal [{ text: "Nothing findable yet." }], RecordingStudioSitemaps::Admin.findable_items
     end
 
-    page = FakePage.new(title: "Getting Started")
-    entry = RecordingStudioSitemaps::UrlSet::Entry.new(loc: "https://site.test/a", lastmod: nil, recordable: page)
+    entry = RecordingStudioSitemaps::Entry.new(
+      loc: "https://site.test/a",
+      title: "Getting Started",
+      type: "Page"
+    )
 
-    RecordingStudioSitemaps::UrlSet.stub(:entries, [entry]) do
-      RecordingStudio.stub(:recordable_type_label, "Page") do
-        assert_equal(
-          [{ text: "Getting Started", trailing: "Page" }],
-          RecordingStudioSitemaps::Admin.findable_items
-        )
-      end
+    RecordingStudioSitemaps::Collection.stub(:accepted, [entry]) do
+      assert_equal(
+        [{ text: "Getting Started", trailing: "Page" }],
+        RecordingStudioSitemaps::Admin.findable_items
+      )
     end
   end
 
@@ -141,10 +140,14 @@ class AdminTest < Minitest::Test
         assert_equal [{ text: "Nothing missing. Nice." }], RecordingStudioSitemaps::Admin.missing_items
       end
 
-      row = RecordingStudioSitemaps::Exclusions::Reason.new(title: "Staff-only notes", reason: "Hidden from search")
+      row = RecordingStudioSitemaps::Exclusions::Item.new(
+        title: "Staff-only notes",
+        reason: "Held for review",
+        filter_name: :hold_launch
+      )
       RecordingStudioSitemaps::Exclusions.stub(:items, [row]) do
         assert_equal(
-          [{ text: "Staff-only notes", trailing: "Hidden from search" }],
+          [{ text: "Staff-only notes", trailing: "Hold launch — Held for review" }],
           RecordingStudioSitemaps::Admin.missing_items
         )
       end
@@ -154,9 +157,9 @@ class AdminTest < Minitest::Test
   def test_missing_items_include_types_with_zero_in_the_sitemap
     snapshot = RecordingStudioSitemaps::Coverage::Snapshot.new(
       included: 0,
-      published: 1,
+      offered: 1,
       types: [
-        RecordingStudioSitemaps::Coverage::TypeCount.new(label: "Support page", included: 0, published: 1)
+        RecordingStudioSitemaps::Coverage::TypeCount.new(label: "Support page", included: 0, offered: 1)
       ]
     )
 
@@ -205,6 +208,22 @@ class AdminTest < Minitest::Test
     range = Time.utc(2026, 8, 1)..Time.utc(2026, 8, 31)
 
     RecordingStudioSitemaps::GenerationLog.stub(:order, logs) do
+      series = RecordingStudioSitemaps::Admin.index_size_series(range: range)
+
+      assert_equal [{ x: "20 Aug 2026, 12:00", y: 2 }], series.first[:data]
+    end
+  end
+
+  def test_index_size_series_asks_a_relation_for_the_time_range
+    older = FakeLog.new(built_at: Time.utc(2026, 6, 1, 12), url_count: 9, status: "success")
+    newer = FakeLog.new(built_at: Time.utc(2026, 8, 20, 12), url_count: 2, status: "success")
+    relation = Object.new
+    relation.define_singleton_method(:where) do |built_at:|
+      [older, newer].select { |log| built_at.cover?(log.built_at) }
+    end
+    range = Time.utc(2026, 8, 1)..Time.utc(2026, 8, 31)
+
+    RecordingStudioSitemaps::GenerationLog.stub(:order, relation) do
       series = RecordingStudioSitemaps::Admin.index_size_series(range: range)
 
       assert_equal [{ x: "20 Aug 2026, 12:00", y: 2 }], series.first[:data]

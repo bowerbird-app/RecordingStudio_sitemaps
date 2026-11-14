@@ -18,7 +18,7 @@
        component: FlatPack::Button::Component.new(
          text: link.text,
          href: preserve_anchor_url(link.url),
-         method: :post,
+         data: { turbo_method: :post },
          style: :primary
        )
      ) %>

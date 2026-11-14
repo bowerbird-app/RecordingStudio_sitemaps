@@ -38,6 +38,15 @@ class XmlBuilderTest < Minitest::Test
     refute_includes xml, "<url>"
   end
 
+  def test_writes_changefreq_and_priority_when_present
+    xml = RecordingStudioSitemaps::XmlBuilder.build(
+      [{ loc: "https://example.test/a", changefreq: "weekly", priority: 0.5 }]
+    )
+
+    assert_includes xml, "<changefreq>weekly</changefreq>"
+    assert_includes xml, "<priority>0.5</priority>"
+  end
+
   def test_string_lastmod_is_used_as_is
     xml = RecordingStudioSitemaps::XmlBuilder.build(
       [{ loc: "https://example.test/a", lastmod: "2026-08-21" }]

@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors     = ["Bowerbird"]
   spec.homepage    = "https://github.com/bowerbird-app/RecordingStudio_sitemaps"
   spec.summary     = "Public sitemap.xml for Recording Studio hosts"
-  spec.description = "A public /sitemap.xml of Publishable indexable URLs, with generation " \
-                     "logs and Admin last-build / excluded URL views."
+  spec.description = "A public /sitemap.xml built from registered sources and filters, " \
+                     "with generation logs and Admin views of what was left out."
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 3.3.0"
 

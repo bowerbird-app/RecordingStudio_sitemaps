@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.10.0
+
+Install Sitemaps `0.10.0`. No migration. Hosts that only publish indexable pages keep `/sitemap.xml` with no setup. The Publishable walk is the default source `:publishable`. Unregister it to replace it.
+
+Other gems register their own rules from an initializer: a filter that returns `false` or a reason when the public should not see an entry, and a source that yields URLs this gem does not know. A filter exception drops that entry. A source exception fails the rebuild and leaves the last good sitemap in place. `UrlSet` is gone. Coverage counts offered entries. Exclusions names the filter and the reason.
+
 ## 0.9.0
 
 Install Sitemaps `0.9.0`. No migration. Optional operations rebuild at `POST /recording_studio_api/apis/operations/v1/sitemaps/rebuild`. No gemspec dependency on `recording_studio_api`. Last-build metrics are unchanged.
