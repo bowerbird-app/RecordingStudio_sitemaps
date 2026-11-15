@@ -11,9 +11,8 @@ RecordingStudio.configure do |config|
 
   config.require_recordable_declarations = true
 
-  # Recording Studio 6.5 denies writes unless authorize_write is set.
-  # The dummy keeps the previous open writes used by the test host.
-  config.allow_unauthorized_writes = true
+  # Core 7 denies a write until this callback allows it.
+  config.authorize_write = ->(**) { true }
 
   config.app_name = "Dummy host" if config.respond_to?(:app_name=)
 

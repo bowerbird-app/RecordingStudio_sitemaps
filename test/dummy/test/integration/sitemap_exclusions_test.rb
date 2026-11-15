@@ -43,7 +43,7 @@ class SitemapExclusionsTest < ActiveSupport::TestCase
   def publish_page!(title, slug:, meta_robots:)
     workspace = Workspace.create!(name: "Exclusion Workspace #{SecureRandom.hex(4)}")
     page = Page.create!(title: title)
-    root = RecordingStudio.root_recording_for(workspace)
+    root = RecordingStudio.create_root_recording!(workspace, actor: @user)
     page_recording = RecordingStudio.record!(
       action: "created",
       recordable: page,

@@ -193,7 +193,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
   def seed_admin_and_pages!
     Current.actor = @user
     admin_root = AdminRoot.find_or_create_by!(name: "Admin")
-    @admin_recording = RecordingStudio.root_recording_for(admin_root)
+    @admin_recording = RecordingStudio.create_root_recording!(admin_root, actor: @user)
     grant_admin_access_for_test!(recording: @admin_recording, actor: @user)
 
     workspace = Workspace.create!(name: "I18n Sitemap Workspace #{SecureRandom.hex(4)}")
@@ -201,7 +201,7 @@ class SitemapsI18nRenderTest < ActionDispatch::IntegrationTest
     indexable_page = Page.create!(title: "Getting Started")
     excluded_page = Page.create!(title: "Staff-only notes")
     held_page = Page.create!(title: "Launch notes")
-    root = RecordingStudio.root_recording_for(workspace)
+    root = RecordingStudio.create_root_recording!(workspace, actor: @user)
     folder_recording = record_child(folder, root, root)
     indexable_recording = record_child(indexable_page, root, folder_recording)
     excluded_recording = record_child(excluded_page, root, folder_recording)

@@ -12,10 +12,10 @@ class SitemapRebuildApiTest < ActionDispatch::IntegrationTest
     end
     Current.actor = @staff
     @admin_root_recordable = AdminRoot.find_or_create_by!(name: "Admin")
-    @admin_root = RecordingStudio.root_recording_for(@admin_root_recordable)
+    @admin_root = RecordingStudio.create_root_recording!(@admin_root_recordable, actor: @staff)
     grant_admin_access_for_test!(recording: @admin_root, actor: @staff)
     @workspace = Workspace.find_or_create_by!(name: "Sitemap rebuild API workspace")
-    @workspace_root = RecordingStudio.root_recording_for(@workspace)
+    @workspace_root = RecordingStudio.create_root_recording!(@workspace, actor: @staff)
     unless RecordingStudioAccessible.authorized?(actor: @staff, recording: @workspace_root, role: :view)
       grant_admin_access_for_test!(recording: @workspace_root, actor: @staff, role: "admin")
     end

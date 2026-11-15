@@ -1,5 +1,21 @@
 # Upgrading
 
+## 0.11.0
+
+Install Sitemaps `0.11.0`. No Sitemaps migration. Recording Studio must be `7.0` or newer and below `8`. Accessible must be `0.44.0` or newer and below `1.0`. Admin must be `2.16.0` or newer. Metrics must be `0.9.0` or newer and below `1.0`. Publishable must be `0.18.0` or newer and below `1.0`. Earlier Publishable releases still require core 6.
+
+`root_recording_for` only finds a root. Seeds and other setup that used to create one by looking it up now call `RecordingStudio.create_root_recording!(recordable, actor:)`. A second call returns the existing root.
+
+Core 7 refuses a write until `config.authorize_write` returns true. Remove `config.allow_unauthorized_writes`. The callback still needs an actor on the write. `config.actor` supplies one when the call does not.
+
+Admin `2.16` dropped `site_admin_recording_resolver`. Site-wide screens (`blast_radius :site`) need `RecordingStudioAccessible` `config.admin_root_resolver`, and the admin mount's `access_recording_resolver` should return `RecordingStudioAccessible.admin_root(context:)`. The operations rebuild check reads `access_recording_resolver` only.
+
+API `0.23` still calls `RecordingStudio::Recording.recording_studio_trashable_kept_sql`. Trashable `0.17` removed that method. The dummy defines it as `RecordingStudio.kept_sql` until API moves.
+
+Copy core's `add_root_recording_id_to_recording_studio_events` migration if events do not already store `root_recording_id`. Publishable `0.18.0` drops `index_rs_publishable_child_per_parent`. Then run `bin/rails generate recording_studio:single_child_index` and migrate. The generated index counts trashed rows.
+
+Dummy kit pins: Recording Studio `v7.0.0`, Accessible `v0.44.0`, Admin `v2.16.0`, Publishable `v0.18.0`, Trashable `v0.17.0`, Root Switchable `v0.16.0`, Metrics `v0.9.0`, Logs `v0.8.0`. Moveable stays `v4.1.1`. Publishable `0.18` requires API `~> 0.23`, and API `0.23` requires Moveable `~> 4.0`, so Moveable `v5.0.0` does not resolve beside this kit. Cache stays `v0.6.3`. API stays `v0.23.0`. FlatPack stays `v0.1.357`.
+
 ## 0.10.0
 
 Install Sitemaps `0.10.0`. No Sitemaps migration. Hosts that only publish indexable pages keep the same `/sitemap.xml` with no setup. The Publishable walk is the default source `:publishable`. Remove it with `RecordingStudioSitemaps.unregister_source(:publishable)` if a host wants to replace it.

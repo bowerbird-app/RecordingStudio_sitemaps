@@ -14,7 +14,10 @@ class SitemapMetricsTest < ActiveSupport::TestCase
     @outsider = user!("sitemap-metrics-outsider")
     Current.actor = @staff
     admin_root = AdminRoot.find_or_create_by!(name: "Admin")
-    grant_admin_access_for_test!(recording: RecordingStudio.root_recording_for(admin_root), actor: @staff)
+    grant_admin_access_for_test!(
+      recording: RecordingStudio.create_root_recording!(admin_root, actor: @staff),
+      actor: @staff
+    )
     Current.actor = nil
   end
 

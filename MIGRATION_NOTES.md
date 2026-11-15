@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## 0.11.0
+
+Install Sitemaps `0.11.0`. No Sitemaps migration. Recording Studio is `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 1.0`. Admin is `>= 2.16.0`. Metrics is `>= 0.9.0`, `< 1.0`. Publishable is `>= 0.18.0`, `< 1.0`.
+
+### Host app
+
+1. Pin Recording Studio `v7.0.0`. Create roots with `RecordingStudio.create_root_recording!(recordable, actor:)`. Leave `root_recording_for` for lookups.
+2. Replace `config.allow_unauthorized_writes` with `config.authorize_write`. Writes still need an actor. Admin `2.16` has no `site_admin_recording_resolver`. Set Accessible `admin_root_resolver` and point Admin `access_recording_resolver` at `RecordingStudioAccessible.admin_root(context:)`.
+3. Copy core's event `root_recording_id` migration when that column is missing. Copy Publishable `0.18.0`'s drop of `index_rs_publishable_child_per_parent`, run `bin/rails generate recording_studio:single_child_index`, then migrate.
+4. English hosts need no locale change.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
 ## 0.10.0
 
 Install Sitemaps `0.10.0`. No migration. Hosts that only publish indexable pages keep `/sitemap.xml` with no setup. The Publishable walk is the default source `:publishable`. Unregister it to replace it.

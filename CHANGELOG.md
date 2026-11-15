@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-15
+
+### Changed
+- Requires Recording Studio `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 1.0`. Admin is `>= 2.16.0`. Metrics is `>= 0.9.0`, `< 1.0`. Publishable is `>= 0.18.0`, `< 1.0` (the first release that allows core 7).
+- Dummy and development Gemfiles pin Recording Studio `v7.0.0`, Accessible `v0.44.0`, Admin `v2.16.0`, Publishable `v0.18.0`, Trashable `v0.17.0`, Logs `v0.8.0`, and Metrics `v0.9.0`. The dummy also pins Root Switchable `v0.16.0`. Moveable stays `v4.1.1` because Publishable `0.18` requires API `~> 0.23`, and that API release requires Moveable `~> 4.0`. Cache stays `v0.6.3`. API stays `v0.23.0`. FlatPack stays `v0.1.357`. Icons stay `v0.2.1`.
+- Dummy seeds and tests create roots with `RecordingStudio.create_root_recording!`. `root_recording_for` stays a lookup. The dummy initializer sets `config.authorize_write` and no longer sets `allow_unauthorized_writes`. Operations rebuild authorization reads Admin `access_recording_resolver` only. Admin `2.16` removed `site_admin_recording_resolver`. The dummy Accessible config sets `admin_root_resolver` so site-wide admin screens resolve. The dummy bridges `recording_studio_trashable_kept_sql` to `RecordingStudio.kept_sql` because API `0.23` still calls the method Trashable `0.17` removed.
+- Dummy schema stores `root_recording_id` on events and uses core's single-child index for Publishable.
+
+### Upgrade notes
+- Bump to `0.11.0`. No Sitemaps migration. Install Recording Studio 7.0 or newer, below 8, plus the runtime floors above. Create roots with `create_root_recording!(recordable, actor:)`. Set `config.authorize_write`. Copy core's event `root_recording_id` migration and Publishable 0.18's child-index swap, then run `bin/rails generate recording_studio:single_child_index`. See `UPGRADING.md`.
+
 ## [0.10.0] - 2026-11-14
 
 ### Added
@@ -242,7 +253,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.7.0...v0.8.0

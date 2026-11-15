@@ -33,9 +33,7 @@ grant_seed_admin_access = lambda do |recording:, actor:|
 end
 
 find_or_record_child = lambda do |recordable, root_recording, parent_recording|
-  RecordingStudio::Recording.where(
-    RecordingStudio::Recording.recording_studio_trashable_kept_sql
-  ).find_by(
+  RecordingStudio::Recording.kept.find_by(
     root_recording: root_recording,
     parent_recording: parent_recording,
     recordable: recordable
@@ -64,10 +62,10 @@ previous_actor = Current.actor
 Current.actor = user
 
 begin
-  root_recording = RecordingStudio.root_recording_for(workspace)
-  accessible_root_recording = RecordingStudio.root_recording_for(accessible_workspace)
-  private_root_recording = RecordingStudio.root_recording_for(private_workspace)
-  admin_root_recording = RecordingStudio.root_recording_for(admin_root)
+  root_recording = RecordingStudio.create_root_recording!(workspace, actor: user)
+  accessible_root_recording = RecordingStudio.create_root_recording!(accessible_workspace, actor: user)
+  private_root_recording = RecordingStudio.create_root_recording!(private_workspace, actor: user)
+  admin_root_recording = RecordingStudio.create_root_recording!(admin_root, actor: user)
 
   folder_recording = find_or_record_child.call(folder, root_recording, root_recording)
   indexable_page_recording = find_or_record_child.call(indexable_page, root_recording, folder_recording)
