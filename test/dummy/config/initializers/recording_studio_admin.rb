@@ -6,11 +6,7 @@ RecordingStudioAdmin.configure do |config|
   config.current_actor_method = :current_user
   config.async_widgets.enabled = false
 
-  config.access_recording_resolver = lambda do |_context|
-    admin_root = AdminRoot.find_by(name: "Admin")
-    next unless admin_root
-
-    RecordingStudio.root_recording_for(admin_root)
+  config.access_recording_resolver = lambda do |context|
+    RecordingStudioAccessible.admin_root(context: context)
   end
-  config.site_admin_recording_resolver = config.access_recording_resolver
 end

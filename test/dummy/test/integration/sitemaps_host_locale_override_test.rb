@@ -114,7 +114,7 @@ class SitemapsHostLocaleOverrideTest < ActionDispatch::IntegrationTest
   def seed_admin!
     Current.actor = @user
     admin_root = AdminRoot.find_or_create_by!(name: "Admin")
-    @admin_recording = RecordingStudio.root_recording_for(admin_root)
+    @admin_recording = RecordingStudio.create_root_recording!(admin_root, actor: @user)
     grant_admin_access_for_test!(recording: @admin_recording, actor: @user)
   ensure
     Current.actor = nil

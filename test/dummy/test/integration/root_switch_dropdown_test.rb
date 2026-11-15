@@ -27,9 +27,10 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     end
 
     sign_in user
+    Current.actor = user
 
     workspace = Workspace.create!(name: "Dropdown Workspace")
-    root_recording = RecordingStudio.root_recording_for(workspace)
+    root_recording = RecordingStudio.create_root_recording!(workspace, actor: user)
     grant_view_for_root_switch!(user)
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
@@ -59,9 +60,10 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     end
 
     sign_in user
+    Current.actor = user
 
     workspace = Workspace.create!(name: "Switch Page Workspace")
-    RecordingStudio.root_recording_for(workspace)
+    RecordingStudio.create_root_recording!(workspace, actor: user)
     grant_view_for_root_switch!(user)
 
     get "/recording_studio_root_switchable/v1/root_switch?scope=all_workspaces"
@@ -78,11 +80,12 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     end
 
     sign_in user
+    Current.actor = user
 
     source_workspace = Workspace.create!(name: "Source Workspace")
     target_workspace = Workspace.create!(name: "Target Workspace")
-    target_root_recording = RecordingStudio.root_recording_for(target_workspace)
-    RecordingStudio.root_recording_for(source_workspace)
+    target_root_recording = RecordingStudio.create_root_recording!(target_workspace, actor: user)
+    RecordingStudio.create_root_recording!(source_workspace, actor: user)
     grant_view_for_root_switch!(user)
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {
@@ -103,11 +106,12 @@ class RootSwitchDropdownTest < ActionDispatch::IntegrationTest
     end
 
     sign_in user
+    Current.actor = user
 
     source_workspace = Workspace.create!(name: "Fallback Source Workspace")
     target_workspace = Workspace.create!(name: "Fallback Target Workspace")
-    target_root_recording = RecordingStudio.root_recording_for(target_workspace)
-    RecordingStudio.root_recording_for(source_workspace)
+    target_root_recording = RecordingStudio.create_root_recording!(target_workspace, actor: user)
+    RecordingStudio.create_root_recording!(source_workspace, actor: user)
     grant_view_for_root_switch!(user)
 
     patch "/recording_studio_root_switchable/v1/root_switch", params: {

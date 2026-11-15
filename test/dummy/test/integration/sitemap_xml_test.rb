@@ -63,7 +63,7 @@ class SitemapXmlTest < ActionDispatch::IntegrationTest
     workspace = Workspace.create!(name: "Draft Workspace #{SecureRandom.hex(4)}")
     page = Page.create!(title: "Draft notes")
     Current.actor = user
-    root = RecordingStudio.root_recording_for(workspace)
+    root = RecordingStudio.create_root_recording!(workspace, actor: user)
     page_recording = record_child(page, root, root)
     RecordingStudioPublishable::Services::Publishables::Update.call(
       parent_recording: page_recording,
@@ -94,7 +94,7 @@ class SitemapXmlTest < ActionDispatch::IntegrationTest
     excluded_page = Page.create!(title: "Staff-only notes")
 
     Current.actor = user
-    root = RecordingStudio.root_recording_for(workspace)
+    root = RecordingStudio.create_root_recording!(workspace, actor: user)
     folder_recording = record_child(folder, root, root)
     indexable_recording = record_child(indexable_page, root, folder_recording)
     excluded_recording = record_child(excluded_page, root, folder_recording)

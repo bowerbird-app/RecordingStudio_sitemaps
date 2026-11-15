@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.10.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.11.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -14,11 +14,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
   def test_gemspec_pins_recording_studio_and_accessible
     gemspec = File.read(File.expand_path("../recording_studio_sitemaps.gemspec", __dir__))
 
-    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 6.3.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", ">= 0.23.1"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", ">= 2.8.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.13.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.7.0", "< 1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 7.0", "< 8.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", ">= 0.44.0", "< 1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", ">= 2.16.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.18.0", "< 1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.9.0", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.3", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", "~> 0.3"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'
@@ -35,19 +35,20 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes gemspec, 'spec.add_dependency "recording_studio_api"'
   end
 
-  def test_dummy_gemfile_pins_verified_6x_github_tags
+  def test_dummy_gemfile_pins_core_7_github_tags
     gemfile = File.read(File.expand_path("dummy/Gemfile", __dir__))
 
     refute_includes gemfile, "widen_recording_studio_requirement"
     refute File.exist?(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.7.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.32.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.13.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.15.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.15.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.14.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.4"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.44.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.16.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.18.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.17.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"'
+    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v4.1.1"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.6.3"'
     assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v0.23.0"'
     assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.357"'
@@ -55,14 +56,15 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute_includes gemfile, 'tag: "v2.4.0"'
     refute_includes gemfile, 'tag: "v0.1.329"'
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v6.7.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.13.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.16.0"'
     assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.357"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.32.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.8.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.7.4"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.14.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.15.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.44.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.17.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.18.0"'
+    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v4.1.1"'
     assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v0.23.0"'
     refute_includes root_gemfile, 'tag: "v2.9.0"'
     refute_includes root_gemfile, 'tag: "v4.7.0"'
@@ -217,6 +219,21 @@ class RecordingStudioSitemapsTest < Minitest::Test
     initializer_path = File.expand_path("dummy/config/initializers/recording_studio.rb", __dir__)
     initializer_source = File.read(initializer_path)
 
+    assert_includes initializer_source, "config.authorize_write = ->(**) { true }"
+    refute_includes initializer_source, "allow_unauthorized_writes"
+    accessible_initializer = File.read(
+      File.expand_path("dummy/config/initializers/recording_studio_accessible.rb", __dir__)
+    )
+    admin_initializer = File.read(
+      File.expand_path("dummy/config/initializers/recording_studio_admin.rb", __dir__)
+    )
+    assert_includes accessible_initializer, "config.admin_root_resolver"
+    assert_includes admin_initializer, "RecordingStudioAccessible.admin_root(context: context)"
+    refute_includes admin_initializer, "site_admin_recording_resolver"
+    kept_sql_bridge = File.read(
+      File.expand_path("dummy/config/initializers/recording_kept_sql_bridge.rb", __dir__)
+    )
+    assert_includes kept_sql_bridge, "def recording_studio_trashable_kept_sql"
     assert_includes initializer_source, "config.require_recordable_declarations = true"
     assert_includes initializer_source, '"AdminRoot"'
     assert_includes initializer_source, '"RecordingStudioPublishable::Publishable"'
@@ -242,14 +259,14 @@ class RecordingStudioSitemapsTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "Recording Studio Sitemaps"
-    assert_includes readme, "v6.7.0"
-    assert_includes readme, "v0.32.0"
+    assert_includes readme, "v7.0.0"
+    assert_includes readme, "v0.44.0"
     assert_includes readme, "v0.1.357"
     refute_includes readme, "v0.1.329"
     assert_includes readme, "/sitemap.xml"
-    assert_includes readme, "v0.15.0"
-    assert_includes readme, "v0.8.0"
-    assert_includes readme, "v2.13.0"
+    assert_includes readme, "v0.18.0"
+    assert_includes readme, "v0.9.0"
+    assert_includes readme, "v2.16.0"
     refute_includes readme, "v4.7.0"
     refute_includes readme, "v2.4.0"
     refute_includes readme, "v2.5.1"

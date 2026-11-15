@@ -19,6 +19,12 @@ class RecordingStudioHostTest < ActiveSupport::TestCase
     connection = ActiveRecord::Base.connection
 
     assert connection.column_exists?(:recording_studio_recordings, :root_recording_id)
+    assert connection.column_exists?(:recording_studio_events, :root_recording_id)
+    assert connection.index_exists?(
+      :recording_studio_recordings,
+      name: "index_recording_studio_recordings_on_single_child"
+    )
+    refute connection.index_exists?(:recording_studio_recordings, name: "index_rs_publishable_child_per_parent")
     assert connection.table_exists?(:recording_studio_accesses)
     assert connection.table_exists?(:recording_studio_access_invitations)
     role_column = connection.columns(:recording_studio_accesses).find { |column| column.name == "role" }
