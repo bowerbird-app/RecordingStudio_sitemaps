@@ -1,5 +1,13 @@
 # Upgrading
 
+## 0.11.1
+
+Install Sitemaps `0.11.1`. No Sitemaps migration. Publishable must be `0.18.1` or newer and below `1.0`. Publishable `0.18.1` requires Recording Studio API `0.24.0` or newer and below `1`, and Flatpack `0.1.341` or newer. API `0.24` also requires Moveable `5.0` or newer and below `6`.
+
+Drop a host copy of `RecordingStudio::Recording.recording_studio_trashable_kept_sql` if it only existed to satisfy API `0.23`. API `0.24` and Admin `2.16` do not call it. Trashable `0.17` already routes kept rows through `RecordingStudio.kept_sql`.
+
+Dummy kit pins: Publishable `v0.18.1`, API `v0.24.0`, Moveable `v5.0.0`. Recording Studio stays `v7.0.0`. Accessible stays `v0.44.0`. Admin stays `v2.16.0`. Trashable stays `v0.17.0`. Root Switchable stays `v0.16.0`. Metrics stays `v0.9.0`. Logs stays `v0.8.0`. Cache stays `v0.6.3`. Icons stay `v0.2.1`. Flatpack stays `v0.1.357` because that tag is already at or above Publishable's `>= 0.1.341` floor.
+
 ## 0.11.0
 
 Install Sitemaps `0.11.0`. No Sitemaps migration. Recording Studio must be `7.0` or newer and below `8`. Accessible must be `0.44.0` or newer and below `1.0`. Admin must be `2.16.0` or newer. Metrics must be `0.9.0` or newer and below `1.0`. Publishable must be `0.18.0` or newer and below `1.0`. Earlier Publishable releases still require core 6.

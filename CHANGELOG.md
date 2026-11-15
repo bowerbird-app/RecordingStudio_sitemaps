@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-11-15
+
+### Changed
+- Requires Publishable `>= 0.18.1`, `< 1.0`. Publishable `0.18.1` requires Recording Studio API `>= 0.24`, `< 1.0` and Flatpack `>= 0.1.341`.
+- Dummy and development Gemfiles pin Publishable `v0.18.1`, API `v0.24.0`, and Moveable `v5.0.0`. Other kit pins stay on the `0.11.0` tags. Flatpack stays `v0.1.357`, which already meets the new floor.
+
+### Removed
+- The dummy `recording_studio_trashable_kept_sql` bridge. API `0.24` no longer calls that method.
+
+### Upgrade notes
+- Bump to `0.11.1`. No Sitemaps migration. Install Publishable `0.18.1` or newer, below 1. Install API `0.24.0` or newer, below 1, and Moveable `5.0` or newer, below 6. Drop any host copy of the `recording_studio_trashable_kept_sql` stand-in. See `UPGRADING.md`.
+
 ## [0.11.0] - 2026-11-15
 
 ### Changed
@@ -253,7 +265,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.1...HEAD
+[0.11.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.8.0...v0.9.0

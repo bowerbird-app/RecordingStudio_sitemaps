@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.11.1
+
+Install Sitemaps `0.11.1`. No Sitemaps migration. Publishable is `>= 0.18.1`, `< 1.0`. That release needs API `>= 0.24`, `< 1.0` and Flatpack `>= 0.1.341`. API `0.24` needs Moveable `>= 5.0`, `< 6.0`.
+
+### Host app
+
+1. Pin Publishable `v0.18.1`, API `v0.24.0`, and Moveable `v5.0.0`.
+2. Remove a local `recording_studio_trashable_kept_sql` stand-in. API `0.24` does not call it.
+3. Leave Flatpack on `v0.1.357` or any tag at or above `v0.1.341`. English hosts need no locale change.
+
+### Verify
+
+```bash
+bundle install
+BUNDLE_GEMFILE=test/dummy/Gemfile bundle install
+bundle exec rake test:all
+```
+
 ## 0.11.0
 
 Install Sitemaps `0.11.0`. No Sitemaps migration. Recording Studio is `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 1.0`. Admin is `>= 2.16.0`. Metrics is `>= 0.9.0`, `< 1.0`. Publishable is `>= 0.18.0`, `< 1.0`.
