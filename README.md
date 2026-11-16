@@ -80,17 +80,17 @@ RecordingStudioSitemaps.rebuild!(source: :admin)
 
 ```ruby
 # Gemfile
-gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.0.0"
-gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.44.0"
-gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.16.0"
+gem "recording_studio", github: "bowerbird-app/RecordingStudio", tag: "v7.3.0"
+gem "recording_studio_accessible", github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.45.1"
+gem "recording_studio_admin", github: "bowerbird-app/RecordingStudio_admin", tag: "v2.18.0"
 gem "recording_studio_logs", github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"
 gem "recording_studio_metrics", github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.0"
-gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v0.18.1"
-gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v0.17.0", require: false
-gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v0.24.0", require: false
-gem "recording_studio_icons", github: "bowerbird-app/RecordingStudio_icons", tag: "v0.2.1", require: false
-gem "recording_studio_moveable", github: "bowerbird-app/RecordingStudio_moveable", tag: "v5.0.0", require: false
-gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.357"
+gem "recording_studio_publishable", github: "bowerbird-app/RecordingStudio_publishable", tag: "v1.1.0"
+gem "recording_studio_trashable", github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1", require: false
+gem "recording_studio_api", github: "bowerbird-app/RecordingStudio_api", tag: "v1.2.1", require: false
+gem "recording_studio_icons", github: "bowerbird-app/RecordingStudio_icons", tag: "v0.4.0", require: false
+gem "recording_studio_moveable", github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.0", require: false
+gem "flat_pack", github: "bowerbird-app/flatpack", tag: "v0.1.377"
 gem "recording_studio_sitemaps", github: "bowerbird-app/RecordingStudio_sitemaps"
 ```
 
@@ -205,18 +205,18 @@ Dummy kit pins:
 
 | Gem | Pin |
 |-----|-----|
-| Recording Studio | `v7.0.0` |
-| Accessible | `v0.44.0` |
-| Admin | `v2.16.0` |
-| Publishable | `v0.18.1` |
+| Recording Studio | `v7.3.0` |
+| Accessible | `v0.45.1` |
+| Admin | `v2.18.0` |
+| Publishable | `v1.1.0` |
 | Root Switchable | `v0.16.0` |
 | Metrics | `v0.9.0` |
-| Trashable | `v0.17.0` |
+| Trashable | `v1.0.1` |
 | Logs | `v0.8.0` |
-| Moveable | `v5.0.0` |
-| Cache | `v0.6.3` |
-| API | `v0.24.0` (Publishable requires it; dummy mounts it) |
-| FlatPack | `v0.1.357` |
+| Moveable | `v6.0.0` |
+| Cache | `v0.7.0` |
+| API | `v1.2.1` (Publishable requires it; dummy mounts it) |
+| FlatPack | `v0.1.377` |
 
 ```bash
 cd test/dummy
