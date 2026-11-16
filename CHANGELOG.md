@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.12.0] - 2026-11-16
 
 ### Changed
-- Recording Studio family runtime dependencies keep their tested floors and cap below the next major. Core stays `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 2.0`. Admin is `>= 2.16.0`, `< 3.0`. Metrics is `>= 0.9.0`, `< 2.0`. Publishable is `>= 0.18.1`, `< 2.0`. Rails and Flatpack constraints are unchanged.
+- Recording Studio family runtime dependencies keep their tested floors and cap below the next major. Core stays `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 2.0`. Admin is `>= 2.16.0`, `< 3.0`. Metrics is `>= 0.9.0`, `< 2.0`. Publishable is `>= 0.18.1`, `< 2.0`. Rails and Flatpack constraints are unchanged. Root and dummy lockfiles record the new gemspec requirements. Git pins are unchanged.
 
 ### Upgrade notes
 - Bump to `0.12.0`. No Sitemaps migration. Accessible, Metrics, and Publishable may be 1.x. Admin may be any 2.x at or above `2.16.0`. Core stays below 8. See `UPGRADING.md`.
