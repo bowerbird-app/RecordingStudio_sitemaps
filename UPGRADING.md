@@ -1,5 +1,9 @@
 # Upgrading
 
+## 0.12.0
+
+Install Sitemaps `0.12.0`. No Sitemaps migration. Recording Studio stays `7.0` or newer and below `8`. Accessible stays `0.44.0` or newer and is now below `2.0`. Admin stays `2.16.0` or newer and is now below `3.0`. Metrics stays `0.9.0` or newer and is now below `2.0`. Publishable stays `0.18.1` or newer and is now below `2.0`. Rails and Flatpack constraints are unchanged. Dummy kit pins are unchanged.
+
 ## 0.11.1
 
 Install Sitemaps `0.11.1`. No Sitemaps migration. Publishable must be `0.18.1` or newer and below `1.0`. Publishable `0.18.1` requires Recording Studio API `0.24.0` or newer and below `1`, and Flatpack `0.1.341` or newer. API `0.24` also requires Moveable `5.0` or newer and below `6`.

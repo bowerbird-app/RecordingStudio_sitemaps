@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.11.1", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.12.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -15,11 +15,14 @@ class RecordingStudioSitemapsTest < Minitest::Test
     gemspec = File.read(File.expand_path("../recording_studio_sitemaps.gemspec", __dir__))
 
     assert_includes gemspec, 'spec.add_dependency "recording_studio", ">= 7.0", "< 8.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", ">= 0.44.0", "< 1.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", ">= 2.16.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.18.1", "< 1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_accessible", ">= 0.44.0", "< 2.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_admin", ">= 2.16.0", "< 3.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.18.1", "< 2.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.18.0", "< 1.0"'
-    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.9.0", "< 1.0"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_publishable", ">= 0.18.1", "< 1.0"'
+    assert_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.9.0", "< 2.0"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_accessible", ">= 0.44.0", "< 1.0"'
+    refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.9.0", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", ">= 0.3", "< 1.0"'
     refute_includes gemspec, 'spec.add_dependency "recording_studio_metrics", "~> 0.3"'
     assert_includes gemspec, 'spec.add_dependency "flat_pack", ">= 0.1.331"'

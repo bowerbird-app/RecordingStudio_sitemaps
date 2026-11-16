@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-11-16
+
+### Changed
+- Recording Studio family runtime dependencies keep their tested floors and cap below the next major. Core stays `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 2.0`. Admin is `>= 2.16.0`, `< 3.0`. Metrics is `>= 0.9.0`, `< 2.0`. Publishable is `>= 0.18.1`, `< 2.0`. Rails and Flatpack constraints are unchanged. Root and dummy lockfiles record the new gemspec requirements. Git pins are unchanged.
+
+### Upgrade notes
+- Bump to `0.12.0`. No Sitemaps migration. Accessible, Metrics, and Publishable may be 1.x. Admin may be any 2.x at or above `2.16.0`. Core stays below 8. See `UPGRADING.md`.
+
 ## [0.11.1] - 2026-11-15
 
 ### Changed
@@ -265,7 +273,8 @@ First product release of Recording Studio Sitemaps. A public `/sitemap.xml` of P
 - Include `RecordingStudio::UsesDefaultLayout` (or set `layout "recording_studio/default_layout"`) for authenticated screens
 - Do not expect `/sitemap.xml`, Admin, generation logs, or Publishable wiring from this version
 
-[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.1...HEAD
+[Unreleased]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/bowerbird-app/RecordingStudio_sitemaps/compare/v0.9.0...v0.10.0
