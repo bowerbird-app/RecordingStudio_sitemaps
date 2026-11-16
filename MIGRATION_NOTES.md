@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## 0.12.0
+
+Install Sitemaps `0.12.0`. No Sitemaps migration. Recording Studio is `>= 7.0`, `< 8.0`. Accessible is `>= 0.44.0`, `< 2.0`. Admin is `>= 2.16.0`, `< 3.0`. Metrics is `>= 0.9.0`, `< 2.0`. Publishable is `>= 0.18.1`, `< 2.0`.
+
+### Host app
+
+1. Leave dummy and development Gemfile pins where they are.
+2. Hosts may resolve Accessible, Metrics, and Publishable 1.x, and Admin 2.x at or above `2.16.0`.
+3. English hosts need no locale change.
+
+### Verify
+
+```bash
+bundle exec gem build recording_studio_sitemaps.gemspec
+```
+
 ## 0.11.1
 
 Install Sitemaps `0.11.1`. No Sitemaps migration. Publishable is `>= 0.18.1`, `< 1.0`. That release needs API `>= 0.24`, `< 1.0` and Flatpack `>= 0.1.341`. API `0.24` needs Moveable `>= 5.0`, `< 6.0`.
