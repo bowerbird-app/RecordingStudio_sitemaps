@@ -10,6 +10,7 @@ module RecordingStudioSitemaps
     class Publishable
       NAME = :publishable
       BATCH_SIZE = 500
+      UrlContext = Struct.new(:url, :publish_at, :resolved, keyword_init: true)
 
       def initialize(batch)
         @batch = batch
@@ -31,20 +32,89 @@ module RecordingStudioSitemaps
 
       def entries_for(type, recordables)
         recordings = recordings_for(type, recordables)
-        recordables.filter_map { |recordable| entry_for(recordable, recordings[recordable.id]) }
+        contexts = url_contexts_for(recordables, recordings)
+        recordables.filter_map do |recordable|
+          entry_for(recordable, recordings[recordable.id], contexts[recordable.id])
+        end
       end
 
-      def entry_for(recordable, recording)
-        loc = AbsoluteUrl.call(recordable.try(:indexable_url))
+      def entry_for(recordable, recording, context = nil)
+        if context&.resolved
+          loc = AbsoluteUrl.call(context.url)
+          lastmod = context.publish_at
+        else
+          loc = AbsoluteUrl.call(recordable.try(:indexable_url))
+          lastmod = lastmod_for(recordable)
+        end
         return if loc.blank?
 
         Entry.new(
           loc: loc,
-          lastmod: lastmod_for(recordable),
+          lastmod: lastmod,
           title: title_for(recordable),
           type: type_label(recordable),
           recording: recording
         )
+      end
+
+      # indexable_url and current_publishable_for_index each reload the parent
+      # recording, its publishable child, and the publishable row. The parent
+      # for this batch is already in `recordings`. Load the children and the
+      # publishable rows once, then build the URL with Routing.
+      def url_contexts_for(recordables, recordings)
+        return {} unless defined?(RecordingStudioPublishable::Routing)
+
+        children = children_by_parent_id(recordings.values)
+        publishables = publishables_by_id(children.values)
+        recordables.each_with_object({}) do |recordable, map|
+          parent = recordings[recordable.id]
+          child = parent.respond_to?(:id) ? children[parent.id] : nil
+          publishable = child.respond_to?(:recordable_id) ? publishables[child.recordable_id] : nil
+          map[recordable.id] = url_context_for(recordable, child, publishable)
+        end
+      end
+
+      def children_by_parent_id(parents)
+        model = recording_model
+        return {} if model.nil? || parents.empty?
+        return {} unless defined?(RecordingStudioPublishable::Publishable)
+        return {} unless parents.all? { |parent| parent.respond_to?(:id) }
+
+        scope = if model.respond_to?(:kept)
+          model.kept
+        elsif model.respond_to?(:all)
+          model.all
+        else
+          return {}
+        end
+        scope = scope.where(parent_recording_id: parents.map(&:id))
+        scope = scope.of_type(RecordingStudioPublishable::Publishable) if scope.respond_to?(:of_type)
+        scope.order(:id).each_with_object({}) do |child, map|
+          map[child.parent_recording_id] ||= child
+        end
+      end
+
+      def publishables_by_id(children)
+        ids = children.map(&:recordable_id)
+        return {} if ids.empty?
+
+        RecordingStudioPublishable::Publishable.where(id: ids).index_by(&:id)
+      end
+
+      def url_context_for(recordable, child, publishable)
+        return UrlContext.new(resolved: false) if publishable.blank?
+        return UrlContext.new(resolved: true) if publishable.noindex?
+
+        url = publishable.canonical_url.presence
+        if url.blank? && child.present? && publishable.currently_published?
+          url = RecordingStudioPublishable::Routing.url_for(
+            publishable_recording: child,
+            publishable: publishable,
+            parent_recordable_type: recordable.class.name
+          )
+        end
+        url = nil unless recordable.class.respond_to?(:indexable_url?) && recordable.class.indexable_url?(url)
+        UrlContext.new(url: url, publish_at: publishable.publish_at, resolved: true)
       end
 
       def each_recordable_batch(relation)
