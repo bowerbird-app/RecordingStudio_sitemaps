@@ -4,7 +4,7 @@ require "test_helper"
 
 class RecordingStudioSitemapsTest < Minitest::Test
   def test_version_matches_release
-    assert_equal "0.12.0", ::RecordingStudioSitemaps::VERSION
+    assert_equal "0.13.0", ::RecordingStudioSitemaps::VERSION
   end
 
   def test_engine_exists
@@ -44,32 +44,36 @@ class RecordingStudioSitemapsTest < Minitest::Test
 
     refute_includes gemfile, "widen_recording_studio_requirement"
     refute File.exist?(File.expand_path("support/widen_recording_studio_requirement.rb", __dir__))
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.3.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.45.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.18.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v1.1.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_root_switchable", tag: "v0.16.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_cache", tag: "v0.7.0"'
-    assert_includes gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v1.2.1"'
-    assert_includes gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.377"'
+    assert_github_pins gemfile, [
+      ["recording_studio", "~> 7.8", "bowerbird-app/RecordingStudio", "v7.8.0"],
+      ["recording_studio_accessible", "~> 0.58", "bowerbird-app/RecordingStudio_accessible", "v0.58.0"],
+      ["recording_studio_admin", "~> 2.20", "bowerbird-app/RecordingStudio_admin", "v2.20.0"],
+      ["recording_studio_publishable", "~> 1.5", "bowerbird-app/RecordingStudio_publishable", "v1.5.0"],
+      ["recording_studio_root_switchable", "~> 0.17", "bowerbird-app/RecordingStudio_root_switchable", "v0.17.0"],
+      ["recording_studio_metrics", "~> 0.10", "bowerbird-app/RecordingStudio_metrics", "v0.10.0"],
+      ["recording_studio_trashable", "~> 1.3", "bowerbird-app/RecordingStudio_trashable", "v1.3.0", false],
+      ["recording_studio_logs", "~> 0.9", "bowerbird-app/RecordingStudio_logs", "v0.9.0"],
+      ["recording_studio_moveable", "~> 6.1", "bowerbird-app/RecordingStudio_moveable", "v6.1.0", false],
+      ["recording_studio_cache", "~> 0.8", "bowerbird-app/RecordingStudio_cache", "v0.8.0"],
+      ["recording_studio_api", "~> 1.21", "bowerbird-app/RecordingStudio_api", "v1.21.2"],
+      ["flat_pack", "~> 0.2", "bowerbird-app/flatpack", "v0.2.0"]
+    ]
     refute_includes gemfile, 'tag: "v4.7.0"'
     refute_includes gemfile, 'tag: "v2.4.0"'
     refute_includes gemfile, 'tag: "v0.1.329"'
     root_gemfile = File.read(File.expand_path("../Gemfile", __dir__))
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio", tag: "v7.3.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_admin", tag: "v2.18.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/flatpack", tag: "v0.1.377"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_accessible", tag: "v0.45.1"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_metrics", tag: "v0.9.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_logs", tag: "v0.8.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_trashable", tag: "v1.0.1"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_publishable", tag: "v1.1.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_moveable", tag: "v6.0.0"'
-    assert_includes root_gemfile, 'github: "bowerbird-app/RecordingStudio_api", tag: "v1.2.1"'
+    assert_github_pins root_gemfile, [
+      ["recording_studio", "~> 7.8", "bowerbird-app/RecordingStudio", "v7.8.0"],
+      ["recording_studio_admin", "~> 2.20", "bowerbird-app/RecordingStudio_admin", "v2.20.0"],
+      ["flat_pack", "~> 0.2", "bowerbird-app/flatpack", "v0.2.0"],
+      ["recording_studio_accessible", "~> 0.58", "bowerbird-app/RecordingStudio_accessible", "v0.58.0"],
+      ["recording_studio_metrics", "~> 0.10", "bowerbird-app/RecordingStudio_metrics", "v0.10.0"],
+      ["recording_studio_logs", "~> 0.9", "bowerbird-app/RecordingStudio_logs", "v0.9.0"],
+      ["recording_studio_trashable", "~> 1.3", "bowerbird-app/RecordingStudio_trashable", "v1.3.0", false],
+      ["recording_studio_publishable", "~> 1.5", "bowerbird-app/RecordingStudio_publishable", "v1.5.0"],
+      ["recording_studio_moveable", "~> 6.1", "bowerbird-app/RecordingStudio_moveable", "v6.1.0", false],
+      ["recording_studio_api", "~> 1.21", "bowerbird-app/RecordingStudio_api", "v1.21.2", false]
+    ]
     refute_includes root_gemfile, 'tag: "v2.9.0"'
     refute_includes root_gemfile, 'tag: "v4.7.0"'
     refute_includes root_gemfile, 'tag: "v0.1.329"'
@@ -137,6 +141,11 @@ class RecordingStudioSitemapsTest < Minitest::Test
     assert_includes application_js, 'import "@hotwired/turbo-rails"'
     refute_includes application_js, 'import { application } from "controllers/application"'
     assert_includes importmap, 'pin "@hotwired/turbo-rails", to: "turbo.min.js"'
+    refute_includes importmap, 'pin "flat_pack/heroicons"'
+    refute_includes importmap, "icon_controller"
+    install_page = File.read(File.expand_path("dummy/install_page.html", __dir__))
+    refute_includes install_page, "flat_pack/heroicons"
+    refute_includes install_page, "icon_controller"
     refute_includes importmap, 'pin "apexcharts", to: "recording_studio_sitemaps/apexcharts.js"'
     refute_includes importmap, "recording_studio_sitemaps/apexcharts.js"
 
@@ -263,19 +272,22 @@ class RecordingStudioSitemapsTest < Minitest::Test
     readme = File.read(File.expand_path("../README.md", __dir__))
 
     assert_includes readme, "Recording Studio Sitemaps"
-    assert_includes readme, "v7.3.0"
-    assert_includes readme, "v0.45.1"
-    assert_includes readme, "v0.1.377"
+    assert_github_pins readme, [
+      ["recording_studio", "~> 7.8", "bowerbird-app/RecordingStudio", "v7.8.0"],
+      ["recording_studio_accessible", "~> 0.58", "bowerbird-app/RecordingStudio_accessible", "v0.58.0"],
+      ["flat_pack", "~> 0.2", "bowerbird-app/flatpack", "v0.2.0"],
+      ["recording_studio_publishable", "~> 1.5", "bowerbird-app/RecordingStudio_publishable", "v1.5.0"],
+      ["recording_studio_api", "~> 1.21", "bowerbird-app/RecordingStudio_api", "v1.21.2", false],
+      ["recording_studio_moveable", "~> 6.1", "bowerbird-app/RecordingStudio_moveable", "v6.1.0", false],
+      ["recording_studio_logs", "~> 0.9", "bowerbird-app/RecordingStudio_logs", "v0.9.0"],
+      ["recording_studio_metrics", "~> 0.10", "bowerbird-app/RecordingStudio_metrics", "v0.10.0"],
+      ["recording_studio_admin", "~> 2.20", "bowerbird-app/RecordingStudio_admin", "v2.20.0"]
+    ]
     refute_includes readme, "v0.1.329"
     assert_includes readme, "/sitemap.xml"
-    assert_includes readme, "v1.1.0"
-    assert_includes readme, "v1.2.1"
-    assert_includes readme, "v6.0.0"
     refute_includes readme, "v0.18.0"
     refute_includes readme, "v0.23.0"
     refute_includes readme, "v4.1.1"
-    assert_includes readme, "v0.9.0"
-    assert_includes readme, "v2.18.0"
     refute_includes readme, "v4.7.0"
     refute_includes readme, "v2.4.0"
     refute_includes readme, "v2.5.1"
@@ -357,5 +369,16 @@ class RecordingStudioSitemapsTest < Minitest::Test
     refute File.exist?(
       File.expand_path("dummy/app/views/layouts/recording_studio/default_layout.html.erb", __dir__)
     )
+  end
+
+  private
+
+  def assert_github_pins(source, pins)
+    normalized = source.gsub(/\s+/, " ")
+    pins.each do |gem_name, requirement, repo, tag, loaded|
+      pin = %(gem "#{gem_name}", "#{requirement}", github: "#{repo}", tag: "#{tag}")
+      pin += ", require: false" if loaded == false
+      assert_includes normalized, pin
+    end
   end
 end

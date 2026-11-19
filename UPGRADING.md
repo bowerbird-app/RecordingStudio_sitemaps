@@ -1,5 +1,15 @@
 # Upgrading
 
+## 0.13.0
+
+Install Sitemaps `0.13.0`. No Sitemaps migration. Gemspec runtime floors are unchanged. Development and dummy Gemfiles pin Recording Studio `~> 7.8` (`v7.8.0`), Flatpack `~> 0.2` (`v0.2.0`), Accessible `~> 0.58` (`v0.58.0`), Admin `~> 2.20` (`v2.20.0`), API `~> 1.21` (`v1.21.2`), Icons `~> 0.5` (`v0.5.0`), Logs `~> 0.9` (`v0.9.0`), Metrics `~> 0.10` (`v0.10.0`), Moveable `~> 6.1` (`v6.1.0`), Publishable `~> 1.5` (`v1.5.0`), and Trashable `~> 1.3` (`v1.3.0`). The dummy also pins Cache `~> 0.8` (`v0.8.0`) and Root Switchable `~> 0.17` (`v0.17.0`).
+
+Hosts MUST run the Recording Studio 7.4, 7.5 and 7.7 migrations if they have not.
+
+flat_pack 0.2.0 is supported; hosts moving to 0.2 must remove the manual `flat_pack/heroicons` importmap pin and any `flat-pack--icon` controller registration.
+
+Hosts that load Recording Studio API 1.12 or newer need `config/recording_studio_api.yml`. A missing file raises during boot. Copy API migration `20261117000024_add_owner_to_recording_studio_api_api_clients` before provisioning clients that store an owner.
+
 ## 0.12.0
 
 Install Sitemaps `0.12.0`. No Sitemaps migration. Recording Studio stays `7.0` or newer and below `8`. Accessible stays `0.44.0` or newer and is now below `2.0`. Admin stays `2.16.0` or newer and is now below `3.0`. Metrics stays `0.9.0` or newer and is now below `2.0`. Publishable stays `0.18.1` or newer and is now below `2.0`. Rails and Flatpack constraints are unchanged. Dummy kit pins are unchanged.
