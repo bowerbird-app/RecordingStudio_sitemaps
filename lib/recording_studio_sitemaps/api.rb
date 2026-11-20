@@ -36,7 +36,8 @@ module RecordingStudioSitemaps
           http_verb: :post,
           path: PATH,
           handler: Rebuild,
-          openapi: OPENAPI
+          openapi: OPENAPI,
+          required_role: :view
         )
       end
 
