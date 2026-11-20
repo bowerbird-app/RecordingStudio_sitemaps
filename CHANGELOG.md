@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Development and dummy Gemfiles pin Recording Studio `~> 7.8` (`v7.8.0`), Flatpack `~> 0.2` (`v0.2.0`), Accessible `~> 0.58` (`v0.58.0`), Admin `~> 2.20` (`v2.20.0`), API `~> 1.21` (`v1.21.2`), Icons `~> 0.5` (`v0.5.0`), Logs `~> 0.9` (`v0.9.0`), Metrics `~> 0.10` (`v0.10.0`), Moveable `~> 6.1` (`v6.1.0`), Publishable `~> 1.5` (`v1.5.0`), and Trashable `~> 1.3` (`v1.3.0`). The dummy also pins Cache `~> 0.8` (`v0.8.0`) and Root Switchable `~> 0.17` (`v0.17.0`). Gemspec runtime floors are unchanged. The dummy drops the `flat_pack/heroicons` importmap pin and the `flat-pack--icon` controller registration. The dummy adds `config/recording_studio_api.yml` and API's owner-columns migration so API 1.21 can boot.
+- Operations rebuild registers `required_role: :view` on `POST sitemaps/rebuild`. API 1.21 defaults an unscoped non-GET endpoint to `:edit`, which returned 403 for a view key.
 
 ### Upgrade notes
 - Bump to `0.13.0`. No Sitemaps migration. Hosts MUST run the Recording Studio 7.4, 7.5 and 7.7 migrations if they have not.
